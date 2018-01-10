@@ -1,0 +1,39 @@
+---
+title: "Bayesian Modeling of Polling Data"
+output: pdf_document
+author: Nick Ahamed
+date: 10 Jan 2017
+---
+##Understand the problem
+I am interested in using Bayesian modeling to predict how many seats Democrats will win in the 2018 House of Representative elections. This broad problem can be broken down into three composite tasks: 
+
+1. Use past election results and polling data to generate distributions for pollster and mode bias.
+
+2. Estimate the relationship between past polling data and number of seats.
+
+3. Apply the bias estimates from (1) to current polling for the 2018 election to generate a polling average, and then use (2) to predict the number of seats. 
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
