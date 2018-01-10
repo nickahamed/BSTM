@@ -35,8 +35,12 @@ res$twoway_seat <- res$dem_seats/(res$dem_seats+res$rep_seats)
 
 polls <- read.csv("training_dat.csv")
 polls$twoway <- polls$dem/(polls$dem+polls$rep)
-#polls$week <- 
-
+polls <- polls %>% 
+  inner_join(res[,c("cycle","date", "twoway_vote")], by="cycle") %>%
+  mutate(week = round(as.numeric((as.Date(as.character(date),  format="%m/%d/%y") - 
+           as.Date(as.character(end_date),  format="%m/%d/%y")) + 
+           (as.Date(as.character(end_date),  format="%m/%d/%y") - 
+           as.Date(as.character(start_date),  format="%m/%d/%y"))/2)/7))
 ```
 
 
