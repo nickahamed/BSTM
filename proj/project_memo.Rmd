@@ -22,7 +22,7 @@ I am interested in using Bayesian modeling to predict how many seats Democrats w
 ##The Data
 
 #### Description
-For this project, I have two primary sources of data: past polls and election results. The poll response that I am using is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?' Asking specific candidate names would be preferrable because it would test voters' preference for actual people; voters may know the name of their incumbent and feel favorable to them even though they might otherwise support the other party, for example. However, I am interested in generating a prediction for 2018 and most candidates that will be on the ballot have not been decided (and may not be until close to the election). Thus, only generic congressional ballot polls are available for 2018 and I will only use these for past elections as well. 
+For this project, I have two primary sources of data: past polls and election results. The poll response that I use is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?' Asking specific candidate names would be preferrable because it would test voters' preference for actual people; voters may know the name of their incumbent and feel favorable to them even though they might otherwise support the other party, for example. However, I am interested in generating a prediction for 2018 and most candidates that will be on the ballot have not been decided (and may not be until close to the election). Thus, only generic congressional ballot polls are available for 2018 and I will only use these for past elections as well. 
 
 The past polls were taken from Real Clear Politics' database across 6 election cycles: [2006](https://realclearpolitics.com/epolls/other/2006_generic_congressional_vote-2174.html), [2008](https://www.realclearpolitics.com/epolls/other/2008_generic_congressional_vote-2173.html#polls), [2010](https://www.realclearpolitics.com/epolls/other/2010_generic_congressional_vote-2171.html#polls), [2012](https://www.realclearpolitics.com/epolls/other/2012_generic_congressional_vote-3525.html#polls), [2014](https://www.realclearpolitics.com/epolls/other/generic_congressional_vote-2170.html) and [2016](https://www.realclearpolitics.com/epolls/other/2016_generic_congressional_vote-5279.html#polls). Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)). Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more computation time. 
 
@@ -36,12 +36,56 @@ res$twoway_seat <- res$dem_seats/(res$dem_seats+res$rep_seats)
 polls <- read.csv("training_dat.csv")
 polls$twoway <- polls$dem/(polls$dem+polls$rep)
 polls <- polls %>% 
-  inner_join(res[,c("cycle","date", "twoway_vote")], by="cycle") %>%
+  inner_join(res[,c("cycle","date")], by="cycle") %>%
   mutate(week = round(as.numeric((as.Date(as.character(date),  format="%m/%d/%y") - 
            as.Date(as.character(end_date),  format="%m/%d/%y")) + 
            (as.Date(as.character(end_date),  format="%m/%d/%y") - 
            as.Date(as.character(start_date),  format="%m/%d/%y"))/2)/7))
+polls$n_size <- as.numeric(as.character(polls$n_size))
 ```
 
-
 #### Exploration
+First, let's explore the trends over time in each cycle. Here, each point is a poll; it's size relfects the sample size and color represents the pollster. The dashed line represents the final two-way popular vote share of Democrats.
+```{r, echo=FALSE, fig.width=6, fig.height=2.5, fig.align="center"}
+ggplot(data=polls, aes(x=week, y=twoway, size=sqrt(n_size), color = pollster)) + 
+  geom_point(alpha=0.3) +
+  theme_bw() + 
+  facet_wrap(~cycle) +
+  scale_x_reverse(name = "Weeks Before Election") +
+  scale_y_continuous(name = "Democratic Two-way Vote Share", labels=scales::percent) + 
+  geom_hline(data=res, aes(yintercept = twoway_vote), linetype="dashed") +
+  guides(size=F, color = F)
+```
+
+A couple of observations from this are clear. Polls are not conducted uniformly over time between elections. For example, 2006 had a lot of polls just before the election, whereas in 2010 many were conducted nearly a year in advance. We also see that by election, some pollsters are systematically off. For example, the pink pollster in 2010 was consistently below the final election result, suggesting bias. Last, we see that there are trends in results over time. For example, in 2014 the polls got closer and closer to the true result over time. Investigating this further, we see that poll results are not normally distributed around the result **across time**, suggesting we will need a time-dependent model.  
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=6, fig.height=2.5, fig.align="center"}
+ggplot(data=polls, aes(x=round(twoway,2))) + 
+  geom_histogram() +
+  theme_bw() + 
+  facet_wrap(~cycle) +
+  scale_x_continuous(name = "Democratic Two-way Vote Share", labels=scales::percent) + 
+  ylab("Number of Polls") +
+  geom_vline(data=res, aes(xintercept = twoway_vote), linetype="dashed") 
+```
+
+Let's also investigate the relationship between polls and two-way seats. While I later improve upon this through modeling, a crude measure is the average poll result within 1 week of election day, weighted by sample size. Below I plot that on the x-axis and share of seats won on the y-axis with a linear line of best fit. We see that the greater the support in final polls, the greater share of seats won. 
+
+```{r, echo=FALSE, fig.width=2, fig.height=2, fig.align="center"}
+avgs <- polls %>%
+  filter(week < 2) %>%
+  group_by(cycle) %>%
+  summarise(avg = sum(n_size*twoway)/sum(n_size)) %>%
+  inner_join(res,by="cycle")
+
+ggplot(avgs, aes(x=avg, y=twoway_seat)) + 
+  geom_point() +
+  theme_bw() +
+  scale_y_continuous(name = "Dems' Share of Seats Won", labels = scales::percent, limits = c(0.4,0.6)) +
+  scale_x_continuous(name = "Dems' Avg Final Poll Results", labels = scales::percent, limits = c(0.4,0.6)) +
+  stat_smooth(method = "lm", se=F) +
+  theme(axis.title.x = element_text(size=8),
+        axis.title.y = element_text(size=8))
+  
+```
+
