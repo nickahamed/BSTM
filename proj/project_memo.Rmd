@@ -89,3 +89,23 @@ ggplot(avgs, aes(x=avg, y=twoway_seat)) +
   
 ```
 
+##The Models
+To answer question 1 above, I follow [Jackman (2005)](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
+$$y_i \sim \mathcal{N}(\mu_i, \sigma^2_i)$$
+That poll is centered around mean $\mu_i$, which itself is a function of $\alpha_t$, the true value of support at the time the poll was taken $t_i$, $\delta_j$, the bias of pollster $j$, and $\theta_k$, the bias of sampling universe $k$. Fully specified, this is: 
+$$\mu_i = \alpha_{t_i} + \delta_{j_i} + \theta_{k_i}$$
+Due to the trends we see in our initial data exploration, a random walk model is appropriate. In such a model, support at time $t$ is normally distributed at time $t - 1$. 
+$$ \alpha_t \sim \mathcal{N}(\alpha_{t-1}, \omega^2) $$
+By including the final election results as the 'reference' for $delta$, and by using a random walk, I will be able to estimate the consistent bias of each pollster and the effect of different sampling universe. 
+
+For these given specifications, we have the following priors: 
+$$ \sigma^2_i = \sqrt{\frac{y_i(1-y_i)}{n_i}},\ \ \ \delta_j \sim \mathcal{N}(0,1),\ \ \ \theta_k \sim \mathcal{N}(0,1),\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega \sim IG(1/2,1/2)$$
+$\sigma^2_i$ just follows the standard formula for standard deviation of a sample. For pollster biases ($\delta$), my prior is that there is no bias with a standard deviation large enough to capture total bias (awarding Democrats 100% when they actually had 0% support); my prior for bias from sampling universe ($\theta$) is the same. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, a prior for the true standard deviation of support ($\omega$), I use the inverse gamma with an effective sample size of 1 and a prior guess of 1 like the standard deviation for $\delta$ and $\theta$.
+
+To answer question 2 above, I will use the pollster and universe biases estimated above, and the same random walk algorithm to generate a final polling average at the time of the election, $\alpha_E$. I will then use the following model to estimate number of seats: 
+$$ S_{cycle} = \beta_0 + \beta_1*\alpha_{E_{cycle}},\ \ \ cycle = 2006,...,2016 $$
+My priors for this model are: 
+$$ '\beta_0 \sim \mathcal{N}(0.5, 0.5),\ \ \ \beta_1 \sim \mathcal{N}(1,1)$$
+$\beta_0$ here has a prior of half the seats in the House of Representatives with a standard deviation of the same. $\beta_1$ has a prior that says a 1 unit increase in $\alpha_{E_{cycle}}$ (a 100 perctange point increase in the Democrats' modeled vote share) is associated with a 100 percentage point increase in the share of seats awarded to Democrats, with a standard deviation of the same. 
+
+To answer question 3, I will use the same random walk algorithm already mentioned, along with the pollster and universe biases and distributions to generate a polling average for today. I will then use this $\alpha$ with the coefficients estimated in the second model to predict the number of seats Democrats will win in 2018. 
