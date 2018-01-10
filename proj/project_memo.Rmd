@@ -4,36 +4,40 @@ output: pdf_document
 author: Nick Ahamed
 date: 10 Jan 2017
 ---
-##Understand the problem
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(tidyverse)
+```
+
+##The Problem
 I am interested in using Bayesian modeling to predict how many seats Democrats will win in the 2018 House of Representative elections. This broad problem can be broken down into three composite tasks: 
 
-1. Use past election results and polling data to generate distributions for pollster and mode bias.
+1. Use past election results and polling data to generate distributions for pollster and universe bias.
 
 2. Estimate the relationship between past polling data and number of seats.
 
 3. Apply the bias estimates from (1) to current polling for the 2018 election to generate a polling average, and then use (2) to predict the number of seats. 
 
+##The Data
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+#### Description
+For this project, I have two primary sources of data: past polls and election results. The poll response that I am using is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?' Asking specific candidate names would be preferrable because it would test voters' preference for actual people; voters may know the name of their incumbent and feel favorable to them even though they might otherwise support the other party, for example. However, I am interested in generating a prediction for 2018 and most candidates that will be on the ballot have not been decided (and may not be until close to the election). Thus, only generic congressional ballot polls are available for 2018 and I will only use these for past elections as well. 
+
+The past polls were taken from Real Clear Politics' database across 6 election cycles: [2006](https://realclearpolitics.com/epolls/other/2006_generic_congressional_vote-2174.html), [2008](https://www.realclearpolitics.com/epolls/other/2008_generic_congressional_vote-2173.html#polls), [2010](https://www.realclearpolitics.com/epolls/other/2010_generic_congressional_vote-2171.html#polls), [2012](https://www.realclearpolitics.com/epolls/other/2012_generic_congressional_vote-3525.html#polls), [2014](https://www.realclearpolitics.com/epolls/other/generic_congressional_vote-2170.html) and [2016](https://www.realclearpolitics.com/epolls/other/2016_generic_congressional_vote-5279.html#polls). Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)). Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more computation time. 
+
+For election results, I use both the popular vote share and the seats won. These were taken from Wikipedia: [2006](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2006), [2008](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2008), [2010](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2010), [2012](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2012), [2014](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2014), and [2016](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2016). Again, I use Democrats' two-way vote share of the popular vote to mimic their two-way support in the polling data, and their percentage share of seats in the Congress. 
+
+```{r, include=FALSE}
+res <- read.csv("election_results.csv")
+res$twoway_vote <- res$dem_vote/(res$dem_vote+res$rep_vote)
+res$twoway_seat <- res$dem_seats/(res$dem_seats+res$rep_seats)
+
+polls <- read.csv("training_dat.csv")
+polls$twoway <- polls$dem/(polls$dem+polls$rep)
+#polls$week <- 
+
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+#### Exploration
