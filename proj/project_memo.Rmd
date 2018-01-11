@@ -8,6 +8,7 @@ date: 10 Jan 2017
 ```{r setup, include=FALSE}
 library(ggplot2)
 library(tidyverse)
+library("rjags")
 ```
 
 ##The Problem
@@ -37,10 +38,10 @@ polls <- read.csv("training_dat.csv")
 polls$twoway <- polls$dem/(polls$dem+polls$rep)
 polls <- polls %>% 
   inner_join(res[,c("cycle","date")], by="cycle") %>%
-  mutate(week = round(as.numeric((as.Date(as.character(date),  format="%m/%d/%y") - 
-           as.Date(as.character(end_date),  format="%m/%d/%y")) + 
-           (as.Date(as.character(end_date),  format="%m/%d/%y") - 
-           as.Date(as.character(start_date),  format="%m/%d/%y"))/2)/7))
+  mutate(week = -round(as.numeric((as.Date(as.character(end_date),  format="%m/%d/%y") - 
+           as.Date(as.character(date),  format="%m/%d/%y")) + 
+           (as.Date(as.character(start_date),  format="%m/%d/%y") - 
+           as.Date(as.character(end_date),  format="%m/%d/%y"))/2)/7))
 polls$n_size <- as.numeric(as.character(polls$n_size))
 ```
 
@@ -99,8 +100,8 @@ $$ \alpha_t \sim \mathcal{N}(\alpha_{t-1}, \omega^2) $$
 By including the final election results as the 'reference' for $delta$, and by using a random walk, I will be able to estimate the consistent bias of each pollster and the effect of different sampling universe. 
 
 For these given specifications, we have the following priors: 
-$$ \sigma^2_i = \sqrt{\frac{y_i(1-y_i)}{n_i}},\ \ \ \delta_j \sim \mathcal{N}(0,1),\ \ \ \theta_k \sim \mathcal{N}(0,1),\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega \sim IG(1/2,1/2)$$
-$\sigma^2_i$ just follows the standard formula for standard deviation of a sample. For pollster biases ($\delta$), my prior is that there is no bias with a standard deviation large enough to capture total bias (awarding Democrats 100% when they actually had 0% support); my prior for bias from sampling universe ($\theta$) is the same. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, a prior for the true standard deviation of support ($\omega$), I use the inverse gamma with an effective sample size of 1 and a prior guess of 1 like the standard deviation for $\delta$ and $\theta$.
+$$ \sigma^2_i = \sqrt{\frac{y_i(1-y_i)}{n_i}},\ \ \ \delta_j \sim \mathcal{N}(0,1),\ \ \ \theta_k \sim \mathcal{N}(0,1),\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega^2 \sim G(1/2,1/2)$$
+$\sigma^2_i$ just follows the standard formula for standard deviation of a sample. For pollster biases ($\delta$), my prior is that there is no bias with a standard deviation large enough to capture total bias (awarding Democrats 100% when they actually had 0% support); my prior for bias from sampling universe ($\theta$) is the same. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, a prior for the true standard deviation of support ($\omega$), I use the gamma distribution with an effective sample size of 1 and a prior guess of 1 like the standard deviation for $\delta$ and $\theta$.
 
 To answer question 2 above, I will use the pollster and universe biases estimated above, and the same random walk algorithm to generate a final polling average at the time of the election, $\alpha_E$. I will then use the following model to estimate number of seats: 
 $$ S_{cycle} = \beta_0 + \beta_1*\alpha_{E_{cycle}},\ \ \ cycle = 2006,...,2016 $$
@@ -109,3 +110,59 @@ $$ '\beta_0 \sim \mathcal{N}(0.5, 0.5),\ \ \ \beta_1 \sim \mathcal{N}(1,1)$$
 $\beta_0$ here has a prior of half the seats in the House of Representatives with a standard deviation of the same. $\beta_1$ has a prior that says a 1 unit increase in $\alpha_{E_{cycle}}$ (a 100 perctange point increase in the Democrats' modeled vote share) is associated with a 100 percentage point increase in the share of seats awarded to Democrats, with a standard deviation of the same. 
 
 To answer question 3, I will use the same random walk algorithm already mentioned, along with the pollster and universe biases and distributions to generate a polling average for today. I will then use this $\alpha$ with the coefficients estimated in the second model to predict the number of seats Democrats will win in 2018. 
+
+```{r, include=FALSE}
+##Model 1 - 2006
+dat <- polls %>% filter(cycle == 2006)
+dat$pollster_num <- as.numeric(dat$pollster)
+dat$univ_num <- as.numeric(dat$univ)
+
+dat$prec <- 1/(sqrt((dat$twoway*(1-dat$twoway))/dat$n_size))
+
+dat$week_adj <- -1*(dat$week - max(dat$week)) + 2
+
+xi <- rep(NA, length(unique(dat$week))+1)
+xi[max(dat$week_adj)] <- avgs$twoway_vote[avgs$cycle == 2006]
+data_jags = as.list(dat)
+data_jags$xi <- xi
+
+mod_string = " model {
+xi[1] ~ dunif(0.46, 0.56)
+
+for(i in 1:length(twoway)){
+    mu[i] <- xi[week_adj[i]] + delta[pollster_num[i]] + theta[univ_num[i]]
+    twoway[i] ~ dnorm(mu[i],prec[i])
+}
+
+ for(t in 2:length(xi)){
+  xi[t] ~ dnorm(xi[t-1],tau)
+ }
+
+## priors for standard deviations
+omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
+tau <- 1/omega2
+
+## priors for house effects
+for (i in 1:max(pollster_num)) {
+  delta[i] ~ dnorm(0.0, 1.0/1.0)
+}
+
+for (i in 1:max(univ_num)) {
+  theta[i] ~ dnorm(0.0, 1.0/1.0)
+}
+
+} "
+
+params = c("xi", "delta", "theta")
+
+mod = jags.model(textConnection(mod_string), data=data_jags, n.chains=3)
+update(mod, 1000) # burn-in
+mod_sim = coda.samples(model=mod,
+                        variable.names=params,
+                        n.iter=50000)
+
+summary(mod_sim)
+
+```
+
+
