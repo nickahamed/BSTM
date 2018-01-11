@@ -882,7 +882,7 @@ final_guess_16 <- data.frame(cycle = 2016,
                              ub = c(0.6136))
 ```
 
-```{r, include=FAlSE}
+```{r, include=FALSE}
 final_guess <- rbind(final_guess_06,
                      final_guess_08,
                      final_guess_10,
