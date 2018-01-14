@@ -2,7 +2,6 @@
 title: "Bayesian Modeling of Polling Data"
 output: pdf_document
 author: Nick Ahamed
-date: 12 Jan 2017
 ---
 
 ```{r setup, include=FALSE}
@@ -10,21 +9,33 @@ library(ggplot2)
 library(tidyverse)
 library("rjags")
 set.seed(102)
+#todo: 
+#-Remove hardcoded numbers
+#-functions for data prep/clean up
+#-dont overwrite everything every time
+#-function for random walk model 
+#-Provide more data tables of bias
+#-Provide table of final estimates using est bias, avg bias, actual two-way and two way seats
+#-Smaller SEs
+#-figure out logistic regression for seats
+#-nice figures for number of seats & distribution of seats 
+#-Shiny app to add new polls and see data update & track seat projections
 ```
+##Summary
+I am interested in forecasting the number of seats Democrats will win in the 2018 elections. I use random walk bayesian models of past elections to generate estimates of bias for pollsters. Likewise, I estimate the relationship between past election forecasts and Democrats' seats. Using these estimates, I model a current true level of support for Democrats (54%). Combined with the second model, I estimate Democrats will win 225 seats. 
 
-##The Problem
-I am interested in using Bayesian modeling to predict how many seats Democrats will win in the 2018 House of Representative elections. This broad problem can be broken down into three composite tasks: 
-
+##Introduction
+To answer the above problem, I break it into three component modeling tasks:  
 1. Use past election results and polling data to generate distributions for pollster and universe bias.
 2. Estimate the relationship between past polling data and number of seats.
-3. Apply the bias estimates from (1) to current polling for the 2018 election to generate a polling average, and then use (2) to predict the number of seats. 
+3. Apply the bias estimates from (1) to current polling  to generate a support forecast, and then use (2) to predict the number of seats. 
 
 ##The Data
-For this project, I have two primary sources of data: past polls and election results. The poll response that I use is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?' Asking specific candidate names would be preferrable because it would test voters' preference for actual people; voters may know the name of their incumbent and feel favorable to them even though they might otherwise support the other party, for example. However, I am interested in generating a prediction for 2018 and most candidates that will be on the ballot have not been decided (and may not be until close to the election). Thus, only generic congressional ballot polls are available for 2018 and I will only use these for past elections as well. 
+For this project, I have two primary sources of data: past polls and election results. The poll response that I use is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?' Since not all candidates are known for 2018 yet, this is the only current question being polled, and so for comparability, I will use the same question for past elections. 
 
-The past polls were taken from Real Clear Politics' database across 6 election cycles: [2006](https://realclearpolitics.com/epolls/other/2006_generic_congressional_vote-2174.html), [2008](https://www.realclearpolitics.com/epolls/other/2008_generic_congressional_vote-2173.html#polls), [2010](https://www.realclearpolitics.com/epolls/other/2010_generic_congressional_vote-2171.html#polls), [2012](https://www.realclearpolitics.com/epolls/other/2012_generic_congressional_vote-3525.html#polls), [2014](https://www.realclearpolitics.com/epolls/other/generic_congressional_vote-2170.html) and [2016](https://www.realclearpolitics.com/epolls/other/2016_generic_congressional_vote-5279.html#polls). Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)). Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more computation time. 
+The past polls were taken from Real Clear Politics' database across 6 election cycles: [__2006__](https://realclearpolitics.com/epolls/other/2006_generic_congressional_vote-2174.html), [__2008__](https://www.realclearpolitics.com/epolls/other/2008_generic_congressional_vote-2173.html#polls), [__2010__](https://www.realclearpolitics.com/epolls/other/2010_generic_congressional_vote-2171.html#polls), [__2012__](https://www.realclearpolitics.com/epolls/other/2012_generic_congressional_vote-3525.html#polls), [__2014__](https://www.realclearpolitics.com/epolls/other/generic_congressional_vote-2170.html) and [__2016__](https://www.realclearpolitics.com/epolls/other/2016_generic_congressional_vote-5279.html#polls). Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)): it is a proportion between 0 and 1. Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more resources. 
 
-For election results, I use both the popular vote share and the seats won. These were taken from Wikipedia: [2006](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2006), [2008](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2008), [2010](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2010), [2012](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2012), [2014](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2014), and [2016](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2016). Again, I use Democrats' two-way vote share of the popular vote to mimic their two-way support in the polling data, and their percentage share of seats in the Congress. 
+For election results, I use both the popular vote share and the seats won. These were taken from Wikipedia: [__2006__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2006), [__2008__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2008), [__2010__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2010), [__2012__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2012), [__2014__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2014), and [__2016__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2016). Again, I use Democrats' two-way vote share of the popular vote to mimic their two-way support in the polling data, and their percentage share of seats in the Congress. 
 
 ```{r, include=FALSE}
 res <- read.csv("election_results.csv")
@@ -42,7 +53,8 @@ polls <- polls %>%
 polls$n_size <- as.numeric(as.character(polls$n_size))
 ```
 
-First, let's explore the trends over time in each cycle. Here, each point is a poll; it's size relfects the sample size and color represents the pollster. The dashed line represents the final two-way popular vote share of Democrats.
+First, let's explore the trends over time in each cycle. Here, each point is a poll; it's size relfects the sample size and color represents the pollster. The dashed line represents the final two-way popular vote share of Democrats. A couple of observations from this are clear. We see that by election, some pollsters are systematically off. For example, the pink pollster in 2010 was consistently below the final election result, suggesting bias. Last, we see that there are trends in results over time. For example, in 2014 the polls got closer and closer to the true result over time. Further investigation shows that poll results are not normally distributed around the result **across time**, suggesting we will need a time-dependent model. 
+
 ```{r, echo=FALSE, fig.width=6, fig.height=2.5, fig.align="center"}
 ggplot(data=polls, aes(x=week, y=twoway, size=sqrt(n_size), color = pollster)) + 
   geom_point(alpha=0.3) +
@@ -54,8 +66,6 @@ ggplot(data=polls, aes(x=week, y=twoway, size=sqrt(n_size), color = pollster)) +
   guides(size=F, color = F)
 ```
 
-A couple of observations from this are clear. Polls are not conducted uniformly over time between elections. For example, 2006 had a lot of polls just before the election, whereas in 2010 many were conducted nearly a year in advance. We also see that by election, some pollsters are systematically off. For example, the pink pollster in 2010 was consistently below the final election result, suggesting bias. Last, we see that there are trends in results over time. For example, in 2014 the polls got closer and closer to the true result over time. Further investigation shows that poll results are not normally distributed around the result **across time**, suggesting we will need a time-dependent model.  
-
 ```{r, include = FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width=6, fig.height=2.5, fig.align="center"}
 ggplot(data=polls, aes(x=round(twoway,2))) + 
   geom_histogram() +
@@ -66,14 +76,15 @@ ggplot(data=polls, aes(x=round(twoway,2))) +
   geom_vline(data=res, aes(xintercept = twoway_vote), linetype="dashed") 
 ```
 
-Let's also investigate the relationship between polls and two-way seats. While I later improve upon this through modeling, a crude measure is the average poll result within 1 week of election day, weighted by sample size. Below I plot that on the x-axis and share of seats won on the y-axis with a linear line of best fit. We see that the greater the support in final polls, the greater share of seats won. 
-
-```{r, echo=FALSE, fig.width=2, fig.height=2, fig.align="center"}
+It's also worth exploring the relationship between polls and two-way seats won. While I later improve upon this through modeling, a crude measure is the average poll result within 1 week of election day, weighted by sample size. The correlation between this and two-way seat share is 0.82 suggesting a strong positive relationship. 
+```{r, include = FALSE, echo=FALSE, fig.width=2, fig.height=2, fig.align="center"}
 avgs <- polls %>%
   filter(week < 2) %>%
   group_by(cycle) %>%
   summarise(avg = sum(n_size*twoway)/sum(n_size)) %>%
   inner_join(res,by="cycle")
+
+cor(avgs$avg, avgs$twoway_seat)
 
 ggplot(avgs, aes(x=avg, y=twoway_seat)) + 
   geom_point() +
@@ -87,26 +98,26 @@ ggplot(avgs, aes(x=avg, y=twoway_seat)) +
 ```
 
 ##The Models
-To answer question 1 above, I follow [Jackman (2005)](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
+To answer question 1 above, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
 $$y_i \sim \mathcal{N}(\mu_i, \sigma^2_i)$$
-That poll is centered around mean $\mu_i$, which itself is a function of $\alpha_t$, the true value of support at the time the poll was taken $t_i$, $\delta_j$, the bias of pollster $j$, and $\theta_k$, the bias of sampling universe $k$. Fully specified, this is: 
+That poll is centered around mean $\mu_i$, which itself is a function of $\alpha_t$, the true value of support at the time the poll was taken $t$, $\delta_j$, the bias of pollster $j$, and $\theta_k$, the bias of sampling universe $k$. Fully specified, this is: 
 $$\mu_i = \alpha_{t_i} + \delta_{j_i} + \theta_{k_i}$$
-Due to the trends we see in our initial data exploration, a random walk model is appropriate. In such a model, support at time $t$ is normally distributed at time $t - 1$. 
+Due to the trends we see in our initial data exploration, a random walk model is appropriate. In such a model, support at time $t$ is normally distributed around support at time $t - 1$. 
 $$ \alpha_t \sim \mathcal{N}(\alpha_{t-1}, \omega^2) $$
-By including the final election results as the 'reference' for $delta$, and by using a random walk, I will be able to estimate the consistent bias of each pollster and the effect of different sampling universe. 
+By anchoring the model in the final election results, and by using a random walk, I will be able to estimate the consistent bias, $\delta$, of each pollster and the effect, $\theta$, of different sampling universes. 
 
 For these given specifications, we have the following priors: 
 $$ \sigma^2_i = \sqrt{\frac{y_i(1-y_i)}{n_i}},\ \ \ \delta_j \sim \mathcal{N}(0,1),\ \ \ \theta_k \sim \mathcal{N}(0,1),\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega^2 \sim IG(1/2,1/2)$$
-$\sigma^2_i$ just follows the standard formula for standard deviation of a sample. For pollster biases ($\delta$), my prior is that there is no bias with a standard deviation large enough to capture total bias (awarding Democrats 100% when they actually had 0% support); my prior for bias from sampling universe ($\theta$) is the same. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, a prior for the true standard deviation of support ($\omega$), I use the inverse gamma distribution with an effective sample size of 1 and a prior guess of 1 like the standard deviation for $\delta$ and $\theta$.
+$\sigma^2_i$ just follows the formula for standard deviation of a sample. For pollster biases ($\delta$), my prior is that there is no bias with a standard deviation large enough to capture 100% bias; my prior for bias from sampling universe ($\theta$) is the same. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation of support ($\omega$), I use the inverse gamma distribution with an effective sample size of 1 and a prior guess of 1 like the standard deviation for $\delta$ and $\theta$.
 
 To answer question 2 above, I will use the pollster and universe biases estimated above, and the same random walk algorithm to generate a final polling average at the time of the election, $\alpha_E$. I will then use the following model to estimate number of seats: 
-$$ S_{cycle} \sim \mathcal{N}(\mu_{cycle}, \sigma^2) $$
-$$\mu_{cycle} = \beta_0 + \beta_1*\alpha_{E_{cycle}},\ \ \ cycle = 2006,...,2016 $$
+$$ S_{cycle} \sim \mathcal{N}(\phi_{cycle}, \sigma^2) $$
+$$\phi_{cycle} = \beta_0 + \beta_1*\alpha_{E_{cycle}},\ \ \ cycle = 2006,...,2016 $$
 My priors for this model are: 
 $$ \beta_0 \sim \mathcal{N}(0, 1),\ \ \ \beta_1 \sim \mathcal{N}(1,1),\ \ \ \sigma^2 \sim IG(1/2, 1/2)$$
-$\beta_0$ here has a prior of none the seats in the House of Representatives with a standard deviation 1. $\beta_1$ has a prior that says a 1 unit increase in $\alpha_{E_{cycle}}$ (a 100 perctange point increase in the Democrats' modeled vote share) is associated with a 100 percentage point increase in the share of seats awarded to Democrats, with a standard deviation of the same. Lastly, I use an inverse gamma distribution with a prior guess of 1 and effective sample size of 1 for the standard deviation. 
+$\beta_0$ here has a prior of 0 seats in the House of Representatives with a standard deviation 1. $\beta_1$ has a prior that says a 1 unit increase in $\alpha_{E_{cycle}}$ (a 100 perctange point increase in the Democrats' modeled vote share) is associated with a 100 percentage point increase in the share of seats awarded to Democrats, with a standard deviation of the same. Lastly, I use an inverse gamma distribution with a prior guess of 1 and effective sample size of 1 for the standard deviation. 
 
-To answer question 3, I will use the same random walk algorithm already mentioned, along with the pollster and universe biases and distributions to generate a polling average for today. I will then use this $\alpha$ with the coefficients estimated in the second model to predict the number of seats Democrats will win in 2018. 
+To answer question 3, I will use the same random walk algorithm already mentioned, along with the pollster and universe biases to generate a polling average for today. I will then use this $\alpha$ with the coefficients estimated in the second model to predict the number of seats Democrats will win in 2018. 
 
 ```{r, include=FALSE}
 ##Model 1 - 2006
@@ -157,7 +168,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 mod_csim = as.mcmc(do.call(rbind, mod_sim))
@@ -226,7 +237,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 mod_csim = as.mcmc(do.call(rbind, mod_sim))
@@ -295,7 +306,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 mod_csim = as.mcmc(do.call(rbind, mod_sim))
@@ -364,7 +375,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 mod_csim = as.mcmc(do.call(rbind, mod_sim))
@@ -433,7 +444,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 mod_csim = as.mcmc(do.call(rbind, mod_sim))
@@ -502,7 +513,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 mod_csim = as.mcmc(do.call(rbind, mod_sim))
@@ -521,12 +532,12 @@ theta_2016 <- theta_2016 %>%
   select(c("univ", "sixteen")) %>%
   unique()
 ```
-
+##Model Evaluation & Results
 For models to answer question 1, I used 250,000 iterations with 3 chains and a burn-in of 1000 iterations. Convergance was quick so this is all that was needed. Gelman and Rubin diagnostics for the model for each election are close to 1. Autocorrelation for some pollsters' bias was high, so I thined the chains, using only 1 in 10 samples. Residuals for poll results look normal. 
 
-Below I report the bias averaged across estimates for each election the pollster was active in. We see that across elections only a few pollsters are very biased one way or the other. With 'Gallup - Low Turnout' most consistently unestimating Democratic support and 'Cook' being the most consistently overestimating Democratic support. 
+Below I report the bias averaged across estimates for each election the pollster was active in. We see that across elections only a few pollsters are very biased one way or the other. 'Gallup - Low Turnout' consistently unestimates Democratic support and 'Cook' consistently overestimates it. 
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=6, fig.height=3, fig.align="center"}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=6, fig.height=3.5, fig.align="center"}
 delta_avgs <- delta_2006 %>%
   full_join(delta_2008, by = "pollster") %>%
   full_join(delta_2010, by = "pollster") %>%
@@ -562,7 +573,7 @@ ggplot(delta_avgs, aes(x=pollster, y=avg_bias)) +
   guides(color = F) +
   xlab("Pollster") +
   scale_y_continuous(name = "Avegage Bias", labels = scales::percent) + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 8))
 ```
 
 ```{r, include = F}
@@ -607,7 +618,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 mod_csim = as.mcmc(do.call(rbind, mod_sim))
@@ -659,7 +670,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 
@@ -711,7 +722,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 
@@ -763,7 +774,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 
@@ -815,7 +826,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 
@@ -867,7 +878,7 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 summary(mod_sim)
 
@@ -925,10 +936,10 @@ param_est <- data.frame(param = c("b0", "b1"),
                              guess = c(-0.0179, 0.9954),
                              ub = c(0.8167, 2.5859))
 ```
-To answer question 2, I used the average bias estimates from above to generate a polling average without anchoring the data with the final election result. I then used the previously described model to generate estimates for the relationship between share of seats won and final polling average. Again, I used 250,000 iterations and 3 chains with a burn-in period of 1,000 iterations, and thinned by 10. Gelman and Rubin diagnostics, autocorrelation and residual checks were all satisfactory.
+To answer question 2, I used the average bias estimates from above to generate a polling average __without__ anchoring the data to the final election result. I then used the previously described model to generate estimates for the relationship between share of seats won and final polling average. Again, I used 250,000 iterations and 3 chains with a burn-in period of 1,000 iterations, and thinned by 10. Gelman and Rubin diagnostics, autocorrelation and residual checks were all satisfactory.
 
-Below I plot the final polling averages with 95% credible intervals along with the estimated relationship in blue and a 1:1 relationship in red. I did not plot the 95% credible interval because it fell outside the normal range of values. Given more time and space, I would explore a logistic model so the SE is constrained within [0,1].
-```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.width=4, fig.height=4, fig.align="center"}
+Below I plot the final polling averages with 95% credible intervals along with the estimated linear relationship in blue and a 1:1 relationship in red. I did not plot the 95% credible interval for the regression because it fell outside the normal range of values. Given more time and space, I would explore a logistic model so it is bounded by [0,1].
+```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.width=3, fig.height=3, fig.align="center"}
 dat <- final_guess %>%
   inner_join(res, by = "cycle") %>%
   select(guess, twoway_seat, lb, ub)
@@ -951,8 +962,8 @@ ggplot(dat, aes(y=guess, x=twoway_seat)) +
   geom_line(data = lobf, aes(y = x, x = x), color = "red", linetype = "dashed") 
 ```
 
-Finally, I use a final random walk model on 2018 polling data. I only used pollsters and sampling universes that had polled in previous elections so I would have average bias estimates already. The blue line below represents the model's assesment of the true value of support; it is lower than most polls on average due to the fact that most pollsters overestimate democratic support. However, there is a wide 95% credible interval, especially during times where there were few polls. 
-```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.width=4, fig.height=4, fig.align="center"}
+Finally, I use a final random walk model on 2018 polling data. I only used pollsters and sampling universes that had polled in previous elections so I would have average bias estimates already. The blue line below represents the model's assesment of the true value of support; it is lower than most polls due to the fact that most pollsters overestimate democratic support, as seen above. However, there is a wide 95% credible interval, especially during times where there were few polls. 
+```{r, include=FALSE}
 test <- read.csv("test_dat.csv")
 test$twoway <- test$dem/(test$dem+test$rep)
 test <- test %>% 
@@ -1013,32 +1024,34 @@ update(mod, 1000) # burn-in
 mod_sim = coda.samples(model=mod,
                        variable.names=params,
                        n.iter=250000,
-                       thin = 9)
+                       thin = 10)
 
 sum <- summary(mod_sim)
 df <- as.data.frame(sum$quantiles)
 names(df) <- c("llb", "lb", "mean", "ub", "uub")
 
 final_guess_18 <- data.frame(cycle = 2018,
-                             lb = c(0.4230),
-                             guess = c(0.5407),
-                             ub = c(0.6601))
+                             lb = c(0.4260541),
+                             guess = c(0.5377625),
+                             ub = c(0.6494071))
 
 xi_2018 <- df
 xi_2018$week_adj <- seq(1,nrow(xi_2018),1)
 
+min_seats <- 435*(param_est[1,"guess"] + param_est[2,"guess"]*final_guess_18$lb[1])
+mean_seats <- 435*(param_est[1,"guess"] + param_est[2,"guess"]*final_guess_18$guess[1])
+max_seats <- 435*(param_est[1,"guess"] + param_est[2,"guess"]*final_guess_18$ub[1])
+```
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.width=5, fig.height=3, fig.align="center"}
 ggplot(xi_2018, aes(x = week_adj, y = mean)) + 
   geom_ribbon(aes(ymin=llb,ymax=uub), alpha = 0.5) +
   geom_point(data = dat, aes(x = week_temp_adj, y=twoway)) + 
   geom_line(color = "blue") + 
   theme_bw() + 
-  scale_y_continuous(name = "Democratic two-way support", limits = c(0.4, 0.67), labels = scales::percent) + 
-  scale_x_continuous(name = "Weeks before 2018 Election" , labels = c(95, 85, 75, 65, 55, 45))
-
-min_seats <- 435*(param_est[1,"guess"] + param_est[2,"guess"]*final_guess_18$lb[1])
-mean_seats <- 435*(param_est[1,"guess"] + param_est[2,"guess"]*final_guess_18$guess[1])
-max_seats <- 435*(param_est[1,"guess"] + param_est[2,"guess"]*final_guess_18$ub[1])
-
+  scale_y_continuous(name = "Democratic two-way support", limits = c(0.39, 0.68), labels = scales::percent) + 
+  scale_x_continuous(name = "Weeks before 2018 Election" , breaks = c(0, 10, 20, 30, 40, 50), labels = c(95, 85, 75, 65, 55, 45))
 ```
 
-Using the estimate for the true current level of support, about 54%, and the parameter estimates from the regression model previously fit, I predict democrats will win about 52% of the seats, or 226 seats, with a 2.5% lower bound of 175 seats and a 97.5% upper bound of 278 seats. This estimate is similar to other's. For example, one respected [author](http://www.centerforpolitics.org/crystalball/articles/partisan-gerrymandering-and-the-outlook-for-the-2018-u-s-house-elections/?mc_cid=51acce7748&mc_eid=e5ff9cb0c5) finds an 8pp advantage in the generic ballot for Democrats will yield 224 Democratic seats. 
+##Conclusions
+Using the estimate for the true current level of support, about 54%, and the parameter estimates from the regression model previously fit, I predict democrats will win about 52% of the seats, or 225 seats, with a 2.5% lower bound of 177 seats and a 97.5% upper bound of 273 seats. This estimate is similar to other's. For example, one respected [__author__](http://www.centerforpolitics.org/crystalball/articles/partisan-gerrymandering-and-the-outlook-for-the-2018-u-s-house-elections/?mc_cid=51acce7748&mc_eid=e5ff9cb0c5) finds an 8pp advantage in the generic ballot for Democrats will yield 224 Democratic seats. 
