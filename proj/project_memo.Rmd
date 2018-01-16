@@ -9,17 +9,6 @@ library(ggplot2)
 library(tidyverse)
 library("rjags")
 set.seed(102)
-#todo: 
-#-Remove hardcoded numbers
-#-functions for data prep/clean up
-#-dont overwrite everything every time
-#-function for random walk model 
-#-Provide more data tables of bias
-#-Provide table of final estimates using est bias, avg bias, actual two-way and two way seats
-#-Smaller SEs
-#-figure out logistic regression for seats
-#-nice figures for number of seats & distribution of seats 
-#-Shiny app to add new polls and see data update & track seat projections
 ```
 ##Summary
 I am interested in forecasting the number of seats Democrats will win in the 2018 elections. I use random walk bayesian models of past elections to generate estimates of bias for pollsters. Likewise, I estimate the relationship between past election forecasts and Democrats' seats. Using these estimates, I model a current true level of support for Democrats (54%). Combined with the second model, I estimate Democrats will win 225 seats. 
