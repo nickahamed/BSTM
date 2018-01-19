@@ -9,17 +9,42 @@ library(ggplot2)
 library(tidyverse)
 library("rjags")
 set.seed(102)
-#todo: 
-#-Remove hardcoded numbers
-#-functions for data prep/clean up
-#-dont overwrite everything every time
-#-function for random walk model 
-#-Provide more data tables of bias
-#-Provide table of final estimates using est bias, avg bias, actual two-way and two way seats
-#-Smaller SEs
-#-figure out logistic regression for seats
-#-nice figures for number of seats & distribution of seats 
-#-Shiny app to add new polls and see data update & track seat projections
+
+#Structure
+# Part 1 - Inference
+# -clean up more polling data
+# -iterate through cycles using updated priors from last cycle for next cycle, 0 where not estimated.
+# -plot final estimate of each pollster with 95% CI
+# -plot final estimate of each universe with 95% CI
+# -plot average movement of pollster/universe bias cycle-over-cycle 
+# -put tables of every estimate in appendix c
+#     -flextables make sure looks nice
+# -put math/specs of model in appendix a
+# -put code in appendix b
+    #-Remove hardcoded numbers
+    #-functions for data prep/clean up
+    #-dont overwrite everything every time
+    #-function for random walk model 
+    #-show key diagnostics
+# -Use final bias estimates as priors for an unanchored random walk model for each cycle
+# -Use in-cycle bias estimates as priors for an unanchored random walk model for each cycle
+# -Plot random walk(s) against polls/results with 95% CI
+#     -if 95% CI is smaller closer to the election, don't worry. 
+#     -if 95% CI is still large, look at the weighted SD for polls by cycle
+#     -if 95% CI is still large, estimate all models by month
+#     -if 95% CI is still large, add a bunch of simulated polls and see if the CI shrinks
+# -Display final and in-cycle EDay estimates against actual two-way popular vote and share of seats in a table. 
+# -Use a normal regression to identify relationship between final estimate and final seats. 
+
+#Part 2
+# -Use final bias estimates as priors for an unanchored random walk model
+# -Use regression from part 1 to estimate #seats won and use sd of model to estimate p(take back the house today) and p(take back the house in X weeks)
+# -Plot random walk against polls with 95% CI
+# -Apply uniform swing from 2016 estimate to 2016 results estimate share of vote for each district
+# -Use SDs to calculate tipping point districts 
+# -Use SDs to calculate p(victory) in tipping point districts
+# -put math/specs of model in appendix a
+# -put code in appendix b
 ```
 ##Summary
 I am interested in forecasting the number of seats Democrats will win in the 2018 elections. I use random walk bayesian models of past elections to generate estimates of bias for pollsters. Likewise, I estimate the relationship between past election forecasts and Democrats' seats. Using these estimates, I model a current true level of support for Democrats (54%). Combined with the second model, I estimate Democrats will win 225 seats. 
