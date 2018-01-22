@@ -1,5 +1,5 @@
 ---
-title: "Bayesian Modeling of Polling Data"
+title: "Bayesian Inference of Pollster Bias"
 output: pdf_document
 author: Nick Ahamed
 ---
@@ -46,36 +46,30 @@ set.seed(102)
 # -put math/specs of model in appendix a
 # -put code in appendix b
 ```
-##Summary
-I am interested in forecasting the number of seats Democrats will win in the 2018 elections. I use random walk bayesian models of past elections to generate estimates of bias for pollsters. Likewise, I estimate the relationship between past election forecasts and Democrats' seats. Using these estimates, I model a current true level of support for Democrats (54%). Combined with the second model, I estimate Democrats will win 225 seats. 
-
 ##Introduction
-To answer the above problem, I break it into three component modeling tasks:  
-1. Use past election results and polling data to generate distributions for pollster and universe bias.
-2. Estimate the relationship between past polling data and number of seats.
-3. Apply the bias estimates from (1) to current polling  to generate a support forecast, and then use (2) to predict the number of seats. 
+In this analysis, I estimate the bias for each public pollster active in the last 6 congressional elections. My final estimate identifies X as the most conservative pollster and Y as the most liberal. I likewise estimate bias of various sampling universes. Next, I use these biases to estimate the true level of support for Democrats over time in each cycle. Lastly, I regress the final estimate of support in each cycle against the number of seats Democrats won.  
 
 ##The Data
-For this project, I have two primary sources of data: past polls and election results. The poll response that I use is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?' Since not all candidates are known for 2018 yet, this is the only current question being polled, and so for comparability, I will use the same question for past elections. 
+I have two primary sources of data: past polls and election results. The poll response that I use is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the only current question being polled, and so for comparability, I will use the same question for past elections.
 
-The past polls were taken from Real Clear Politics' database across 6 election cycles: [__2006__](https://realclearpolitics.com/epolls/other/2006_generic_congressional_vote-2174.html), [__2008__](https://www.realclearpolitics.com/epolls/other/2008_generic_congressional_vote-2173.html#polls), [__2010__](https://www.realclearpolitics.com/epolls/other/2010_generic_congressional_vote-2171.html#polls), [__2012__](https://www.realclearpolitics.com/epolls/other/2012_generic_congressional_vote-3525.html#polls), [__2014__](https://www.realclearpolitics.com/epolls/other/generic_congressional_vote-2170.html) and [__2016__](https://www.realclearpolitics.com/epolls/other/2016_generic_congressional_vote-5279.html#polls). Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)): it is a proportion between 0 and 1. Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more resources. 
+The past polls were taken from Real Clear Politics' database across 6 election cycles: [__2006__](https://realclearpolitics.com/epolls/other/2006_generic_congressional_vote-2174.html), [__2008__](https://www.realclearpolitics.com/epolls/other/2008_generic_congressional_vote-2173.html#polls), [__2010__](https://www.realclearpolitics.com/epolls/other/2010_generic_congressional_vote-2171.html#polls), [__2012__](https://www.realclearpolitics.com/epolls/other/2012_generic_congressional_vote-3525.html#polls), [__2014__](https://www.realclearpolitics.com/epolls/other/generic_congressional_vote-2170.html) and [__2016__](https://www.realclearpolitics.com/epolls/other/2016_generic_congressional_vote-5279.html#polls). Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)): it is a proportion between 0 and 1. Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more data. 
 
 For election results, I use both the popular vote share and the seats won. These were taken from Wikipedia: [__2006__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2006), [__2008__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2008), [__2010__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2010), [__2012__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2012), [__2014__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2014), and [__2016__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2016). Again, I use Democrats' two-way vote share of the popular vote to mimic their two-way support in the polling data, and their percentage share of seats in the Congress. 
 
 ```{r, include=FALSE}
-res <- read.csv("election_results.csv")
-res$twoway_vote <- res$dem_vote/(res$dem_vote+res$rep_vote)
-res$twoway_seat <- res$dem_seats/(res$dem_seats+res$rep_seats)
+#Data cleaning and preparation
+res <- read.csv("election_results.csv") %>%
+  mutate(twoway_vote = dem_vote/(dem_vote+rep_vote),
+         twoway_seat = dem_seats/(dem_seats+rep_seats))
 
-polls <- read.csv("training_dat.csv")
-polls$twoway <- polls$dem/(polls$dem+polls$rep)
-polls <- polls %>% 
+polls <- read.csv("training_dat.csv") %>%
+  mutate(twoway = dem/(dem+rep)) %>% 
   inner_join(res[,c("cycle","date")], by="cycle") %>%
-  mutate(week = -round(as.numeric((as.Date(as.character(end_date),  format="%m/%d/%y") - 
+  mutate(week = round(as.numeric((as.Date(as.character(end_date),  format="%m/%d/%y") - 
            as.Date(as.character(date),  format="%m/%d/%y")) + 
            (as.Date(as.character(start_date),  format="%m/%d/%y") - 
-           as.Date(as.character(end_date),  format="%m/%d/%y"))/2)/7))
-polls$n_size <- as.numeric(as.character(polls$n_size))
+           as.Date(as.character(end_date),  format="%m/%d/%y"))/2)/7),
+         n_size = as.numeric(as.character(n_size)))
 ```
 
 First, let's explore the trends over time in each cycle. Here, each point is a poll; it's size relfects the sample size and color represents the pollster. The dashed line represents the final two-way popular vote share of Democrats. A couple of observations from this are clear. We see that by election, some pollsters are systematically off. For example, the pink pollster in 2010 was consistently below the final election result, suggesting bias. Last, we see that there are trends in results over time. For example, in 2014 the polls got closer and closer to the true result over time. Further investigation shows that poll results are not normally distributed around the result **across time**, suggesting we will need a time-dependent model. 
@@ -102,7 +96,7 @@ ggplot(data=polls, aes(x=round(twoway,2))) +
 ```
 
 It's also worth exploring the relationship between polls and two-way seats won. While I later improve upon this through modeling, a crude measure is the average poll result within 1 week of election day, weighted by sample size. The correlation between this and two-way seat share is 0.82 suggesting a strong positive relationship. 
-```{r, include = FALSE, echo=FALSE, fig.width=2, fig.height=2, fig.align="center"}
+```{r, echo=FALSE, fig.width=2, fig.height=2, fig.align="center"}
 avgs <- polls %>%
   filter(week < 2) %>%
   group_by(cycle) %>%
@@ -119,30 +113,8 @@ ggplot(avgs, aes(x=avg, y=twoway_seat)) +
   stat_smooth(method = "lm", se=F) +
   theme(axis.title.x = element_text(size=8),
         axis.title.y = element_text(size=8))
-  
 ```
 
-##The Models
-To answer question 1 above, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
-$$y_i \sim \mathcal{N}(\mu_i, \sigma^2_i)$$
-That poll is centered around mean $\mu_i$, which itself is a function of $\alpha_t$, the true value of support at the time the poll was taken $t$, $\delta_j$, the bias of pollster $j$, and $\theta_k$, the bias of sampling universe $k$. Fully specified, this is: 
-$$\mu_i = \alpha_{t_i} + \delta_{j_i} + \theta_{k_i}$$
-Due to the trends we see in our initial data exploration, a random walk model is appropriate. In such a model, support at time $t$ is normally distributed around support at time $t - 1$. 
-$$ \alpha_t \sim \mathcal{N}(\alpha_{t-1}, \omega^2) $$
-By anchoring the model in the final election results, and by using a random walk, I will be able to estimate the consistent bias, $\delta$, of each pollster and the effect, $\theta$, of different sampling universes. 
-
-For these given specifications, we have the following priors: 
-$$ \sigma^2_i = \sqrt{\frac{y_i(1-y_i)}{n_i}},\ \ \ \delta_j \sim \mathcal{N}(0,1),\ \ \ \theta_k \sim \mathcal{N}(0,1),\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega^2 \sim IG(1/2,1/2)$$
-$\sigma^2_i$ just follows the formula for standard deviation of a sample. For pollster biases ($\delta$), my prior is that there is no bias with a standard deviation large enough to capture 100% bias; my prior for bias from sampling universe ($\theta$) is the same. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation of support ($\omega$), I use the inverse gamma distribution with an effective sample size of 1 and a prior guess of 1 like the standard deviation for $\delta$ and $\theta$.
-
-To answer question 2 above, I will use the pollster and universe biases estimated above, and the same random walk algorithm to generate a final polling average at the time of the election, $\alpha_E$. I will then use the following model to estimate number of seats: 
-$$ S_{cycle} \sim \mathcal{N}(\phi_{cycle}, \sigma^2) $$
-$$\phi_{cycle} = \beta_0 + \beta_1*\alpha_{E_{cycle}},\ \ \ cycle = 2006,...,2016 $$
-My priors for this model are: 
-$$ \beta_0 \sim \mathcal{N}(0, 1),\ \ \ \beta_1 \sim \mathcal{N}(1,1),\ \ \ \sigma^2 \sim IG(1/2, 1/2)$$
-$\beta_0$ here has a prior of 0 seats in the House of Representatives with a standard deviation 1. $\beta_1$ has a prior that says a 1 unit increase in $\alpha_{E_{cycle}}$ (a 100 perctange point increase in the Democrats' modeled vote share) is associated with a 100 percentage point increase in the share of seats awarded to Democrats, with a standard deviation of the same. Lastly, I use an inverse gamma distribution with a prior guess of 1 and effective sample size of 1 for the standard deviation. 
-
-To answer question 3, I will use the same random walk algorithm already mentioned, along with the pollster and universe biases to generate a polling average for today. I will then use this $\alpha$ with the coefficients estimated in the second model to predict the number of seats Democrats will win in 2018. 
 
 ```{r, include=FALSE}
 ##Model 1 - 2006
@@ -1080,3 +1052,26 @@ ggplot(xi_2018, aes(x = week_adj, y = mean)) +
 
 ##Conclusions
 Using the estimate for the true current level of support, about 54%, and the parameter estimates from the regression model previously fit, I predict democrats will win about 52% of the seats, or 225 seats, with a 2.5% lower bound of 177 seats and a 97.5% upper bound of 273 seats. This estimate is similar to other's. For example, one respected [__author__](http://www.centerforpolitics.org/crystalball/articles/partisan-gerrymandering-and-the-outlook-for-the-2018-u-s-house-elections/?mc_cid=51acce7748&mc_eid=e5ff9cb0c5) finds an 8pp advantage in the generic ballot for Democrats will yield 224 Democratic seats. 
+
+##Appendix A
+To answer question 1 above, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
+$$y_i \sim \mathcal{N}(\mu_i, \sigma^2_i)$$
+That poll is centered around mean $\mu_i$, which itself is a function of $\alpha_t$, the true value of support at the time the poll was taken $t$, $\delta_j$, the bias of pollster $j$, and $\theta_k$, the bias of sampling universe $k$. Fully specified, this is: 
+$$\mu_i = \alpha_{t_i} + \delta_{j_i} + \theta_{k_i}$$
+Due to the trends we see in our initial data exploration, a random walk model is appropriate. In such a model, support at time $t$ is normally distributed around support at time $t - 1$. 
+$$ \alpha_t \sim \mathcal{N}(\alpha_{t-1}, \omega^2) $$
+By anchoring the model in the final election results, and by using a random walk, I will be able to estimate the consistent bias, $\delta$, of each pollster and the effect, $\theta$, of different sampling universes. 
+
+For these given specifications, we have the following priors: 
+$$ \sigma^2_i = \sqrt{\frac{y_i(1-y_i)}{n_i}},\ \ \ \delta_j \sim \mathcal{N}(0,1),\ \ \ \theta_k \sim \mathcal{N}(0,1),\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega^2 \sim IG(1/2,1/2)$$
+$\sigma^2_i$ just follows the formula for standard deviation of a sample. For pollster biases ($\delta$), my prior is that there is no bias with a standard deviation large enough to capture 100% bias; my prior for bias from sampling universe ($\theta$) is the same. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation of support ($\omega$), I use the inverse gamma distribution with an effective sample size of 1 and a prior guess of 1 like the standard deviation for $\delta$ and $\theta$.
+
+To answer question 2 above, I will use the pollster and universe biases estimated above, and the same random walk algorithm to generate a final polling average at the time of the election, $\alpha_E$. I will then use the following model to estimate number of seats: 
+$$ S_{cycle} \sim \mathcal{N}(\phi_{cycle}, \sigma^2) $$
+$$\phi_{cycle} = \beta_0 + \beta_1*\alpha_{E_{cycle}},\ \ \ cycle = 2006,...,2016 $$
+My priors for this model are: 
+$$ \beta_0 \sim \mathcal{N}(0, 1),\ \ \ \beta_1 \sim \mathcal{N}(1,1),\ \ \ \sigma^2 \sim IG(1/2, 1/2)$$
+$\beta_0$ here has a prior of 0 seats in the House of Representatives with a standard deviation 1. $\beta_1$ has a prior that says a 1 unit increase in $\alpha_{E_{cycle}}$ (a 100 perctange point increase in the Democrats' modeled vote share) is associated with a 100 percentage point increase in the share of seats awarded to Democrats, with a standard deviation of the same. Lastly, I use an inverse gamma distribution with a prior guess of 1 and effective sample size of 1 for the standard deviation. 
+
+To answer question 3, I will use the same random walk algorithm already mentioned, along with the pollster and universe biases to generate a polling average for today. I will then use this $\alpha$ with the coefficients estimated in the second model to predict the number of seats Democrats will win in 2018. 
+
