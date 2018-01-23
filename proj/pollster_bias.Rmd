@@ -49,7 +49,7 @@ run_model <- function(chains = 4,
                             params = c("xi", "delta", "theta"),
                             data_jags) { 
   mod_string <- " model {
-  xi[1] ~ dunif(0.4, 0.6) #A deliberately wide range to incorporate all possible starting points.
+  xi[1] ~ dunif(0.46, 0.56) #The lower and upper limit of Dem two-way vote share in the 6 elections examined.
 
   for(i in 1:length(twoway)){
     mu[i] <- xi[week_adj[i]] + delta[pollster_num[i]] + theta[univ_num[i]]
@@ -61,8 +61,9 @@ run_model <- function(chains = 4,
   }
 
   ## prior for standard deviations
-  omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
-  tau <- 1/omega2
+  #omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
+  omega ~ dunif(0, .1)
+  tau <- 1/pow(omega,2)
 
   ## priors for house effects
   for (i in 1:max(pollster_num)) {
@@ -80,21 +81,64 @@ run_model <- function(chains = 4,
   return(mod_sim)
 }
 
+calculate_priors <- function(mod_res, year, data_jags) { 
+  mod_csim <- as.mcmc(do.call(rbind, mod_res))
+  param_ests <- data.frame(iter_mean = colMeans(mod_csim),
+                           iter_sigma2 = (apply(mod_csim, 2, FUN ="sd"))^2)
+  
+  delta_est <- param_ests %>% 
+    filter(substr(row.names(param_ests),1,1) == 'd') %>%
+    mutate(delta_pollster_num = data_jags$delta_pollster_num,
+           pollster = data_jags$delta_pollster) %>%
+    full_join(data.frame(pollster = levels(data_jags$pollster)), by = "pollster") %>%
+    mutate(delta_cycle = year,
+           delta_mu = iter_mean,
+           delta_sigma2 = iter_sigma2,
+           delta_pollster = pollster) %>%
+    select(delta_cycle, delta_pollster, delta_mu, delta_sigma2)
+
+  theta_est <- param_ests %>% 
+    filter(substr(row.names(param_ests),1,1) == 't') %>%
+    mutate(theta_univ_num = data_jags$theta_univ_num,
+           univ = data_jags$theta_univ) %>%
+    full_join(data.frame(univ = levels(data_jags$univ)), by = "univ") %>%
+    mutate(theta_cycle = year,
+           theta_mu = iter_mean,
+           theta_sigma2 = iter_sigma2,
+           theta_univ = univ) %>%
+    select(theta_cycle, theta_univ, theta_mu, theta_sigma2)
+  
+  return(list(deltas_est = delta_est, thetas_est = theta_est))
+}
+
+update_priors <- function(deltas_all, thetas_all, deltas_new, thetas_new) {
+  x <- rbind(deltas_all, deltas_new)
+  y <- rbind(thetas_all, thetas_new)
+
+  w <- x %>%
+    filter(!is.na(delta_mu)) %>%
+    group_by(delta_pollster) %>%
+    filter(delta_cycle == max(delta_cycle)) %>%
+    ungroup()
+
+  z <- y %>%
+    filter(!is.na(theta_mu)) %>%
+    group_by(theta_univ) %>%
+    filter(theta_cycle == max(theta_cycle)) %>%
+    ungroup()
+  
+  return(list(deltas = w, deltas_all = x, thetas = z, thetas_all = y))
+}
+
 #Structure
 # Part 1 - Inference
 # -clean up more polling data
-# -iterate through cycles using updated priors from last cycle for next cycle, 0 where not estimated.
-# -plot final estimate of each pollster with 95% CI
-# -plot final estimate of each universe with 95% CI
-# -plot average movement of pollster/universe bias cycle-over-cycle 
+# -proper pollster name labels
 # -put tables of every estimate in appendix c
 #     -flextables make sure looks nice
 # -put math/specs of model in appendix a
 # -put code in appendix b
-    #-Remove hardcoded numbers
-    #-functions for data prep/clean up
-    #-dont overwrite everything every time
-    #-function for random walk model 
+    #-figure out if should be sigma or sigma2
     #-show key diagnostics
 # -Use final bias estimates as priors for an unanchored random walk model for each cycle
 # -Use in-cycle bias estimates as priors for an unanchored random walk model for each cycle
@@ -130,7 +174,8 @@ For election results, I use both the popular vote share and the seats won. These
 #Data cleaning and preparation
 res <- read.csv("election_results.csv") %>%
   mutate(twoway_vote = dem_vote/(dem_vote+rep_vote),
-         twoway_seat = dem_seats/(dem_seats+rep_seats))
+         twoway_seat = dem_seats/(dem_seats+rep_seats)) %>%
+  arrange(cycle)
 
 polls <- read.csv("training_dat.csv") %>%
   mutate(twoway = dem/(dem+rep)) %>% 
@@ -186,389 +231,104 @@ ggplot(avgs, aes(x=avg, y=twoway_seat)) +
 ```
 
 
-```{r, include=FALSE}
+```{r}
 ##Estimate bias
 #Params
-deltas <- data.frame(delta_pollster = unique(polls$pollster),
+deltas <- data.frame(delta_cycle = 0,
+                     delta_pollster = unique(polls$pollster),
                      delta_mu = rep(0, length(unique(polls$pollster))), 
                      delta_sigma2 = rep(1.0, length(unique(polls$pollster))))
+deltas_all <- deltas
 
-thetas <- data.frame(theta_univ = unique(polls$univ),
+thetas <- data.frame(theta_cycle = 0,
+                     theta_univ = unique(polls$univ),
                      theta_mu = rep(0, length(unique(polls$univ))), 
                      theta_sigma2 = rep(1.0, length(unique(polls$univ))))
+thetas_all <- thetas
 
-data_jags <- data_prep(data = polls, res = res, year = 2006)
-data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
-mod_res <- run_model(data_jags = data_jags)
+#Estimation
+for(cycle in res$cycle) {
+  data_jags <- data_prep(data = polls, res = res, year = cycle)
+  data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
+  mod_res <- run_model(data_jags = data_jags)
 
-#function to post process mod sim
-#figure out how to output pollster bias mu, pollster num, pollster sd | theta bias mu, num and sd
-
-#Use returned tables to update master tables for next iteration. 
-#put all in for-loop
-mod_csim <- as.mcmc(do.call(rbind, mod_sim))
-
-summary(mod_sim)
-
-x <- data.frame(oh_six = colMeans(mod_csim))
-delta_2006 <- x %>% filter(substr(row.names(x),1,1) == 'd')
-delta_2006$pollster_num <- seq(1,nrow(delta_2006),1)
-delta_2006 <- delta_2006 %>% 
-  left_join(dat, by = "pollster_num") %>%
-  select(c("pollster", "oh_six")) %>%
-  unique()
-
-theta_2006 <- x %>% filter(substr(row.names(x),1,1) == 't')
-theta_2006$univ_num <- seq(1,nrow(theta_2006),1)
-theta_2006 <- theta_2006 %>% 
-  left_join(dat, by = "univ_num") %>%
-  select(c("univ", "oh_six")) %>%
-  unique()
+  prior_ests <- calculate_priors(mod_res = mod_res, year = cycle, data_jags = data_jags)
+  new_priors <- update_priors(deltas_all = deltas_all, thetas_all = thetas_all, 
+                              deltas_new = prior_ests$deltas_est, thetas_new = prior_ests$thetas_est)
+  deltas <- new_priors$deltas %>% 
+    arrange(delta_mu) %>%
+    mutate(delta_pollster = factor(delta_pollster, levels = delta_pollster[order(delta_mu)]))
+  deltas_all <- new_priors$deltas_all 
+  thetas <- new_priors$thetas %>% 
+    arrange(theta_mu) %>%
+    mutate(theta_univ = factor(theta_univ, levels = theta_univ[order(theta_mu)]))
+  thetas_all <- new_priors$thetas_all
+}
 ```
 
-```{r, include=FALSE}
-##Model 1 - 2008
-dat <- polls %>% filter(cycle == 2008)
-dat$pollster_num <- as.numeric(as.factor(as.character(dat$pollster)))
-dat$univ_num <- as.numeric(dat$univ)
+```{r, echo = FALSE}
+ggplot(deltas, aes(x=delta_pollster, y=delta_mu)) + 
+  geom_point(aes(color = delta_mu)) +
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  scale_color_continuous(low="red", high="blue") +
+  scale_x_discrete(labels = stringr::str_to_title(str_replace(deltas$delta_pollster, "_", " "))) +
+  theme_bw() +
+  guides(color = F) +
+  xlab("Pollster") +
+  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.05,0.05)) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 10, vjust = 0.5))
+```
+```{r, echo = FALSE}
+temp <- deltas_all %>%
+  mutate(delta_cycle = ifelse(delta_cycle == 0, 2004, delta_cycle))
 
-dat$prec <- 1/(sqrt((dat$twoway*(1-dat$twoway))/dat$n_size))
+pollsters <- temp %>% 
+  filter(!is.na(delta_mu)) %>% 
+  group_by(delta_pollster) %>% 
+  summarise(n = n()) %>% 
+  filter(n > 5) 
 
-dat$week_adj <- -1*(dat$week - max(dat$week)) + 2
+temp <- temp %>%
+  filter(delta_pollster %in% pollsters$delta_pollster, !is.na(delta_mu))
 
-xi <- rep(NA, length(unique(dat$week))+1)
-xi[max(dat$week_adj)] <- avgs$twoway_vote[avgs$cycle == 2008]
-data_jags = as.list(dat)
-data_jags$xi <- xi
-
-mod_string = " model {
-xi[1] ~ dunif(0.46, 0.56)
-
-for(i in 1:length(twoway)){
-    mu[i] <- xi[week_adj[i]] + delta[pollster_num[i]] + theta[univ_num[i]]
-    twoway[i] ~ dnorm(mu[i],prec[i])
-}
-
- for(t in 2:length(xi)){
-  xi[t] ~ dnorm(xi[t-1],tau)
- }
-
-## priors for standard deviations
-omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
-tau <- 1/omega2
-
-## priors for house effects
-for (i in 1:max(pollster_num)) {
-  delta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-for (i in 1:max(univ_num)) {
-  theta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-} "
-
-params = c("xi", "delta", "theta")
-
-mod = jags.model(textConnection(mod_string), data=data_jags, n.chains=3)
-update(mod, 1000) # burn-in
-mod_sim = coda.samples(model=mod,
-                       variable.names=params,
-                       n.iter=250000,
-                       thin = 10)
-
-summary(mod_sim)
-mod_csim = as.mcmc(do.call(rbind, mod_sim))
-x <- data.frame(oh_eight = colMeans(mod_csim))
-delta_2008 <- x %>% filter(substr(row.names(x),1,1) == 'd')
-delta_2008$pollster_num <- seq(1,nrow(delta_2008),1)
-delta_2008 <- delta_2008 %>% 
-  left_join(dat, by = "pollster_num") %>%
-  select(c("pollster", "oh_eight")) %>%
-  unique()
-
-theta_2008 <- x %>% filter(substr(row.names(x),1,1) == 't')
-theta_2008$univ_num <- seq(1,nrow(theta_2008),1)
-theta_2008 <- theta_2008 %>% 
-  left_join(dat, by = "univ_num") %>%
-  select(c("univ", "oh_eight")) %>%
-  unique()
+ggplot(temp, aes(x=delta_cycle, y=delta_mu, group = delta_pollster)) + 
+  geom_point(alpha = 0.9, aes(color = delta_pollster)) +
+  geom_line(alpha = 0.8, color = "lightgrey") +
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  scale_x_continuous(breaks = c(2004, 2006, 2008, 2010, 2012, 2014, 2016), 
+                   labels = c("", "2006", "2008", "2010", "2012", "2014", "2016")) +
+  theme_bw() +
+  xlab("Cycle") +
+  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.05,0.05)) + 
+  scale_color_discrete(name = "Pollster")
 ```
 
-```{r, include=FALSE}
-##Model 1 - 2010
-dat <- polls %>% filter(cycle == 2010)
-dat$pollster_num <- as.numeric(as.factor(as.character(dat$pollster)))
-dat$univ_num <- as.numeric(dat$univ)
 
-dat$prec <- 1/(sqrt((dat$twoway*(1-dat$twoway))/dat$n_size))
-
-dat$week_adj <- -1*(dat$week - max(dat$week)) + 2
-
-xi <- rep(NA, length(unique(dat$week))+1)
-xi[max(dat$week_adj)] <- avgs$twoway_vote[avgs$cycle == 2010]
-data_jags = as.list(dat)
-data_jags$xi <- xi
-
-mod_string = " model {
-xi[1] ~ dunif(0.46, 0.56)
-
-for(i in 1:length(twoway)){
-    mu[i] <- xi[week_adj[i]] + delta[pollster_num[i]] + theta[univ_num[i]]
-    twoway[i] ~ dnorm(mu[i],prec[i])
-}
-
- for(t in 2:length(xi)){
-  xi[t] ~ dnorm(xi[t-1],tau)
- }
-
-## priors for standard deviations
-omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
-tau <- 1/omega2
-
-## priors for house effects
-for (i in 1:max(pollster_num)) {
-  delta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-for (i in 1:max(univ_num)) {
-  theta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-} "
-
-params = c("xi", "delta", "theta")
-
-mod = jags.model(textConnection(mod_string), data=data_jags, n.chains=3)
-update(mod, 1000) # burn-in
-mod_sim = coda.samples(model=mod,
-                       variable.names=params,
-                       n.iter=250000,
-                       thin = 10)
-
-summary(mod_sim)
-mod_csim = as.mcmc(do.call(rbind, mod_sim))
-x <- data.frame(ten = colMeans(mod_csim))
-delta_2010 <- x %>% filter(substr(row.names(x),1,1) == 'd')
-delta_2010$pollster_num <- seq(1,nrow(delta_2010),1)
-delta_2010 <- delta_2010 %>% 
-  left_join(dat, by = "pollster_num") %>%
-  select(c("pollster", "ten")) %>%
-  unique()
-
-theta_2010 <- x %>% filter(substr(row.names(x),1,1) == 't')
-theta_2010$univ_num <- seq(1,nrow(theta_2010),1)
-theta_2010 <- theta_2010 %>% 
-  left_join(dat, by = "univ_num") %>%
-  select(c("univ", "ten")) %>%
-  unique()
+```{r, echo = FALSE}
+ggplot(thetas, aes(x=theta_univ, y=theta_mu)) + 
+  geom_point() +
+  theme_bw() +
+  guides(color = F) +
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  xlab("Sampling Universe") +
+  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(0,0.05)) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 10, vjust = 0.5))
 ```
+```{r, echo = FALSE}
+temp <- thetas_all %>%
+  mutate(theta_cycle = ifelse(theta_cycle == 0, 2004, theta_cycle)) %>%
+  filter(!is.na(theta_mu))
 
-```{r, include=FALSE}
-##Model 1 - 2012
-dat <- polls %>% filter(cycle == 2012)
-dat$pollster_num <- as.numeric(as.factor(as.character(dat$pollster)))
-dat$univ_num <- as.numeric(dat$univ)
-
-dat$prec <- 1/(sqrt((dat$twoway*(1-dat$twoway))/dat$n_size))
-
-dat$week_adj <- -1*(dat$week - max(dat$week)) + 2
-
-xi <- rep(NA, length(unique(dat$week))+1)
-xi[max(dat$week_adj)] <- avgs$twoway_vote[avgs$cycle == 2012]
-data_jags = as.list(dat)
-data_jags$xi <- xi
-
-mod_string = " model {
-xi[1] ~ dunif(0.46, 0.56)
-
-for(i in 1:length(twoway)){
-    mu[i] <- xi[week_adj[i]] + delta[pollster_num[i]] + theta[univ_num[i]]
-    twoway[i] ~ dnorm(mu[i],prec[i])
-}
-
- for(t in 2:length(xi)){
-  xi[t] ~ dnorm(xi[t-1],tau)
- }
-
-## priors for standard deviations
-omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
-tau <- 1/omega2
-
-## priors for house effects
-for (i in 1:max(pollster_num)) {
-  delta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-for (i in 1:max(univ_num)) {
-  theta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-} "
-
-params = c("xi", "delta", "theta")
-
-mod = jags.model(textConnection(mod_string), data=data_jags, n.chains=3)
-update(mod, 1000) # burn-in
-mod_sim = coda.samples(model=mod,
-                       variable.names=params,
-                       n.iter=250000,
-                       thin = 10)
-
-summary(mod_sim)
-mod_csim = as.mcmc(do.call(rbind, mod_sim))
-x <- data.frame(twelve = colMeans(mod_csim))
-delta_2012 <- x %>% filter(substr(row.names(x),1,1) == 'd')
-delta_2012$pollster_num <- seq(1,nrow(delta_2012),1)
-delta_2012 <- delta_2012 %>% 
-  left_join(dat, by = "pollster_num") %>%
-  select(c("pollster", "twelve")) %>%
-  unique()
-
-theta_2012 <- x %>% filter(substr(row.names(x),1,1) == 't')
-theta_2012$univ_num <- seq(1,nrow(theta_2012),1)
-theta_2012 <- theta_2012 %>% 
-  left_join(dat, by = "univ_num") %>%
-  select(c("univ", "twelve")) %>%
-  unique()
-```
-
-```{r, include=FALSE}
-##Model 1 - 2014
-dat <- polls %>% filter(cycle == 2014)
-dat$pollster_num <- as.numeric(as.factor(as.character(dat$pollster)))
-dat$univ_num <- as.numeric(dat$univ)
-
-dat$prec <- 1/(sqrt((dat$twoway*(1-dat$twoway))/dat$n_size))
-
-dat$week_adj <- -1*(dat$week - max(dat$week)) + 2
-
-xi <- rep(NA, length(unique(dat$week))+1)
-xi[max(dat$week_adj)] <- avgs$twoway_vote[avgs$cycle == 2014]
-data_jags = as.list(dat)
-data_jags$xi <- xi
-
-mod_string = " model {
-xi[1] ~ dunif(0.46, 0.56)
-
-for(i in 1:length(twoway)){
-    mu[i] <- xi[week_adj[i]] + delta[pollster_num[i]] + theta[univ_num[i]]
-    twoway[i] ~ dnorm(mu[i],prec[i])
-}
-
- for(t in 2:length(xi)){
-  xi[t] ~ dnorm(xi[t-1],tau)
- }
-
-## priors for standard deviations
-omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
-tau <- 1/omega2
-
-## priors for house effects
-for (i in 1:max(pollster_num)) {
-  delta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-for (i in 1:max(univ_num)) {
-  theta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-} "
-
-params = c("xi", "delta", "theta")
-
-mod = jags.model(textConnection(mod_string), data=data_jags, n.chains=3)
-update(mod, 1000) # burn-in
-mod_sim = coda.samples(model=mod,
-                       variable.names=params,
-                       n.iter=250000,
-                       thin = 10)
-
-summary(mod_sim)
-mod_csim = as.mcmc(do.call(rbind, mod_sim))
-x <- data.frame(fourteen = colMeans(mod_csim))
-delta_2014 <- x %>% filter(substr(row.names(x),1,1) == 'd')
-delta_2014$pollster_num <- seq(1,nrow(delta_2014),1)
-delta_2014 <- delta_2014 %>% 
-  left_join(dat, by = "pollster_num") %>%
-  select(c("pollster", "fourteen")) %>%
-  unique()
-
-theta_2014 <- x %>% filter(substr(row.names(x),1,1) == 't')
-theta_2014$univ_num <- seq(1,nrow(theta_2014),1)
-theta_2014 <- theta_2014 %>% 
-  left_join(dat, by = "univ_num") %>%
-  select(c("univ", "fourteen")) %>%
-  unique()
-```
-
-```{r, include=FALSE}
-##Model 1 - 2016
-dat <- polls %>% filter(cycle == 2016)
-dat$pollster_num <- as.numeric(as.factor(as.character(dat$pollster)))
-dat$univ_num <- as.numeric(dat$univ)
-
-dat$prec <- 1/(sqrt((dat$twoway*(1-dat$twoway))/dat$n_size))
-
-dat$week_adj <- -1*(dat$week - max(dat$week)) + 2
-
-xi <- rep(NA, length(unique(dat$week))+1)
-xi[max(dat$week_adj)] <- avgs$twoway_vote[avgs$cycle == 2016]
-data_jags = as.list(dat)
-data_jags$xi <- xi
-
-mod_string = " model {
-xi[1] ~ dunif(0.46, 0.56)
-
-for(i in 1:length(twoway)){
-    mu[i] <- xi[week_adj[i]] + delta[pollster_num[i]] + theta[univ_num[i]]
-    twoway[i] ~ dnorm(mu[i],prec[i])
-}
-
- for(t in 2:length(xi)){
-  xi[t] ~ dnorm(xi[t-1],tau)
- }
-
-## priors for standard deviations
-omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
-tau <- 1/omega2
-
-## priors for house effects
-for (i in 1:max(pollster_num)) {
-  delta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-for (i in 1:max(univ_num)) {
-  theta[i] ~ dnorm(0.0, 1.0/1.0)
-}
-
-} "
-
-params = c("xi", "delta", "theta")
-
-mod = jags.model(textConnection(mod_string), data=data_jags, n.chains=3)
-update(mod, 1000) # burn-in
-mod_sim = coda.samples(model=mod,
-                       variable.names=params,
-                       n.iter=250000,
-                       thin = 10)
-
-summary(mod_sim)
-mod_csim = as.mcmc(do.call(rbind, mod_sim))
-x <- data.frame(sixteen = colMeans(mod_csim))
-delta_2016 <- x %>% filter(substr(row.names(x),1,1) == 'd')
-delta_2016$pollster_num <- seq(1,nrow(delta_2016),1)
-delta_2016 <- delta_2016 %>% 
-  left_join(dat, by = "pollster_num") %>%
-  select(c("pollster", "sixteen")) %>%
-  unique()
-
-theta_2016 <- x %>% filter(substr(row.names(x),1,1) == 't')
-theta_2016$univ_num <- seq(1,nrow(theta_2016),1)
-theta_2016 <- theta_2016 %>% 
-  left_join(dat, by = "univ_num") %>%
-  select(c("univ", "sixteen")) %>%
-  unique()
+ggplot(temp, aes(x=theta_cycle, y=theta_mu, group = theta_univ)) + 
+  geom_point(alpha = 0.9, aes(color = theta_univ)) +
+  geom_line(alpha = 0.8, color = "lightgrey") +
+  geom_hline(yintercept = 0, linetype = "dashed") + 
+  scale_x_continuous(breaks = c(2004, 2006, 2008, 2010, 2012, 2014, 2016), 
+                   labels = c("", "2006", "2008", "2010", "2012", "2014", "2016")) +
+  theme_bw() +
+  xlab("Cycle") +
+  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.05,0.05)) + 
+  scale_color_discrete(name = "Sampling\nUnivese")
 ```
 ##Model Evaluation & Results
 For models to answer question 1, I used 250,000 iterations with 3 chains and a burn-in of 1000 iterations. Convergance was quick so this is all that was needed. Gelman and Rubin diagnostics for the model for each election are close to 1. Autocorrelation for some pollsters' bias was high, so I thined the chains, using only 1 in 10 samples. Residuals for poll results look normal. 
