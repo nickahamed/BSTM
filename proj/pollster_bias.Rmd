@@ -42,6 +42,44 @@ bias_priors <- function(data_jags, deltas, thetas) {
   return(data_jags)
 }
 
+run_model <- function(chains = 4, 
+                            thining = 10, 
+                            burnin = 10000, 
+                            iter = 500000, 
+                            params = c("xi", "delta", "theta"),
+                            data_jags) { 
+  mod_string <- " model {
+  xi[1] ~ dunif(0.4, 0.6) #A deliberately wide range to incorporate all possible starting points.
+
+  for(i in 1:length(twoway)){
+    mu[i] <- xi[week_adj[i]] + delta[pollster_num[i]] + theta[univ_num[i]]
+    twoway[i] ~ dnorm(mu[i],prec[i])
+  }
+
+  for(t in 2:length(xi)){
+    xi[t] ~ dnorm(xi[t-1],tau)
+  }
+
+  ## prior for standard deviations
+  omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
+  tau <- 1/omega2
+
+  ## priors for house effects
+  for (i in 1:max(pollster_num)) {
+    delta[i] ~ dnorm(delta_mu[i], 1.0/delta_sigma2[i])
+  }
+
+  for (i in 1:max(univ_num)) {
+    theta[i] ~ dnorm(theta_mu[i], 1.0/theta_sigma2[i])
+  }
+  } "
+
+  mod <- jags.model(textConnection(mod_string), data = data_jags, n.chains = chains)
+  update(mod, burnin) # burn-in
+  mod_sim <- coda.samples(model = mod, variable.names = params, n.iter= iter, thin = thining)
+  return(mod_sim)
+}
+
 #Structure
 # Part 1 - Inference
 # -clean up more polling data
@@ -159,53 +197,19 @@ thetas <- data.frame(theta_univ = unique(polls$univ),
                      theta_mu = rep(0, length(unique(polls$univ))), 
                      theta_sigma2 = rep(1.0, length(unique(polls$univ))))
 
-data_jags <- data_prep(data=polls, res=res, year=2006)
-data_jags <- bias_priors(data_jags, deltas, thetas)
+data_jags <- data_prep(data = polls, res = res, year = 2006)
+data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
+mod_res <- run_model(data_jags = data_jags)
 
-estimate_biases <- function(chains = 4, 
-                            thining = 10, 
-                            burnin = 10000, 
-                            iter = 500000, 
-                            params = c("delta", "theta"),
-                            data_jags = data_jags) { 
-  mod_string <- " model {
-  xi[1] ~ dunif(0.4, 0.6) #A deliberately wide range to incorporate all possible starting points.
-
-  for(i in 1:length(twoway)){
-    mu[i] <- xi[week_adj[i]] + delta[pollster_num[i]] + theta[univ_num[i]]
-    twoway[i] ~ dnorm(mu[i],prec[i])
-  }
-
-  for(t in 2:length(xi)){
-    xi[t] ~ dnorm(xi[t-1],tau)
-  }
-
-  ## prior for standard deviations
-  omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
-  tau <- 1/omega2
-
-  ## priors for house effects
-  for (i in 1:max(pollster_num)) {
-    delta[i] ~ dnorm(delta_mu[i], 1.0/delta_sigma2[i])
-  }
-
-  for (i in 1:max(univ_num)) {
-    theta[i] ~ dnorm(theta_mu[i], 1.0/theta_sigma2[i])
-  }
-  } "
-
-  mod = jags.model(textConnection(mod_string), data = data_jags, n.chains = chains)
-  update(mod, burnin) # burn-in
-  mod_sim = coda.samples(model = mod, variable.names = params, n.iter= iter, thin = thining)
-  
-  #figure out how to output pollster bias mu, pollster num, pollster sd | theta bias mu, num and sd
-}
+#function to post process mod sim
+#figure out how to output pollster bias mu, pollster num, pollster sd | theta bias mu, num and sd
 
 #Use returned tables to update master tables for next iteration. 
 #put all in for-loop
+mod_csim <- as.mcmc(do.call(rbind, mod_sim))
 
 summary(mod_sim)
-mod_csim = as.mcmc(do.call(rbind, mod_sim))
+
 x <- data.frame(oh_six = colMeans(mod_csim))
 delta_2006 <- x %>% filter(substr(row.names(x),1,1) == 'd')
 delta_2006$pollster_num <- seq(1,nrow(delta_2006),1)
