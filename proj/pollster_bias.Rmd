@@ -172,6 +172,8 @@ For election results, I use both the popular vote share and the seats won. These
 
 ```{r, include=FALSE}
 #Data cleaning and preparation
+pollster_lkup <- read.csv("pollsters.csv")
+
 res <- read.csv("election_results.csv") %>%
   mutate(twoway_vote = dem_vote/(dem_vote+rep_vote),
          twoway_seat = dem_seats/(dem_seats+rep_seats)) %>%
@@ -257,8 +259,11 @@ for(cycle in res$cycle) {
                               deltas_new = prior_ests$deltas_est, thetas_new = prior_ests$thetas_est)
   deltas <- new_priors$deltas %>% 
     arrange(delta_mu) %>%
-    mutate(delta_pollster = factor(delta_pollster, levels = delta_pollster[order(delta_mu)]))
-  deltas_all <- new_priors$deltas_all 
+    inner_join(pollster_lkup, by = c("delta_pollster" = "pollster")) %>%
+    mutate(pollster_raw = factor(pollster_raw, levels = pollster_raw[order(delta_mu)]))
+  deltas_all <- new_priors$deltas_all %>%
+    inner_join(pollster_lkup, by = c("delta_pollster" = "pollster"))
+  
   thetas <- new_priors$thetas %>% 
     arrange(theta_mu) %>%
     mutate(theta_univ = factor(theta_univ, levels = theta_univ[order(theta_mu)]))
@@ -267,11 +272,10 @@ for(cycle in res$cycle) {
 ```
 
 ```{r, echo = FALSE}
-ggplot(deltas, aes(x=delta_pollster, y=delta_mu)) + 
+ggplot(deltas, aes(x=pollster_raw, y=delta_mu)) + 
   geom_point(aes(color = delta_mu)) +
   geom_hline(yintercept = 0, linetype = "dashed") + 
   scale_color_continuous(low="red", high="blue") +
-  scale_x_discrete(labels = stringr::str_to_title(str_replace(deltas$delta_pollster, "_", " "))) +
   theme_bw() +
   guides(color = F) +
   xlab("Pollster") +
@@ -291,8 +295,8 @@ pollsters <- temp %>%
 temp <- temp %>%
   filter(delta_pollster %in% pollsters$delta_pollster, !is.na(delta_mu))
 
-ggplot(temp, aes(x=delta_cycle, y=delta_mu, group = delta_pollster)) + 
-  geom_point(alpha = 0.9, aes(color = delta_pollster)) +
+ggplot(temp, aes(x=delta_cycle, y=delta_mu, group = pollster_raw)) + 
+  geom_point(alpha = 0.9, aes(color = pollster_raw)) +
   geom_line(alpha = 0.8, color = "lightgrey") +
   geom_hline(yintercept = 0, linetype = "dashed") + 
   scale_x_continuous(breaks = c(2004, 2006, 2008, 2010, 2012, 2014, 2016), 
