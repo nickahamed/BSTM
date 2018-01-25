@@ -1,0 +1,41 @@
+pollster,pollster_raw
+abc_wapo,ABC/WaPo
+ap_gfk,AP/GFK
+ap_ipsos,AP/Ipsos
+battleground,Battleground
+bloomberg,Bloomberg
+cbs_nyt,CBS/NYT
+cnn_orc,CNN/ORC
+cook,Cook/RT Strategies
+dem_corps,Democracy Corps (D)
+diageo,Diageo/Hotline
+economist_yougov,Economist/YouGov
+fox_news,Fox News
+gallup,Gallup
+gallup_ht,Gallup High-Turnout
+gallup_lt,Gallup Low-Turnout
+gwu_battleground,GWU/Battleground
+harris,Harris
+hotline,Hotline/FD
+ipsos_mcclatchy,Ipsos/McClatchy
+lat_bloomberg,LAT/Bloomberg
+mcclatchy_marist,McClatchy/Marist
+mclaughlin,McLaughlin (R) 
+nat_journal,National Journal/FD
+nbc_wsj,NBC/WSJ
+newsweek,Newsweek
+npr,NPR
+pew,Pew
+politico_gwu_battleground,Politico/GWU/Battleground
+pos,POS (R) 
+ppp,PPP (D)
+quinnipiac,Quinnipiac
+rasmussen,Rasmussen
+reason,Reason
+resurgen_republic,Resurgent Republic (R)
+reuters_ipsos,Reuters/Ipsos
+time,Time
+usa_today_gallup,USA Today/Gallup
+usa_today_pew,USA Today/Pew
+usa_today_psrai,USA Today/PSRAI
+zogby,Zogby

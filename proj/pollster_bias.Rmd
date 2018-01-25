@@ -45,7 +45,7 @@ bias_priors <- function(data_jags, deltas, thetas) {
 run_model <- function(chains = 4, 
                             thining = 10, 
                             burnin = 10000, 
-                            iter = 500000, 
+                            iter = 2500000, 
                             params = c("xi", "delta", "theta"),
                             data_jags) { 
   mod_string <- " model {
@@ -237,13 +237,13 @@ ggplot(avgs, aes(x=avg, y=twoway_seat)) +
 deltas <- data.frame(delta_cycle = 0,
                      delta_pollster = unique(polls$pollster),
                      delta_mu = rep(0, length(unique(polls$pollster))), 
-                     delta_sigma2 = rep(1.0, length(unique(polls$pollster))))
+                     delta_sigma2 = rep(0.2, length(unique(polls$pollster))))
 deltas_all <- deltas
 
 thetas <- data.frame(theta_cycle = 0,
                      theta_univ = unique(polls$univ),
                      theta_mu = rep(0, length(unique(polls$univ))), 
-                     theta_sigma2 = rep(1.0, length(unique(polls$univ))))
+                     theta_sigma2 = rep(0.2, length(unique(polls$univ))))
 thetas_all <- thetas
 
 #Estimation
@@ -275,7 +275,7 @@ ggplot(deltas, aes(x=delta_pollster, y=delta_mu)) +
   theme_bw() +
   guides(color = F) +
   xlab("Pollster") +
-  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.05,0.05)) + 
+  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.055,0.055)) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 10, vjust = 0.5))
 ```
 ```{r, echo = FALSE}
