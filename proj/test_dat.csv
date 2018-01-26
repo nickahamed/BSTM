@@ -1,4 +1,15 @@
 pollster_raw,pollster,start_date,end_date,n_size,univ,dem,rep,cycle
+FOX News,fox_news,1/21/18,1/23/18,1002,RV,44,38,2018
+Economist/YouGov,economist_yougov,1/21/18,1/23/18,1301,RV,41,37,2018
+Quinnipiac,quinnipiac,1/19/18,1/23/18,1245,RV,51,38,2018
+Reuters/Ipsos,reuters_ipsos,1/19/18,1/23/18,2981,Adults,38,30,2018
+ABC News/Wash Post,abc_wapo,1/15/18,1/18/18,846,RV,51,39,2018
+NBC News/Wall St. Jrnl,nbc_wsj,1/13/18,1/17/18,765,RV,49,43,2018
+Economist/YouGov,economist_yougov,1/14/18,1/16/18,1311,RV,42,36,2018
+Reuters/Ipsos,reuters_ipsos,1/12/18,1/16/18,1638,Adults,37,32,2018
+Quinnipiac,quinnipiac,1/12/18,1/16/18,1212,RV,50,39,2018
+Pew Research,pew,1/10/18,1/15/18,1215,RV,53,39,2018
+NPR/PBS/Marist,npr,1/8/18,1/10/18,1092,RV,46,40,2018
 Emerson,emerson,1/8/18,1/11/18,600,RV,45,40,2018
 Economist/YouGov,economist_yougov,1/8/18,1/9/18,1327,RV,44,37,2018
 Quinnipiac,quinnipiac,1/5/18,1/9/18,1106,RV,52,35,2018
