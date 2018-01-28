@@ -135,11 +135,6 @@ update_priors <- function(deltas_all, thetas_all, deltas_new, thetas_new) {
 
 #Structure
 # Part 1 - Inference
-# Make flextables look nice
-# -put math/specs of model in appendix a
-# -put code in appendix b
-    #-figure out if should be sigma or sigma2
-    #-show key diagnostics
 # -Use final bias estimates as priors for an unanchored random walk model for each cycle
 # -Use in-cycle bias estimates as priors for an unanchored random walk model for each cycle
 # -Plot random walk(s) against polls/results with 95% CI
@@ -149,6 +144,8 @@ update_priors <- function(deltas_all, thetas_all, deltas_new, thetas_new) {
 #     -if 95% CI is still large, add a bunch of simulated polls and see if the CI shrinks
 # -Display final and in-cycle EDay estimates against actual two-way popular vote and share of seats in a table. 
 # -Use a normal regression to identify relationship between final estimate and final seats. 
+# -Make flextables look nice
+# -put math/specs of model in appendix a
 
 #Part 2
 # -Use final bias estimates as priors for an unanchored random walk model
@@ -170,7 +167,7 @@ The past polls were taken from Real Clear Politics' database across 6 election c
 
 In total, 797 polls from 41 pollsters contacting 1.7m respondents over the 6 election cycles were used. These are the 5 largest pollsters. See Appendix B for full details.
 
-```{r, echo = F}
+```{r, echo = F, fig.width=8, fig.height=4, fig.align="center"}
 pollster_lkup <- read.csv("pollsters.csv")
 
 res <- read.csv("election_results.csv") %>%
@@ -223,7 +220,7 @@ For election results, I use both the popular vote share and the seats won. These
 
 First, let's explore the trends over time in each cycle. Here, each point is a poll; it's size relfects the sample size and color represents the pollster. The dashed line represents the final two-way popular vote share of Democrats. A couple of observations from this are clear. We see that by election, some pollsters are systematically off. For example, the pink pollster in 2010 was consistently below the final election result, suggesting bias. Last, we see that there are trends in results over time. For example, in 2014 the polls got closer and closer to the true result over time. Further investigation shows that poll results are not normally distributed around the result **across time**, suggesting we will need a time-dependent model. 
 
-```{r, echo=FALSE, fig.width=6, fig.height=2.5, fig.align="center"}
+```{r, echo=FALSE, fig.width=8, fig.height=4, fig.align="center"}
 ggplot(data=polls, aes(x=week, y=twoway, size=sqrt(n_size), color = pollster)) + 
   geom_point(alpha=0.3) +
   theme_bw() + 
@@ -234,7 +231,7 @@ ggplot(data=polls, aes(x=week, y=twoway, size=sqrt(n_size), color = pollster)) +
   guides(size=F, color = F)
 ```
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=6, fig.height=2.5, fig.align="center"}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=8, fig.height=4, fig.align="center"}
 ggplot(data=polls, aes(x=round(twoway,2))) + 
   geom_histogram() +
   theme_bw() + 
@@ -245,7 +242,7 @@ ggplot(data=polls, aes(x=round(twoway,2))) +
 ```
 
 It's also worth exploring the relationship between polls and two-way seats won. While I later improve upon this through modeling, a crude measure is the average poll result within 1 week of election day, weighted by sample size. The correlation between this and two-way seat share is 0.82 suggesting a strong positive relationship. 
-```{r, echo=FALSE, fig.width=2, fig.height=2, fig.align="center"}
+```{r, echo=FALSE, fig.width=3, fig.height=3, fig.align="center"}
 avgs <- polls %>%
   filter(week < 2) %>%
   group_by(cycle) %>%
@@ -265,8 +262,8 @@ ggplot(avgs, aes(x=avg, y=twoway_seat)) +
 ```
 
 ##Estimating pollster and universe bias
-To estimate bias for each pollster and universe, I use a Bayesian random-walk model. For the first cycle a pollster/universe is used in, its prior is normally distributed around 0pp and assumed to be less than 20pp 95% of the time, in either direction. This prior is updated to be the posterior from the most recent previous cycle the pollster/universe was active in. Full specification of the theoretical model can be found in Appendix A; implementation specifications and key convergance diagnostics can be found in Appendix B. 
-```{r}
+To estimate bias for each pollster and universe, I use a Bayesian random-walk models anchored to the true final election results. For the first cycle a pollster/universe is used in, its prior is normally distributed around 0pp and assumed to be less than 20pp 95% of the time, in either direction. This prior is updated to be the posterior from the most recent previous cycle the pollster/universe was active in. Full specification of the theoretical model can be found in Appendix A; implementation specifications and key convergance diagnostics can be found in Appendix B. 
+```{r, include = F}
 deltas <- data.frame(delta_cycle = 0,
                      delta_pollster = unique(polls$pollster),
                      delta_mu = rep(0, length(unique(polls$pollster))), 
@@ -307,7 +304,7 @@ thetas <- thetas %>%
     mutate(theta_univ = factor(theta_univ, levels = theta_univ[order(theta_mu)]))
 ```
 
-Below I plot the final bias estimate for each pollster. For example, for a pollster who polled in 2014 but not 2016, this will be their 2014 posterior results. Most pollsters are not biased by more than a percentage point in either direction. 'Gallup Low-Turnout' was the mostly conservative estimate (they took 4 polls in 1 election cycle). 'Diageo/Hotline' most consistently overestimted Democratic support (they took 7 polls in 2 election cycles). Bloomberg was the least biased pollseter with an average bias of -0.00008 across their 12 polls in 4 cycles. 
+Below I plot the final bias estimate for each pollster. For example, for a pollster who polled in 2014 but not 2016, this will be their 2014 posterior results. Most pollsters are not biased by more than a percentage point in either direction. 'Gallup Low-Turnout' was the mostly conservative estimate (they took 4 polls in 1 election cycle). 'Diageo/Hotline' most consistently overestimted Democratic support (they took 7 polls in 2 election cycles). Bloomberg was the least biased pollseter with an average bias of -0.00008 across their 12 polls in 4 cycles. Full results can be found in Appendix B.
 
 ```{r, echo = FALSE}
 ggplot(deltas, aes(x=pollster_raw, y=delta_mu)) + 
@@ -346,7 +343,7 @@ ggplot(temp, aes(x=delta_cycle, y=delta_mu, group = pollster_raw)) +
   scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.05,0.05)) + 
   scale_color_discrete(name = "Pollster")
 ```
-
+Additionally, we see that most sampling universes also show some overestimation of Democratic support. Our posterior observation from the 2016 cycle shows that likely voter universes across pollsters were biased 1.7pp in favor of Democrats, registered voter universes were biased 2.4pp and samples of just adults were biased nearly 5pp in favor of Democrats. Full results can be found in Appendix B.
 ```{r, echo = FALSE}
 ggplot(thetas, aes(x=theta_univ, y=theta_mu)) + 
   geom_point() +
@@ -357,6 +354,7 @@ ggplot(thetas, aes(x=theta_univ, y=theta_mu)) +
   scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(0,0.05)) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 10, vjust = 0.5))
 ```
+These trends were fairly stable over time. The rank order of the universes was the same for all elections except 2006. Both adult and registered voter universes were stable around their final estimate since the 2010 cycle. In 2010 and 2012, there was basically no bias in likely voter universes, but this increased in 2014 and 2016. 
 ```{r, echo = FALSE}
 temp <- thetas_all %>%
   mutate(theta_cycle = ifelse(theta_cycle == 0, 2004, theta_cycle)) %>%
@@ -373,6 +371,10 @@ ggplot(temp, aes(x=theta_cycle, y=theta_mu, group = theta_univ)) +
   scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.05,0.05)) + 
   scale_color_discrete(name = "Sampling\nUnivese")
 ```
+
+##Week-by-week estimates of support by cycle
+Using the final estimates of bias for pollsters and universes as priors, I now refit the random-walk models, but with no anchor to the true result. This allows us to generate estimates week-by-week for each election, including a final estimate of election outcome, simulating a future prediction. The results are slightly overfit, especially for 2016, since the true results in each election updated the priors which are now inputs to the model. For 2016 specifically, the priors are derived from posterior distribution of the model anchored in the true result, so we should expect the model to be very precise. For full model specification see Appendix A and Appendix B for implementaton, code and full results. 
+
 ##Model Evaluation & Results
 For models to answer question 1, I used 250,000 iterations with 3 chains and a burn-in of 1000 iterations. Convergance was quick so this is all that was needed. Gelman and Rubin diagnostics for the model for each election are close to 1. Autocorrelation for some pollsters' bias was high, so I thined the chains, using only 1 in 10 samples. Residuals for poll results look normal. 
 
@@ -1049,6 +1051,31 @@ update_priors <- function(deltas_all, thetas_all, deltas_new, thetas_new) {
   
   return(list(deltas = w, deltas_all = x, thetas = z, thetas_all = y))
 }
+
+convergence_diagnostics <- function(chains = 4, 
+                                    thining = 10, 
+                                    burnin = 10000, 
+                                    iter = 2500000, 
+                                    data_jags) { 
+  message(paste0("Sample convergance diagnostics for ", unique(data_jags$cycle), " parameters:"))
+  xi <- paste0("xi[", sample(seq(1,length(data_jags$xi)), 1), "]")
+  delta <- paste0("delta[", sample(seq(1,length(data_jags$delta_pollster)), 1), "]")
+  theta <- paste0("theta[", sample(seq(1,length(data_jags$theta_univ)), 1), "]")
+  params <- c(xi, delta, theta)
+  
+  mod_res <- run_model(chains = chains, 
+                       thining = thining, 
+                       burnin = burnin, 
+                       iter = iter, 
+                       params = params,
+                       data_jags = data_jags)
+  
+  plot(mod_res)
+  print(gelman.diag(mod_res))
+  print(autocorr.diag(mod_res))
+  autocorr.plot(mod_res)
+  effectiveSize(mod_res)
+}
 ```
 
 ###Load, prep and explore data
@@ -1099,6 +1126,7 @@ thetas_all <- thetas
 for(cycle in res$cycle) {
   data_jags <- data_prep(data = polls, res = res, year = cycle)
   data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
+  convergence_diagnostics(data_jags = data_jags)
   mod_res <- run_model(data_jags = data_jags)
 
   prior_ests <- calculate_priors(mod_res = mod_res, year = cycle, data_jags = data_jags)
