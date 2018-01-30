@@ -7,15 +7,8 @@ author: Nick Ahamed
 ```{r setup, include=FALSE}
 #Structure
 # Part 1 - Inference
-# -Use final bias estimates as priors for an unanchored random walk model for each cycle
-# -Use in-cycle bias estimates as priors for an unanchored random walk model for each cycle
-# -Plot random walk(s) against polls/results with 95% CI
-#     -if 95% CI is smaller closer to the election, don't worry. 
-#     -if 95% CI is still large, look at the weighted SD for polls by cycle
-#     -if 95% CI is still large, estimate all models by month
-#     -if 95% CI is still large, add a bunch of simulated polls and see if the CI shrinks
-# -Display final and in-cycle EDay estimates against actual two-way popular vote and share of seats in a table. 
-# -Use a normal regression to identify relationship between final estimate and final seats. 
+# -add a table of contents
+# -make sure plots are correctly sized
 # -Make flextables look nice
 # -put math/specs of model in appendix a
 
@@ -89,6 +82,14 @@ These trends were fairly stable over time. The rank order of the universes was t
 ##Week-by-week estimates of support by cycle
 Using the final estimates of bias for pollsters and universes as priors, I now refit the random-walk models, but with no anchor to the true result. This allows us to generate estimates week-by-week for each election, including a final estimate of election outcome, simulating a future prediction. The results are slightly overfit, especially for 2016, since the true results in each election updated the priors which are now inputs to the model. For 2016 specifically, the priors are derived from posterior distribution of the model anchored in the true result, so we should expect the model to be very precise. For full model specification see Appendix A and Appendix B for implementaton, code and full results. 
 
+<center>
+![](figures/time_series_with_trend.png)
+</center>
+
+<center>
+![](figures/final_est_vs_seats.png)
+</center>
+
 ##Conclusions
 Using the estimate for the true current level of support, about 54%, and the parameter estimates from the regression model previously fit, I predict democrats will win about 52% of the seats, or 225 seats, with a 2.5% lower bound of 177 seats and a 97.5% upper bound of 273 seats. This estimate is similar to other's. For example, one respected [__author__](http://www.centerforpolitics.org/crystalball/articles/partisan-gerrymandering-and-the-outlook-for-the-2018-u-s-house-elections/?mc_cid=51acce7748&mc_eid=e5ff9cb0c5) finds an 8pp advantage in the generic ballot for Democrats will yield 224 Democratic seats. 
 
@@ -116,7 +117,7 @@ To answer question 3, I will use the same random walk algorithm already mentione
 
 ##Appendix B
 ###Functions and setup 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(ggplot2)
 library(tidyverse)
 library(rjags)
@@ -124,19 +125,25 @@ library(cowplot)
 set.seed(102)
 scipen=999
 
-data_prep <- function(data, res, year) { 
+data_prep <- function(data, res, year, anchor = T) { 
   data <- data %>% 
     filter(cycle == year) %>%
     mutate(pollster_num = as.numeric(as.factor(as.character(pollster))),
            univ_num = as.numeric(univ),
            prec = 1 / (sqrt((twoway * (1 - twoway)) / n_size)),
-           week_adj = -1 * (week - max(week)) + 2) %>%
+           week_adj = -1 * (week - max(week)) + 1) %>%
     select(-pollster_raw)
   
   data_jags = as.list(data)
   
-  xi <- rep(NA, length(unique(data$week))+1)
-  xi[max(data$week_adj)] <- res$twoway_vote[res$cycle == year]
+  
+  if(anchor) {
+    xi <- rep(NA, max(length(unique(data$week_adj)), max(data$week_adj))+1)
+    xi[max(data$week_adj+1)] <- res$twoway_vote[res$cycle == year]
+  }  else { 
+    xi <- rep(NA, max(length(unique(data$week_adj)), max(data$week_adj)))
+    }
+  
   data_jags$xi <- xi
   return(data_jags)
 }
@@ -157,13 +164,14 @@ bias_priors <- function(data_jags, deltas, thetas) {
   return(data_jags)
 }
 
-run_model <- function(chains = 4, 
-                            thining = 10, 
-                            burnin = 10000, 
-                            iter = 1000000, 
-                            params = c("xi", "delta", "theta"),
-                            data_jags) { 
-  mod_string <- " model {
+run_model <- function(data_jags,
+                      anchor = T,
+                      chains = 4, 
+                      thining = 10, 
+                      burnin = 10000, 
+                      iter = 1000000, 
+                      params = c("xi", "delta", "theta")) { 
+  mod_string_1 <- " model {
   xi[1] ~ dunif(0.46, 0.56) #The lower and upper limit of Dem two-way vote share in the 6 elections examined.
 
   for(i in 1:length(twoway)){
@@ -178,17 +186,33 @@ run_model <- function(chains = 4,
   ## prior for standard deviations
   #omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
   omega ~ dunif(0, .1)
-  tau <- 1/pow(omega,2)
+  tau <- 1/pow(omega,2) "
+  
+  if(anchor) {
+    mod_string_2 <- "
+      ## priors for house effects
+      for (i in 1:max(pollster_num)) {
+        delta[i] ~ dnorm(delta_mu[i], 1.0/delta_sigma2[i])
+      }
 
-  ## priors for house effects
-  for (i in 1:max(pollster_num)) {
-    delta[i] ~ dnorm(delta_mu[i], 1.0/delta_sigma2[i])
-  }
+       for (i in 1:max(univ_num)) {
+        theta[i] ~ dnorm(theta_mu[i], 1.0/theta_sigma2[i])
+      }
+      } "
+  } else {
+    mod_string_2 <- "
+      ## priors for house effects
+      for (i in 1:max(pollster_num)) {
+        delta[i] = delta_mu[i]
+      }
 
-  for (i in 1:max(univ_num)) {
-    theta[i] ~ dnorm(theta_mu[i], 1.0/theta_sigma2[i])
+       for (i in 1:max(univ_num)) {
+        theta[i] = theta_mu[i]
+      }
+      } "
   }
-  } "
+  
+  mod_string <- paste(mod_string_1, mod_string_2)
 
   mod <- jags.model(textConnection(mod_string), data = data_jags, n.chains = chains)
   update(mod, burnin) # burn-in
@@ -250,7 +274,6 @@ convergence_diagnostics <- function(chains = 4,
                                     burnin = 10000, 
                                     iter = 1000000, 
                                     data_jags) { 
-  message(paste0("Sample convergance diagnostics for ", unique(data_jags$cycle), " parameters:"))
   xi <- paste0("xi[", sample(seq(1,length(data_jags$xi)), 1), "]")
   delta <- paste0("delta[", sample(seq(1,length(data_jags$delta_pollster)), 1), "]")
   theta <- paste0("theta[", sample(seq(1,length(data_jags$theta_univ)), 1), "]")
@@ -263,10 +286,22 @@ convergence_diagnostics <- function(chains = 4,
                        params = params,
                        data_jags = data_jags)
   
-  plot(mod_res)
-  #print(gelman.diag(mod_res))
-  autocorr.plot(mod_res)
-  #effectiveSize(mod_res)
+  return(list(gelman = gelman.diag(mod_res), autocorr = autocorr.diag(mod_res)))
+}
+
+extract_time_est <- function(mod_res, year, data_jags) { 
+  mod_csim <- as.mcmc(do.call(rbind, mod_res))
+  param_ests <- data.frame(iter_mean = colMeans(mod_csim),
+                           iter_sigma2 = (apply(mod_csim, 2, FUN ="sd"))^2)
+  
+  time_est <- param_ests %>% 
+    filter(substr(row.names(param_ests),1,1) == 'x') %>%
+    mutate(time_before_elec = seq((length(data_jags$xi) - 1), 0, -1),
+           upper_bound = iter_mean + 1.96*sqrt(iter_sigma2),
+           lower_bound = iter_mean - 1.96*sqrt(iter_sigma2),
+           cycle = year)
+
+  return(time_est)
 }
 ```
 
@@ -365,9 +400,8 @@ correlation <- ggplot(avgs, aes(x=avg, y=twoway_seat)) +
 ggsave(filename = "figures/correlation.png", plot = correlation, width = 3, height = 3, units = "in")
 ```
 
-
 ###Estimate bias for pollsters and universes
-```{r}
+```{r, warning=FALSE, message=FALSE, results=FALSE}
 deltas <- data.frame(delta_cycle = 0,
                      delta_pollster = unique(polls$pollster),
                      delta_mu = rep(0, length(unique(polls$pollster))), 
@@ -380,11 +414,13 @@ thetas <- data.frame(theta_cycle = 0,
                      theta_sigma2 = rep(0.2, length(unique(polls$univ))))
 thetas_all <- thetas
 
+convergence <- list()
+
 #Estimation
 for(cycle in res$cycle) {
   data_jags <- data_prep(data = polls, res = res, year = cycle)
   data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
-  convergence_diagnostics(data_jags = data_jags)
+  convergence[[paste(cycle)]] <- convergence_diagnostics(data_jags = data_jags)
   mod_res <- run_model(data_jags = data_jags)
 
   prior_ests <- calculate_priors(mod_res = mod_res, year = cycle, data_jags = data_jags)
@@ -408,17 +444,25 @@ deltas_all <- deltas_all %>%
 thetas <- thetas %>% 
     arrange(theta_mu) %>%
     mutate(theta_univ = factor(theta_univ, levels = theta_univ[order(theta_mu)]))
+```
 
-#Final estimate of pollster bias and error
+```{r, echo=FALSE}
+for(cycle in res$cycle){ 
+  message(paste0("Sample convergance diagnostics for ", cycle, " parameters:"))
+  print(convergence[[paste(cycle)]]$gelman)
+  print(convergence[[paste(cycle)]]$autocorr)
+  }
+
+message("Final estimates of pollster bias:")
 print(deltas) #Flextable
 
-#Estimate for every cycle and error
+message("Estimate for each pollster and cycle:")
 print(deltas_all) #Flextable
 
-#Final estimate of universe bias and error
+message("Final estimates of sampling universe bias:")
 print(thetas) #Flextable
 
-#Estimate for every cycle and error
+message("Estimate for each universe and cycle:")
 print(thetas_all) #Flextable
 ```
 
@@ -487,5 +531,68 @@ univ_cycle <- ggplot(temp, aes(x=theta_cycle, y=theta_mu, group = theta_univ)) +
   scale_color_discrete(name = "Sampling\nUnivese")
 
 ggsave(filename = "figures/univ_cycle.png", plot = univ_cycle, width = 8, height = 4, units = "in")
+```
+
+```{r, warning=FALSE, message=FALSE, results=FALSE}
+#Estimate week-by-week movement using past pollster and universe bias
+all_cycle_est <- data.frame(iter_mean = numeric(0),
+                            iter_sigma2 = numeric(0),
+                            time_before_elec = numeric(0),
+                            upper_bound = numeric(0),
+                            lower_bound = numeric(0),
+                            cycle = numeric(0))
+
+for(cycle in res$cycle) {
+  data_jags <- data_prep(data = polls, res = res, year = cycle, anchor = F)
+  data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
+
+  mod_res <- run_model(data_jags = data_jags, params = c("xi"), anchor = F)
+  cycle_time_est <- extract_time_est(mod_res = mod_res, year = cycle, data_jags = data_jags)
+  all_cycle_est <- rbind(all_cycle_est, cycle_time_est)
+}
+```
+
+```{r, include=FALSE}
+time_series_with_trend <- ggplot(data=all_cycle_est, aes(x=time_before_elec, y=iter_mean)) + 
+  geom_point(data=polls, aes(x=week, y=twoway, size=sqrt(n_size)), alpha=0.2) +
+  geom_ribbon(aes(ymin=lower_bound,ymax=upper_bound), alpha = 0.5) +
+  geom_hline(data=res, aes(yintercept = twoway_vote), linetype="dashed") +
+  geom_line(color = "blue") +
+  theme_bw() + 
+  facet_wrap(~cycle) +
+  scale_x_reverse(name = "Weeks Before Election") +
+  scale_y_continuous(name = "Democratic Two-way Vote Share", labels=scales::percent) + 
+  guides(size=F, color = F)
+
+ggsave(filename = "figures/time_series_with_trend.png", plot = time_series_with_trend, width = 8, height = 4, units = "in")
+
+final_ests <- all_cycle_est %>% 
+  filter(time_before_elec == 0) %>%
+  inner_join(avgs, by = "cycle") 
+
+lm_fit <- ggplot(final_ests, aes(x = twoway_seat, y = iter_mean)) + 
+  geom_point() + 
+  geom_errorbar(aes(ymin=lower_bound, ymax=upper_bound)) +
+  coord_flip() + 
+  theme_bw() + 
+  scale_y_continuous(name = "Election Forecast", limits = c(0.4, 0.65), labels = scales::percent) + 
+  scale_x_continuous(name = "Observed Seats Won", limits = c(0.4, 0.6), labels = scales::percent) + 
+  stat_smooth(method = "lm") 
+
+ggsave(filename = "figures/final_est_vs_seats.png", plot = lm_fit, width = 3, height = 3, units = "in")
+
+tbl <- final_ests %>%
+  mutate(`Forecast` = scales::percent(round(iter_mean,3)),
+         `Popular Vote` = scales::percent(round(twoway_vote,3)), 
+         `Seat Share` = scales::percent(round(twoway_seat,3)),
+         `Forecast Error` = scales::percent(round(twoway_vote - iter_mean,3)),
+         Cycle = cycle) %>%
+  select(c(Cycle, `Forecast`, `Popular Vote`, `Seat Share`, `Forecast Error`))
+```
+
+```{r}
+summary(glm(twoway_seat ~ iter_mean, data = all_cycle_est %>% 
+  filter(time_before_elec == 0) %>%
+  inner_join(avgs, by = "cycle")))
 ```
 
