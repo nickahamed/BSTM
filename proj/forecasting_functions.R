@@ -62,7 +62,6 @@ run_model <- function(data_jags,
   }
   
   ## prior for standard deviations
-  #omega2 ~ dgamma(1.0/2.0,1.0/2.0) I(0.001, 0.999)
   omega ~ dunif(0, .1)
   tau <- 1/pow(omega,2) "
   
@@ -180,4 +179,16 @@ extract_time_est <- function(mod_res, year, data_jags) {
            cycle = year)
   
   return(time_est)
+}
+
+extract_omega_est <- function(mod_res, year, data_jags) { 
+  mod_csim <- as.mcmc(do.call(rbind, mod_res))
+  param_ests <- data.frame(iter_mean = colMeans(mod_csim),
+                           iter_sigma2 = (apply(mod_csim, 2, FUN ="sd"))^2)
+  
+  omega_est <- param_ests %>% 
+    filter(substr(row.names(param_ests),1,1) == 'o') %>%
+    select(iter_mean)
+  
+  return(omega_est)
 }
