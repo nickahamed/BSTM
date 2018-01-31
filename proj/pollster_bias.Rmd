@@ -1,13 +1,15 @@
 ---
 title: "Bayesian Inference of Pollster Bias"
 output: pdf_document
+    toc: true
+    toc_depth: 3
 author: Nick Ahamed
+date: 2/1/2018
 ---
 
 ```{r setup, include=FALSE}
 #Structure
 # Part 1 - Inference
-# -add a table of contents
 # -make sure plots are correctly sized
 # -Make flextables look nice
 # -put math/specs of model in appendix a
@@ -93,7 +95,7 @@ Using the final estimates of bias for pollsters and universes as priors, I now r
 ##Conclusions
 Using the estimate for the true current level of support, about 54%, and the parameter estimates from the regression model previously fit, I predict democrats will win about 52% of the seats, or 225 seats, with a 2.5% lower bound of 177 seats and a 97.5% upper bound of 273 seats. This estimate is similar to other's. For example, one respected [__author__](http://www.centerforpolitics.org/crystalball/articles/partisan-gerrymandering-and-the-outlook-for-the-2018-u-s-house-elections/?mc_cid=51acce7748&mc_eid=e5ff9cb0c5) finds an 8pp advantage in the generic ballot for Democrats will yield 224 Democratic seats. 
 
-##Appendix A
+#Appendix A
 To answer question 1 above, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
 $$y_i \sim \mathcal{N}(\mu_i, \sigma^2_i)$$
 That poll is centered around mean $\mu_i$, which itself is a function of $\alpha_t$, the true value of support at the time the poll was taken $t$, $\delta_j$, the bias of pollster $j$, and $\theta_k$, the bias of sampling universe $k$. Fully specified, this is: 
@@ -115,8 +117,8 @@ $\beta_0$ here has a prior of 0 seats in the House of Representatives with a sta
 
 To answer question 3, I will use the same random walk algorithm already mentioned, along with the pollster and universe biases to generate a polling average for today. I will then use this $\alpha$ with the coefficients estimated in the second model to predict the number of seats Democrats will win in 2018. 
 
-##Appendix B
-###Load packages, functions and other setup 
+#Appendix B
+##Load packages, functions and other setup 
 ```{r, message=FALSE, warning=FALSE}
 library(ggplot2)
 library(tidyverse)
@@ -129,7 +131,7 @@ set.seed(102)
 scipen=999
 ```
 
-###Load, prep and explore data
+##Load, prep and explore data
 ```{r}
 pollster_lkup <- read.csv("pollsters.csv")
 
@@ -224,7 +226,7 @@ correlation <- ggplot(avgs, aes(x=avg, y=twoway_seat)) +
 ggsave(filename = "figures/correlation.png", plot = correlation, width = 3, height = 3, units = "in")
 ```
 
-###Estimate bias for pollsters and universes
+##Estimate bias for pollsters and universes
 ```{r, warning=FALSE, message=FALSE, results=FALSE}
 deltas <- data.frame(delta_cycle = 0,
                      delta_pollster = unique(polls$pollster),
@@ -289,15 +291,19 @@ for(cycle in res$cycle){
 
 message("Final estimates of pollster bias:")
 print(deltas) #Flextable
+write_csv(deltas, "data/final_pollster_bias_ests.csv")
 
 message("Estimate for each pollster and cycle:")
 print(deltas_all) #Flextable
+write_csv(deltas_all, "data/all_pollster_bias_ests.csv")
 
 message("Final estimates of sampling universe bias:")
 print(thetas) #Flextable
+write_csv(thetas, "data/final_universe_bias_ests.csv")
 
 message("Estimate for each universe and cycle:")
 print(thetas_all) #Flextable
+write_csv(thetas_all, "data/all_universe_bias_ests.csv")
 ```
 
 ```{r, include = FALSE}
@@ -367,8 +373,8 @@ univ_cycle <- ggplot(temp, aes(x=theta_cycle, y=theta_mu, group = theta_univ)) +
 ggsave(filename = "figures/univ_cycle.png", plot = univ_cycle, width = 8, height = 4, units = "in")
 ```
 
+##Estimate week-by-week movement using past pollster and universe biases
 ```{r, warning=FALSE, message=FALSE, results=FALSE}
-#Estimate week-by-week movement using past pollster and universe bias
 all_cycle_est <- data.frame(iter_mean = numeric(0),
                             iter_sigma2 = numeric(0),
                             time_before_elec = numeric(0),
@@ -390,6 +396,8 @@ for(cycle in res$cycle) {
   cycle_time_est <- extract_time_est(mod_res = mod_res, year = cycle, data_jags = data_jags)
   all_cycle_est <- rbind(all_cycle_est, cycle_time_est)
 }
+
+write_csv(all_cycle_est, "data/all_weekly_ests.csv")
 ```
 
 ```{r, include=FALSE}
@@ -430,9 +438,13 @@ tbl <- final_ests %>%
   select(c(Cycle, `Forecast`, `Popular Vote`, `Seat Share`, `Forecast Error`))
 ```
 
+##Estimate relationship between election forecast and seat share won
 ```{r}
-summary(glm(twoway_seat ~ iter_mean, data = all_cycle_est %>% 
+lm_obj <- glm(twoway_seat ~ iter_mean, data = all_cycle_est %>% 
   filter(time_before_elec == 0) %>%
-  inner_join(avgs, by = "cycle")))
-```
+  inner_join(avgs, by = "cycle"))
+summary(lm_obj)
 
+coefs <- as.data.frame(coefficients(lm_obj))
+write_csv(coefs, "data/forecast_seats_coefs.csv")
+```
