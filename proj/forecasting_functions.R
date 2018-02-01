@@ -8,7 +8,7 @@ data_prep <- function(data, res, year, anchor = T) {
     filter(cycle == year) %>%
     mutate(pollster_num = as.numeric(as.factor(as.character(pollster))),
            univ_num = as.numeric(univ),
-           prec = 1 / (sqrt((twoway * (1 - twoway)) / n_size)),
+           prec = 1 / ((twoway * (1 - twoway)) / n_size),
            week_adj = -1 * (week - max(week)) + 1) %>%
     select(-pollster_raw)
   
@@ -62,7 +62,7 @@ run_model <- function(data_jags,
   }
   
   ## prior for standard deviations
-  omega ~ dunif(0, .1)
+  omega ~ dunif(0, 0.01)
   tau <- 1/pow(omega,2) "
   
   if(anchor) {

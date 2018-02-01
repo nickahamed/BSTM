@@ -1,18 +1,15 @@
 ---
 title: "Pooling the polls to estimate bias in past US House Elections"
-output: pdf_document
-    toc: true
-    toc_depth: 3
-author: Nick Ahamed
-date: 2/1/2018
+author: "Nick Ahamed"
+date: "2/1/2018"
+output:
+  html_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
 ```{r setup, include=FALSE}
-#Structure
-# Part 1 - Inference
-# -Make flextables look nice
-# -put math/specs of model in appendix a
-
+library(flextable)
 #Part 2
 # -Use final bias estimates as priors for an unanchored random walk model
 # -Use regression from part 1 to estimate #seats won and use sd of model to estimate p(take back the house today) and p(take back the house in X weeks)
@@ -34,25 +31,23 @@ The past polls were taken from Real Clear Politics' database across 6 election c
 
 In total, 797 polls from 41 pollsters contacting 1.7m respondents over the 6 election cycles were used. These are the 5 largest pollsters. See Appendix B for full details.
 
-```{r, fig.width="8in", echo=FALSE, message=F, warning=F, fig.align='center'}
-knitr::include_graphics("figures/data_breakdown.png")
-```
+<center>
+![](figures/data_breakdown.png){ width=6in }
+</center>
 
 For election results, I use both the popular vote share and the seats won. These were taken from Wikipedia: [__2006__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2006), [__2008__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2008), [__2010__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2010), [__2012__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2012), [__2014__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2014), and [__2016__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2016). Again, I use Democrats' two-way vote share of the popular vote to mimic their two-way support in the polling data, and their percentage share of seats in the Congress. 
 
 First, let's explore the trends over time in each cycle. Here, each point is a poll; it's size relfects the sample size and color represents the pollster. The dashed line represents the final two-way popular vote share of Democrats. A couple of observations from this are clear. We see that by election, some pollsters are systematically off. For example, the pink pollster in 2010 was consistently below the final election result, suggesting bias. Last, we see that there are trends in results over time. For example, in 2014 the polls got closer and closer to the true result over time. Further investigation shows that poll results are not normally distributed around the result **across time**, suggesting we will need a time-dependent model. 
 
-```{r, fig.width="8in", echo=FALSE, message=F, warning=F,  fig.align='center'}
-knitr::include_graphics("figures/time_series.png")
-```
+<center>
+![](figures/time_series.png)
+</center>
 
-```{r, fig.width="8in", echo=FALSE, message=F, warning=F,  fig.align='center',include=FALSE}
+```{r, out.width="8in", out.height="3in", echo=FALSE, message=F, warning=F,  fig.align='center',include=FALSE}
 knitr::include_graphics("figures/normal_dists.png")
 ```
 
-It's also worth exploring the relationship between polls and two-way seats won. While I later improve upon this through modeling, a crude measure is the average poll result within 1 week of election day, weighted by sample size. The correlation between this and two-way seat share is 0.82 suggesting a strong positive relationship. 
-
-```{r, fig.width="3in", echo=FALSE, message=F, warning=F,  fig.align='center',include=FALSE}
+```{r, out.width="3in", out.height="3in",echo=FALSE, message=F, warning=F,  fig.align='center',include=FALSE}
 knitr::include_graphics("figures/correlation.png")
 ```
 
@@ -61,27 +56,27 @@ To estimate bias for each pollster and universe, I use a Bayesian random-walk mo
 
 Below I plot the final bias estimate for each pollster. For example, for a pollster who polled in 2014 but not 2016, this will be their 2014 posterior results. Most pollsters are not biased by more than a percentage point in either direction. 'Gallup Low-Turnout' was the mostly conservative estimate (they took 4 polls in 1 election cycle). 'Diageo/Hotline' most consistently overestimted Democratic support (they took 7 polls in 2 election cycles). Bloomberg was the least biased pollseter with an average bias of -0.00029 across their 32 polls in 4 cycles. Full results can be found in Appendix B.
 
-```{r, fig.width="8in", echo=FALSE, message=F, warning=F,  fig.align='center'}
-knitr::include_graphics("figures/pollster_bias.png")
-```
+<center>
+![](figures/pollster_bias.png)
+</center>
 
 Looking more closely at pollsters that were active in at least 5 of the 6 cycles examine, we some variation in bias across cycles. For example, CBS/NYT strongly oveestimated Democratic support in 2006, but became less and less biased each cycle. Others were too conservative in some cycles and too liberal in others. Fox News underestimated Democratic support in all.
 
-```{r, fig.width="8in", echo=FALSE, message=F, warning=F, fig.align='center'}
-knitr::include_graphics("figures/pollster_cycle.png")
-```
+<center>
+![](figures/pollster_cycle.png)
+</center>
 
 Additionally, we see that most sampling universes also show some overestimation of Democratic support. Our posterior observation from the 2016 cycle shows that likely voter universes across pollsters were biased 1.4pp in favor of Democrats, registered voter universes were biased 2.2pp and samples of just adults were biased 3.6pp in favor of Democrats. Full results can be found in Appendix B.
 
-```{r, fig.width="3in", echo=FALSE, message=F, warning=F,  fig.align='center'}
-knitr::include_graphics("figures/univ_bias.png")
-```
+<div style= "float:left;position: relative; top: -10px;">
+![](figures/univ_bias.png){ width=4in }
+</div>
 
 These trends were fairly stable over time. The rank order of the universes was the same for all elections except 2006. Both adult and registered voter universes were stable around their final estimate since the 2010 cycle. In 2010 and 2012, there was basically no bias in likely voter universes, but this increased in 2014 and 2016. 
 
-```{r, fig.width="8in", echo=FALSE, message=F, warning=F,  fig.align='center'}
-knitr::include_graphics("figures/univ_cycle.png")
-```
+<center>
+![](figures/univ_cycle.png)
+</center>
 
 ##Week-by-week estimates of support by cycle
 Using the final estimates of bias for pollsters and universes as priors, I now refit the random-walk models, but with no anchor to the true result. This allows us to generate estimates week-by-week for each election, including a final estimate of election outcome, simulating a future prediction. The results are slightly overfit, especially for 2016, since the true results in each election updated the priors which are now inputs to the model. For 2016 specifically, the priors are derived from posterior distribution of the model anchored in the true result, so we should expect the model to be very precise. For full model specification see Appendix A and Appendix B for implementaton, code and full results. 
@@ -90,24 +85,39 @@ The figure below highlights a few key trends. First, the estimated 'true' trendl
 
 Second, while there appears to be significant variation over time in the polls, the trendlines are much smoother. In fact, week-over-week, the models estimate 95% of movement is less than 1.3pp. The model used here has one parameter for week-to-week movement, so it averages over big swings (see weeks 63-50 in 2014) and small, incremental changes (see weeks 100-63 in 2014). A model that separates out these trends might better reflect some swings in the polls, and identify which ones are noise. 
 
-```{r, fig.width="8in", echo=FALSE, message=F, warning=F,  fig.align='center'}
-knitr::include_graphics("figures/time_series_with_trend.png")
+<center>
+![](figures/time_series_with_trend.png)
+</center>
+
+<div style= "float:right;position: relative; top: -10px; right: 10px">
+```{r, echo=F, warning=F, message=F}
+tbl_display <- read.csv("data/final_est_comparison.csv")
+FT1 <- flextable(tbl_display)
+FT1 <- theme_zebra(x = FT1, odd_header = "#CFCFCF", odd_body = "#EFEFEF",
+even_header = "transparent", even_body = "transparent")
+FT1 <- align(x = FT1, j = 1, align = "left", part = "all")
+FT1 <- align(x = FT1, j = 2:5, align = "center", part = "all")
+FT1 <- bold(x = FT1, bold = TRUE, part = "header")
+FT1
 ```
+</div>
+
+<br>
+<br>
 Third, some cycles' models are more accurate than others. The table below shows the percentage point error of each final forecast. In 2006, 2014 and 2016, our models were very accurate. In 2008, 2010 and 2012, they missed by a few percentage points, always underestimating Democratic support. 
 
-```{r, echo=F, warning=F, message=F}
-tbl_display <- read_csv("data/final_est_comparison.csv")
-tbl_display
-```
+<div style= "float:left;position: relative; top: 10px;">
+![](figures/final_est_vs_seats.png){ width=2in }
+</div>
+
+The model that adapts for both past pollster and sampling universe bias is more accurate than a model that accounts for just pollster bias or no bias at all. Over the six cycles analyzed here, there is a 0.1pp reduction in bias compared to the model with no bias and 0.2pp over the model that just accounts for pollster bias. Likewise, the model that accounts for no bias sees larger week-to-week movement by about 0.1pp. 
 
 Lastly, we are interested in the relationship between the final forecasts and the actual share of seats won. Becuase of our winner-take-all and gerrymandered system, the popular vote rarely translates directly into share of seats won. A simple linear regression shows that 67% of the variation in seats won over the last 6 elections is explained by the forecasts produced here. Additionally, Democrats need to be forecasted to win more than 50% of the popular vote to win 50% of the seats.
 
-```{r, fig.width="3in", echo=FALSE, message=F, warning=F,  fig.align='center'}
-knitr::include_graphics("figures/final_est_vs_seats.png")
-```
-
 ##Conclusions
+Using past public polling data and election results, I generated bias estimates for each pollster and sampling universe activly polling the generic Congressional ballot over the past six cycles. Generally, pollsters are consistently biased by less than 1pp, but a few exceed this theshold. Of the pollsters analyzed, I find PPP is the least biased pollster. Likewise, I find that likely voter sampling universes are less biased than registered voter or adult universes. All three universes tend to overestimate the true level of Democratic support. 
 
+I then use these (admittedly overfit) estimates of bias to generate forecasts for the six cycles analyzed. The final forecasts had a mean absolute error of about 1.5pp, though five-of-six correctly predicted the winner. These forecasts are fairly predictive of the final seat share Democrats would win.
 
 #Appendix A
 To answer question 1 above, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
@@ -118,18 +128,13 @@ Due to the trends we see in our initial data exploration, a random walk model is
 $$ \alpha_t \sim \mathcal{N}(\alpha_{t-1}, \omega^2) $$
 By anchoring the model in the final election results, and by using a random walk, I will be able to estimate the consistent bias, $\delta$, of each pollster and the effect, $\theta$, of different sampling universes. 
 
-For these given specifications, we have the following priors: 
-$$ \sigma^2_i = \sqrt{\frac{y_i(1-y_i)}{n_i}},\ \ \ \delta_j \sim \mathcal{N}(0,1),\ \ \ \theta_k \sim \mathcal{N}(0,1),\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega^2 \sim IG(1/2,1/2)$$
-$\sigma^2_i$ just follows the formula for standard deviation of a sample. For pollster biases ($\delta$), my prior is that there is no bias with a standard deviation large enough to capture 100% bias; my prior for bias from sampling universe ($\theta$) is the same. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation of support ($\omega$), I use the inverse gamma distribution with an effective sample size of 1 and a prior guess of 1 like the standard deviation for $\delta$ and $\theta$.
+For these given specifications, we start with the following priors: 
+$$ \sigma^2_i = \frac{y_i(1-y_i)}{n_i},\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega \sim \mathcal{U}(0, (0.02/1.96))$$
+$\sigma^2_i$ just follows the formula for standard deviation of a sample. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation of support ($\omega$), I use a uniform distribution between 0 and 0.1. A value of 0.1 would reflect that 95% of week-to-week movement is within about 2pp in either direction, a fairly weak assumption. These priors are similar to [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf) 
 
-To answer question 2 above, I will use the pollster and universe biases estimated above, and the same random walk algorithm to generate a final polling average at the time of the election, $\alpha_E$. I will then use the following model to estimate number of seats: 
-$$ S_{cycle} \sim \mathcal{N}(\phi_{cycle}, \sigma^2) $$
-$$\phi_{cycle} = \beta_0 + \beta_1*\alpha_{E_{cycle}},\ \ \ cycle = 2006,...,2016 $$
-My priors for this model are: 
-$$ \beta_0 \sim \mathcal{N}(0, 1),\ \ \ \beta_1 \sim \mathcal{N}(1,1),\ \ \ \sigma^2 \sim IG(1/2, 1/2)$$
-$\beta_0$ here has a prior of 0 seats in the House of Representatives with a standard deviation 1. $\beta_1$ has a prior that says a 1 unit increase in $\alpha_{E_{cycle}}$ (a 100 perctange point increase in the Democrats' modeled vote share) is associated with a 100 percentage point increase in the share of seats awarded to Democrats, with a standard deviation of the same. Lastly, I use an inverse gamma distribution with a prior guess of 1 and effective sample size of 1 for the standard deviation. 
+$$\ \ \ \delta_j \sim \mathcal{N}(0, (0.2/1.96)^2),\ \ \ \theta_k \sim \mathcal{N}(0, (0.2/1.96)^2)$$
 
-To answer question 3, I will use the same random walk algorithm already mentioned, along with the pollster and universe biases to generate a polling average for today. I will then use this $\alpha$ with the coefficients estimated in the second model to predict the number of seats Democrats will win in 2018. 
+For pollster biases ($\delta$), I start with a prior that there is no bias with a standard deviation to reflect that bias is 95% of the time within 20pp in either direction; likewise, I start with a prior for bias from sampling universe ($\theta$) that is the same. However, these priors are updated based upon the previous election cycle. Thus, this prior is true for the fist cycle the pollster was active in (often 2006). Subsequently, the prior is the mean of the posterior observatons of ($\delta_{j_{most recent cycle}}]$) and variance of the same posterior observations. 
 
 #Appendix B
 ##Load packages, functions and other setup 
@@ -138,6 +143,7 @@ library(ggplot2)
 library(tidyverse)
 library(rjags)
 library(cowplot)
+library(flextable)
 
 source("forecasting_functions.R")
 
@@ -172,10 +178,28 @@ polling_summary <- polls %>%
   inner_join(pollster_lkup, by = "pollster") %>%
     mutate(pollster_raw = factor(pollster_raw, levels = pollster_raw[order(`Total N-Size`)]))
 
-print(polling_summary) #Flextable
+polling_summary <- polling_summary %>% 
+  mutate(nsize = as.character(`Total N-Size`),
+         polls = `# of Polls`,
+         cycles = `# of Cycles`) %>%
+  select(pollster_raw, nsize, polls, cycles)
+
+FT2 <- flextable(polling_summary)
+FT2 <- set_header_labels(FT2, pollster_raw = "Pollster", nsize = "Total N-Size", polls = "# of Polls", cycles = "# of Cycles")
+FT2 <- theme_zebra(x = FT2, odd_header = "#CFCFCF", odd_body = "#EFEFEF",
+even_header = "transparent", even_body = "transparent")
+FT2 <- align(x = FT2, j = 1, align = "left", part = "all")
+FT2 <- align(x = FT2, j = 2:4, align = "center", part = "all")
+FT2 <- bold(x = FT2, bold = TRUE, part = "header")
+FT2
 ```
 
 ```{r, include=FALSE}
+polling_summary <- polling_summary %>% 
+  mutate(`Total N-Size` = as.numeric(nsize),
+         `# of Polls` = polls,
+         `# of Cycles` = cycles) 
+
 #Plots for above
 x1 <- ggplot(data = (polling_summary[1:5,]), aes(y = `# of Cycles`, x = pollster_raw)) +
   geom_bar(stat = 'identity') +
@@ -307,20 +331,76 @@ for(cycle in res$cycle){
   }
 
 message("Final estimates of pollster bias:")
-print(deltas) #Flextable
 write_csv(deltas, "data/final_pollster_bias_ests.csv")
+deltas_ft <- deltas %>%
+  mutate(delta_cycle = as.character(delta_cycle),
+         mu = round(delta_mu,3),
+         var =  round(delta_sigma2,4)) %>%
+  select(pollster_raw, delta_cycle, mu, var)  
+
+FT3 <- flextable(deltas_ft)
+FT3 <- set_header_labels(FT3, pollster_raw = "Pollster", delta_cycle = "Cycle", mu = "Bias", var = "Variance")
+FT3 <- theme_zebra(x = FT3, odd_header = "#CFCFCF", odd_body = "#EFEFEF",
+even_header = "transparent", even_body = "transparent")
+FT3 <- align(x = FT3, j = 1:2, align = "left", part = "all")
+FT3 <- align(x = FT3, j = 3:4, align = "center", part = "all")
+FT3 <- bold(x = FT3, bold = TRUE, part = "header")
+FT3
 
 message("Estimate for each pollster and cycle:")
-print(deltas_all) #Flextable
+message("(If a pollster is missing from a cycle, it did not poll).")
 write_csv(deltas_all, "data/all_pollster_bias_ests.csv")
+deltas_all_ft <- deltas_all %>%
+  filter(!is.na(delta_mu), delta_cycle != 0) %>%
+  mutate(delta_cycle = as.character(delta_cycle),
+         mu = round(delta_mu,3),
+         var =  round(delta_sigma2,4)) %>%
+  select(pollster_raw, delta_cycle, mu, var)  
+
+FT4 <- flextable(deltas_all_ft)
+FT4 <- set_header_labels(FT4, pollster_raw = "Pollster", delta_cycle = "Cycle", mu = "Bias", var = "Variance")
+FT4 <- theme_zebra(x = FT4, odd_header = "#CFCFCF", odd_body = "#EFEFEF",
+even_header = "transparent", even_body = "transparent")
+FT4 <- align(x = FT4, j = 1:2, align = "left", part = "all")
+FT4 <- align(x = FT4, j = 3:4, align = "center", part = "all")
+FT4 <- bold(x = FT4, bold = TRUE, part = "header")
+FT4
 
 message("Final estimates of sampling universe bias:")
-print(thetas) #Flextable
 write_csv(thetas, "data/final_universe_bias_ests.csv")
+thetas_ft <- thetas %>%
+  filter(!is.na(theta_mu), theta_cycle != 0) %>%
+  mutate(theta_cycle = as.character(theta_cycle),
+         mu = round(theta_mu,3),
+         var =  as.character(round(theta_sigma2,4))) %>%
+  select(theta_univ, theta_cycle, mu, var)  
+
+FT5 <- flextable(thetas_ft)
+FT5 <- set_header_labels(FT5, theta_univ = "Sampling Universe", theta_cycle = "Cycle", mu = "Bias", var = "Variance")
+FT5 <- theme_zebra(x = FT5, odd_header = "#CFCFCF", odd_body = "#EFEFEF",
+even_header = "transparent", even_body = "transparent")
+FT5 <- align(x = FT5, j = 1:2, align = "left", part = "all")
+FT5 <- align(x = FT5, j = 3:4, align = "center", part = "all")
+FT5 <- bold(x = FT5, bold = TRUE, part = "header")
+FT5
 
 message("Estimate for each universe and cycle:")
-print(thetas_all) #Flextable
 write_csv(thetas_all, "data/all_universe_bias_ests.csv")
+thetas_all_ft <- thetas_all %>%
+  filter(!is.na(theta_mu), theta_cycle != 0) %>%
+  mutate(theta_cycle = as.character(theta_cycle),
+         mu = round(theta_mu,3),
+         var =  as.character(round(theta_sigma2,4))) %>%
+  select(theta_univ, theta_cycle, mu, var)   
+
+FT6 <- flextable(thetas_all_ft)
+FT6 <- set_header_labels(FT6, pollster_raw = "Pollster", delta_cycle = "Cycle", mu = "Bias", var = "Variance")
+FT6 <- theme_zebra(x = FT6, odd_header = "#CFCFCF", odd_body = "#EFEFEF",
+even_header = "transparent", even_body = "transparent")
+FT6 <- align(x = FT6, j = 1:2, align = "left", part = "all")
+FT6 <- align(x = FT6, j = 3:4, align = "center", part = "all")
+FT6 <- bold(x = FT6, bold = TRUE, part = "header")
+FT6
 ```
 
 ```{r, include = FALSE}
@@ -416,11 +496,10 @@ for(cycle in res$cycle) {
   all_cycle_est <- rbind(all_cycle_est, cycle_time_est)
   omegas <- c(omegas, paste(extract_omega_est(mod_res = mod_res, year = cycle, data_jags = data_jags)))
 }
-
-mean(as.numeric(omegas))
 ```
 
 ```{r, include=FALSE}
+mean(as.numeric(omegas))*1.96
 write_csv(all_cycle_est, "data/all_weekly_ests.csv")
 
 time_series_with_trend <- ggplot(data=all_cycle_est, aes(x=time_before_elec, y=iter_mean)) + 
