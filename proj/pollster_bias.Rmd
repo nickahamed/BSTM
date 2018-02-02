@@ -111,7 +111,7 @@ Using past public polling data and election results, I generated bias estimates 
 I then use these (admittedly overfit) estimates of bias to generate forecasts for the six cycles analyzed. The final forecasts had a mean absolute error of about 1.3pp, though five-of-six correctly predicted the winner. These forecasts are fairly predictive of the final seat share Democrats would win.
 
 #Appendix A
-To answer question 1 above, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
+For a formal model, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the variance a function of $y_i$ and sample size. This would be specified as:
 $$y_i \sim \mathcal{N}(\mu_i, \sigma^2_i)$$
 That poll is centered around mean $\mu_i$, which itself is a function of $\alpha_t$, the true value of support at the time the poll was taken $t$, $\delta_j$, the bias of pollster $j$, and $\theta_k$, the bias of sampling universe $k$. Fully specified, this is: 
 $$\mu_i = \alpha_{t_i} + \delta_{j_i} + \theta_{k_i}$$
@@ -121,7 +121,7 @@ By anchoring the model in the final election results, and by using a random walk
 
 For these given specifications, we start with the following priors: 
 $$ \sigma^2_i = \frac{y_i(1-y_i)}{n_i},\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega \sim \mathcal{U}(0, (0.02/1.96))$$
-$\sigma^2_i$ just follows the formula for standard deviation of a sample. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation of support ($\omega$), I use a uniform distribution between 0 and 0.1. A value of 0.1 would reflect that 95% of week-to-week movement is within about 2pp in either direction, a fairly weak assumption. These priors are similar to [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf) 
+$\sigma^2_i$ just follows the formula for variance of a sample. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true variance of support ($\omega$), I use a uniform distribution between 0 and 0.01. A value of 0.01 would reflect that 95% of week-to-week movement is within about 2pp in either direction, a fairly weak assumption. These priors are similar to [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf) 
 
 $$\ \ \ \delta_j \sim \mathcal{N}(0, (0.2/1.96)^2),\ \ \ \theta_k \sim \mathcal{N}(0, (0.2/1.96)^2)$$
 
