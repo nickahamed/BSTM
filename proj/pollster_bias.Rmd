@@ -22,7 +22,7 @@ library(flextable)
 ```
 #Pooling the polls to estimate bias in past US House Elections
 ##Introduction
-In this analysis, I estimate the bias for each public pollster active in the last 6 congressional elections. My final estimate identifies X as the most conservative pollster and Y as the most liberal. I likewise estimate bias of various sampling universes. Next, I use these biases to estimate the true level of support for Democrats over time in each cycle. Lastly, I regress the final estimate of support in each cycle against the number of seats Democrats won.  
+In this analysis, I estimate the bias for each public pollster active in the last 6 congressional elections. My final estimate identifies Gallup(Low-Turnout) as the most conservative pollster and AP/Ipsos as the most liberal. I likewise estimate bias of various sampling universes. Next, I use these biases to estimate the true level of support for Democrats over time in each cycle. Lastly, I regress the final estimate of support in each cycle against the number of seats Democrats won.  
 
 ##The Data
 I have two primary sources of data: past polls and election results. The poll response that I use is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the only current question being polled, and so for comparability, I will use the same question for past elections.
@@ -54,25 +54,25 @@ knitr::include_graphics("figures/correlation.png")
 ##Estimating pollster and universe bias
 To estimate bias for each pollster and universe, I use a Bayesian random-walk models anchored to the true final election results. For the first cycle a pollster/universe is used in, its prior is normally distributed around 0pp and assumed to be less than 20pp 95% of the time, in either direction. This prior is updated to be the posterior from the most recent previous cycle the pollster/universe was active in. Full specification of the theoretical model can be found in Appendix A; implementation specifications and key convergance diagnostics can be found in Appendix B. 
 
-Below I plot the final bias estimate for each pollster. For example, for a pollster who polled in 2014 but not 2016, this will be their 2014 posterior results. Most pollsters are not biased by more than a percentage point in either direction. 'Gallup Low-Turnout' was the mostly conservative estimate (they took 4 polls in 1 election cycle). 'Diageo/Hotline' most consistently overestimted Democratic support (they took 7 polls in 2 election cycles). Bloomberg was the least biased pollseter with an average bias of -0.00029 across their 32 polls in 4 cycles. Full results can be found in Appendix B.
+Below I plot the final bias estimate for each pollster. For example, for a pollster who polled in 2014 but not 2016, this will be their 2014 posterior results. Most pollsters are not biased by more than a percentage point in either direction. 'Gallup Low-Turnout' was the mostly conservative estimate (they took 4 polls in 1 election cycle). 'AP/Ipsos' most consistently overestimted Democratic support (they took 4 polls in 2 election cycles). POS (R) was the least biased pollseter with an average bias of -0.00025 across their 3 polls in 1 cycles. Full results can be found in Appendix B.
 
 <center>
 ![](figures/pollster_bias.png)
 </center>
 
-Looking more closely at pollsters that were active in at least 5 of the 6 cycles examine, we some variation in bias across cycles. For example, CBS/NYT strongly oveestimated Democratic support in 2006, but became less and less biased each cycle. Others were too conservative in some cycles and too liberal in others. Fox News underestimated Democratic support in all.
+Looking more closely at pollsters that were active in at least 5 of the 6 cycles examine, we some variation in bias across cycles. For example, CBS/NYT strongly oveestimated Democratic support in 2008, but became less and less biased each cycle. Others were too conservative in some cycles and too liberal in others. Fox News underestimated Democratic support in all.
 
 <center>
 ![](figures/pollster_cycle.png)
 </center>
 
-Additionally, we see that most sampling universes also show some overestimation of Democratic support. Our posterior observation from the 2016 cycle shows that likely voter universes across pollsters were biased 1.4pp in favor of Democrats, registered voter universes were biased 2.2pp and samples of just adults were biased 3.6pp in favor of Democrats. Full results can be found in Appendix B.
+Additionally, we see that most sampling universes also show some overestimation of Democratic support. Our posterior observation from the 2016 cycle shows that likely voter universes across pollsters were biased 0.9pp in favor of Democrats, registered voter universes were biased 1.3pp and samples of just adults were biased nearly 4pp in favor of Democrats. Full results can be found in Appendix B.
 
 <div style= "float:left;position: relative; top: -10px;">
 ![](figures/univ_bias.png){ width=4in }
 </div>
 
-These trends were fairly stable over time. The rank order of the universes was the same for all elections except 2006. Both adult and registered voter universes were stable around their final estimate since the 2010 cycle. In 2010 and 2012, there was basically no bias in likely voter universes, but this increased in 2014 and 2016. 
+These trends were fairly stable over time. The rank order of the universes was the same for all elections except 2006. Both adult and registered voter universes were stable around their final estimate since the 2010 cycle. In 2010, there was basically no bias in likely voter universes, but this increased in the following three elections. 
 
 <center>
 ![](figures/univ_cycle.png)
@@ -83,7 +83,7 @@ Using the final estimates of bias for pollsters and universes as priors, I now r
 
 The figure below highlights a few key trends. First, the estimated 'true' trendline for each election cycle is shifted slightly below the polls. This is due to the fact that our estimates of universe bias (above) were consistently overestimating Democratic support. Additional bias from polling house effects are split between over- and under-estimating Democratic support. 
 
-Second, while there appears to be significant variation over time in the polls, the trendlines are much smoother. In fact, week-over-week, the models estimate 95% of movement is less than 1.3pp. The model used here has one parameter for week-to-week movement, so it averages over big swings (see weeks 63-50 in 2014) and small, incremental changes (see weeks 100-63 in 2014). A model that separates out these trends might better reflect some swings in the polls, and identify which ones are noise. 
+Second, while there appears to be significant variation over time in the polls, the trendlines are much smoother. In fact, week-over-week, the models estimate 95% of movement is less than 1.5pp. The model used here has one parameter for week-to-week movement, so it averages over big swings (see weeks 63-50 in 2014) and small, incremental changes (see weeks 100-63 in 2014). A model that separates out these trends might better identify which swings are real, substantive movements, and which should be smoothed.
 
 <center>
 ![](figures/time_series_with_trend.png)
@@ -104,20 +104,20 @@ FT1
 
 <br>
 <br>
-Third, some cycles' models are more accurate than others. The table below shows the percentage point error of each final forecast. In 2006, 2014 and 2016, our models were very accurate. In 2008, 2010 and 2012, they missed by a few percentage points, always underestimating Democratic support. 
+Third, some cycles' models are more accurate than others. This table shows the percentage point error of each final forecast. In 2014 and 2016, our models were very accurate. In 2008, and 2012, they missed by about a point, and in 2010 and 2012. The error is not consistently biased in one direction, but instead sometimes overestimates and sometimes underestimates Democratic support.
 
 <div style= "float:left;position: relative; top: 10px;">
 ![](figures/final_est_vs_seats.png){ width=2in }
 </div>
 
-The model that adapts for both past pollster and sampling universe bias is more accurate than a model that accounts for just pollster bias or no bias at all. Over the six cycles analyzed here, there is a 0.1pp reduction in bias compared to the model with no bias and 0.2pp over the model that just accounts for pollster bias. Likewise, the model that accounts for no bias sees larger week-to-week movement by about 0.1pp. 
+The model that adapts for both past pollster and sampling universe bias is more accurate than a model that accounts for just pollster bias or no bias at all. Over the six cycles analyzed here, there is a reduction in error just over 0.3pp compared to the model with no bias and just under 0.3pp over the model that just accounts for pollster bias.
 
-Lastly, we are interested in the relationship between the final forecasts and the actual share of seats won. Becuase of our winner-take-all and gerrymandered system, the popular vote rarely translates directly into share of seats won. A simple linear regression shows that 67% of the variation in seats won over the last 6 elections is explained by the forecasts produced here. Additionally, Democrats need to be forecasted to win more than 50% of the popular vote to win 50% of the seats.
+Lastly, we are interested in the relationship between the final forecasts and the actual share of seats won. Becuase of our winner-take-all and gerrymandered system, the popular vote rarely translates directly into share of seats won. A simple linear regression shows that 69% of the variation in seats won over the last 6 elections is explained by the forecasts produced here. Additionally, Democrats need to be forecasted to win about 52% of the popular vote to win 50% of the seats.
 
 ##Conclusions
-Using past public polling data and election results, I generated bias estimates for each pollster and sampling universe activly polling the generic Congressional ballot over the past six cycles. Generally, pollsters are consistently biased by less than 1pp, but a few exceed this theshold. Of the pollsters analyzed, I find PPP is the least biased pollster. Likewise, I find that likely voter sampling universes are less biased than registered voter or adult universes. All three universes tend to overestimate the true level of Democratic support. 
+Using past public polling data and election results, I generated bias estimates for each pollster and sampling universe activly polling the generic Congressional ballot over the past six cycles. Generally, pollsters are consistently biased by less than 1pp, but a several still exceed this theshold. Of the pollsters analyzed, I find POS (R) and NBC/WSJ are the least biased pollsters. Likewise, I find that likely voter sampling universes are less biased than registered voter or adult universes. All three universes tend to overestimate the true level of Democratic support. 
 
-I then use these (admittedly overfit) estimates of bias to generate forecasts for the six cycles analyzed. The final forecasts had a mean absolute error of about 1.5pp, though five-of-six correctly predicted the winner. These forecasts are fairly predictive of the final seat share Democrats would win.
+I then use these (admittedly overfit) estimates of bias to generate forecasts for the six cycles analyzed. The final forecasts had a mean absolute error of about 1.3pp, though five-of-six correctly predicted the winner. These forecasts are fairly predictive of the final seat share Democrats would win.
 
 #Appendix A
 To answer question 1 above, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
@@ -134,7 +134,7 @@ $\sigma^2_i$ just follows the formula for standard deviation of a sample. As a p
 
 $$\ \ \ \delta_j \sim \mathcal{N}(0, (0.2/1.96)^2),\ \ \ \theta_k \sim \mathcal{N}(0, (0.2/1.96)^2)$$
 
-For pollster biases ($\delta$), I start with a prior that there is no bias with a standard deviation to reflect that bias is 95% of the time within 20pp in either direction; likewise, I start with a prior for bias from sampling universe ($\theta$) that is the same. However, these priors are updated based upon the previous election cycle. Thus, this prior is true for the fist cycle the pollster was active in (often 2006). Subsequently, the prior is the mean of the posterior observatons of ($\delta_{j_{most recent cycle}}]$) and variance of the same posterior observations. 
+For pollster biases ($\delta$), I start with a prior that there is no bias with a standard deviation to reflect that bias is 95% of the time within 20pp in either direction; likewise, I start with a prior for bias from sampling universe ($\theta$) that is the same. However, these priors are updated based upon the previous election cycle. Thus, this prior is true for the fist cycle the pollster was active in (often 2006). Subsequently, the prior is the mean of the posterior observatons of ($\delta_{j_{most\ recent\ cycle}}$) and variance of the same posterior observations. 
 
 #Appendix B
 ##Load packages, functions and other setup 
@@ -411,7 +411,7 @@ pollster_bias <- ggplot(deltas, aes(x=pollster_raw, y=delta_mu)) +
   theme_bw() +
   guides(color = F) +
   xlab("Pollster") +
-  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.045,0.055)) + 
+  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.061,0.035)) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 10, vjust = 0.5))
 
 ggsave(filename = "figures/pollster_bias.png", plot = pollster_bias, width = 8, height = 4, units = "in")
@@ -436,7 +436,7 @@ pollster_cycle <- ggplot(temp, aes(x=delta_cycle, y=delta_mu, group = pollster_r
                    labels = c("", "2006", "2008", "2010", "2012", "2014", "2016")) +
   theme_bw() +
   xlab("Cycle") +
-  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.03,0.03)) + 
+  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.04,0.04)) + 
   scale_color_discrete(name = "Pollster")
 
 ggsave(filename = "figures/pollster_cycle.png", plot = pollster_cycle, width = 8, height = 4, units = "in")
@@ -447,7 +447,7 @@ univ_bias <- ggplot(thetas, aes(x=theta_univ, y=theta_mu)) +
   guides(color = F) +
   geom_hline(yintercept = 0, linetype = "dashed") + 
   xlab("Sampling Universe") +
-  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(0,0.04)) + 
+  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.01,0.045)) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 10, vjust = 0.5))
 
 ggsave(filename = "figures/univ_bias.png", plot = univ_bias, width = 4, height = 2, units = "in")
@@ -464,7 +464,7 @@ univ_cycle <- ggplot(temp, aes(x=theta_cycle, y=theta_mu, group = theta_univ)) +
                    labels = c("", "2006", "2008", "2010", "2012", "2014", "2016")) +
   theme_bw() +
   xlab("Cycle") +
-  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.01,0.04)) + 
+  scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.01,0.045)) + 
   scale_color_discrete(name = "Sampling\nUnivese")
 
 ggsave(filename = "figures/univ_cycle.png", plot = univ_cycle, width = 8, height = 4, units = "in")
@@ -550,7 +550,7 @@ lm_fit <- ggplot(final_ests, aes(x = twoway_seat, y = iter_mean)) +
   geom_errorbar(aes(ymin=lower_bound, ymax=upper_bound)) +
   coord_flip() + 
   theme_bw() + 
-  scale_y_continuous(name = "Election Forecast", limits = c(0.4, 0.61), labels = scales::percent) + 
+  scale_y_continuous(name = "Election Forecast", limits = c(0.4, 0.6), labels = scales::percent) + 
   scale_x_continuous(name = "Observed Seats Won", limits = c(0.4, 0.6), labels = scales::percent) + 
   geom_line(data = lobf, aes(y = x, x = line), color = "blue", linetype = "dashed") 
 
