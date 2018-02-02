@@ -1,0 +1,182 @@
+---
+title: "Pooling the polls to forecast the 2018 US House elections"
+author: "Nick Ahamed"
+date: "2/1/2018"
+output:
+  html_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+```{r setup, include = F}
+#Part 2
+# -Apply uniform swing from 2016 estimate to 2016 results estimate share of vote for each district
+# -Use SDs to calculate tipping point districts 
+# -Use SDs to calculate p(victory) in tipping point districts
+# -put math/specs of model in appendix a
+# -put code in appendix b
+```
+#Pooling the polls to forecast the 2018 US House elections
+##Introduction
+Using previously estimated pollster and sampling universe biases and current polling data, I forecast the the results of the 2018 US House elections. The Bayesian model predicts Democrats will get XX% of the popular vote, yielding XXX seats in the House of Representatives; current polling suggests there is a XX% chance Democrats will take back the House. Lastly, I apply a uniform swing from 2016 to identify key swing districts for investment in 2018. 
+
+##Data
+The polling data were scraped from Real Clear Politics' database for the [__2018__]() Generic Congressional ballot. Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the most common question being polled by public sources. 
+
+Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)): it is a proportion between 0 and 1. Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more data. Additionally, only sampling universes and pollsters who have polled in at least one of the last six election cycles are included. This is because I use estimates of bias observed over the last electios to account for house effects. See more [__here__](www.github.com).
+
+As of 2/2/2018, 99 polls from 12 pollsters contacting 123k respondents were used. These are the 5 largest pollsters. See Appendix B for full details.
+
+<center>
+![](figures/2018_data_breakdown.png){ width=6in }
+</center>
+
+##Week-by-week estimate of support
+I use a Bayesian random-walk model to estimate the true level of support over time. Below, I show that model. Based on the most current data, the forecast gives Democrats 53.8% support on the generic ballot, translating to 229 seats in the House of Representatives. Likewise, there is relatively little volatility in week-to-week movements. Whereas in the past six election cycles, 95% of week-to-week movement was within 1.5pp, this cycle, 95% of movement is within just 0.65pp. We saw a maximum amount of support for Democrats right at the end of 2017, possibly associated with XXX event, but there's been a slight return since. 
+
+<center>
+![](figures/2018_time_series_with_trend.png){ width=8in }
+</center>
+
+If the election were held today, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is nearly a 100% chance that they win a majority of seats in the House itself. Accounting for the variation we expect over time, there is still a 61% chance Democrats will win 50% of the popular vote and a 57% chance of winning a majority of seats __on election day__.
+
+##Strategic targeting for 2018
+
+#Appendix A
+
+
+#Appendix B
+##Load packages, functions and other setup 
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(rjags)
+library(cowplot)
+library(flextable)
+
+source("forecasting_functions.R")
+
+set.seed(102)
+scipen=9
+```
+
+##Load, prep and explore data
+```{r, message=FALSE, warning=FALSE}
+pollster_lkup <- read.csv("data/pollster_lkup.csv")
+
+deltas <- read.csv("data/final_pollster_bias_ests.csv")
+thetas <- read.csv("data/final_universe_bias_ests.csv")
+coefs <- read.csv("data/forecast_seats_coefs.csv")
+
+polls <- read.csv("data/2018_polling.csv") %>%
+  filter(pollster %in% pollster_lkup$pollster) %>%
+  mutate(twoway = dem/(dem+rep)) %>% 
+  mutate(week = round(as.numeric((as.Date(as.character("11/6/18"),  format="%m/%d/%y") - 
+           as.Date(as.character(end_date),  format="%m/%d/%y")) + 
+           (as.Date(as.character(end_date),  format="%m/%d/%y") - 
+           as.Date(as.character(start_date),  format="%m/%d/%y"))/2)/7),
+         n_size = as.numeric(as.character(n_size)))
+
+polling_summary <- polls %>% 
+  group_by(pollster) %>%
+  summarise(`Total N-Size` = sum(n_size), 
+            `# of Polls` = n()) %>%
+  arrange(desc(`Total N-Size`)) %>%
+  inner_join(pollster_lkup, by = "pollster") %>%
+    mutate(pollster_raw = factor(pollster_raw, levels = pollster_raw[order(`Total N-Size`)]))
+
+polling_summary <- polling_summary %>% 
+  mutate(nsize = as.character(`Total N-Size`),
+         polls = `# of Polls`) %>%
+  select(pollster_raw, nsize, polls)
+
+FT1 <- flextable(polling_summary)
+FT1 <- set_header_labels(FT1, pollster_raw = "Pollster", nsize = "Total N-Size", polls = "# of Polls")
+
+FT1 <- theme_zebra(x = FT1, odd_header = "#CFCFCF", odd_body = "#EFEFEF",
+even_header = "transparent", even_body = "transparent")
+FT1 <- align(x = FT1, j = 1, align = "left", part = "all")
+FT1 <- align(x = FT1, j = 2:3, align = "center", part = "all")
+FT1 <- bold(x = FT1, bold = TRUE, part = "header")
+FT1
+```
+
+```{r, include=FALSE}
+polling_summary <- polling_summary %>% 
+  mutate(`Total N-Size` = as.numeric(nsize),
+         `# of Polls` = polls) 
+
+#Plots for above
+x1 <- ggplot(data = (polling_summary[1:5,]), aes(y = `# of Polls`, x = pollster_raw)) +
+  geom_bar(stat = 'identity') +
+  coord_flip() + 
+  theme_bw() + 
+  xlab("") 
+
+x2 <- ggplot(data = (polling_summary[1:5,]), aes(y = `Total N-Size`, x = pollster_raw)) +
+  geom_bar(stat = 'identity') +
+  coord_flip() + 
+  theme_bw() + 
+  xlab("") + 
+  theme(axis.text.y = element_blank())
+
+ggsave(filename = "figures/2018_data_breakdown.png", plot = plot_grid(x1, x2, nrow = 1), width = 8, height = 4, units = "in")
+```
+
+##Estimate week-by-week movement using past pollster and universe biases
+```{r, warning=FALSE, message=FALSE, results=FALSE}
+data_jags <- data_prep(data = polls, res = res, year = 2018, anchor = F)
+data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
+
+mod_res <- run_model(data_jags = data_jags, 
+                     params = c("xi", "omega"), 
+                     anchor = F,
+                     chains = 4, 
+                     thining = 10, 
+                     burnin = 10000, 
+                     iter = 1000000)
+cycle_time_est <- extract_time_est(mod_res = mod_res, year = 2018, data_jags = data_jags) %>%
+  mutate(time_before_elec = time_before_elec + (max(data_jags$week) - max(data_jags$week_adj)))
+omega <- extract_omega_est(mod_res = mod_res, year = 2018, data_jags = data_jags)
+```
+
+```{r, include=FALSE}
+time_series_with_trend <- ggplot(data=cycle_time_est, aes(x=time_before_elec, y=iter_mean)) + 
+  geom_point(data=polls, aes(x=week, y=twoway, size=sqrt(n_size)), alpha=0.2) +
+  geom_ribbon(aes(ymin=lower_bound,ymax=upper_bound), alpha = 0.5) +
+  geom_line(color = "blue") +
+  theme_bw() + 
+  scale_x_reverse(name = "Weeks Before Election", limits= c(94, 0)) +
+  scale_y_continuous(name = "Democratic Two-way Vote Share", labels=scales::percent, limits = c(min(0.48, min(polls$twoway) - 0.01), max(0.6, max(polls$twoway) + 0.01))) + 
+  guides(size=F, color = F) + 
+  geom_hline( aes(yintercept = 0.5), linetype="dashed") 
+
+ggsave(filename = "figures/2018_time_series_with_trend.png", plot = time_series_with_trend, width = 8, height = 4, units = "in")
+```
+
+##Predict # of seats won and probability of taking back the House
+```{r, message=FALSE, warning=FALSE}
+as.numeric(omega)*1.96
+
+##If the election were held today
+mod_csim <- as.mcmc(do.call(rbind, mod_res))
+mod_csim <- as.data.frame(mod_csim)
+final_param <- paste0("xi[",(length(names(mod_csim))-1),"]")
+final_forecast_posterior <- mod_csim[,final_param]
+mean(final_forecast_posterior > 0.5)
+
+predict_seats <- round((coefs[1,1] + coefs[2,1]*mean(final_forecast_posterior))*435)
+predict_seats
+
+final_seats_posterior <- round((coefs[1,1] + coefs[2,1]*final_forecast_posterior)*435)
+mean(final_seats_posterior > 217)
+
+
+##Adding in error over time
+new_means <- rnorm(100000, mean = mean(final_forecast_posterior), sd = (as.numeric(omega)*min(cycle_time_est$time_before_elec)))
+new_seats <- round((coefs[1,1] + coefs[2,1]*new_means)*435)
+
+mean(new_means > 0.5)
+mean(new_seats > 217)
+```
+
