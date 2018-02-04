@@ -147,14 +147,22 @@ update_priors <- function(deltas_all, thetas_all, deltas_new, thetas_new) {
 }
 
 convergence_diagnostics <- function(data_jags,
+                                    anchor = F,
                                     chains = 4, 
                                     thining = 10, 
                                     burnin = 10000, 
                                     iter = 1000000) { 
-  xi <- paste0("xi[", sample(seq(1,length(data_jags$xi)), 1), "]")
-  delta <- paste0("delta[", sample(seq(1,length(data_jags$delta_pollster)), 1), "]")
-  theta <- paste0("theta[", sample(seq(1,length(data_jags$theta_univ)), 1), "]")
-  params <- c(xi, delta, theta)
+  if(anchor) {
+    xi <- paste0("xi[", sample(seq(1,length(data_jags$xi)), 1), "]")
+    delta <- paste0("delta[", sample(seq(1,length(data_jags$delta_pollster)), 1), "]")
+    theta <- paste0("theta[", sample(seq(1,length(data_jags$theta_univ)), 1), "]")
+    params <- c(xi, delta, theta)
+  } else {
+    xis <- sample(seq(1,length(data_jags$xi)), 2)
+    xi1 <- paste0("xi[", xis[1], "]")
+    xi2 <- paste0("xi[", xis[2], "]")
+    params <- c(xi1, xi2, "omega")
+  }
   
   mod_res <- run_model(chains = chains, 
                        thining = thining, 

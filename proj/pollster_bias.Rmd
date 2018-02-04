@@ -279,6 +279,7 @@ for(cycle in res$cycle) {
   data_jags <- data_prep(data = polls, res = res, year = cycle, anchor = T)
   data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
   convergence[[paste(cycle)]] <- convergence_diagnostics(data_jags = data_jags,
+                                                         anchor = T,
                                                          chains = 4, 
                                                          thining = 10, 
                                                          burnin = 10000, 
@@ -314,9 +315,9 @@ thetas <- thetas %>%
     mutate(theta_univ = factor(theta_univ, levels = theta_univ[order(theta_mu)]))
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 for(cycle in res$cycle){ 
-  message(paste0("Sample convergance diagnostics for ", cycle, " parameters:"))
+  message(paste0("Convergance diagnostics for sample ", cycle, " parameters:"))
   print(convergence[[paste(cycle)]]$gelman)
   print(convergence[[paste(cycle)]]$autocorr)
   }

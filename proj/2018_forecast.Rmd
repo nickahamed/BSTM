@@ -16,27 +16,27 @@ output:
 ```
 #Pooling the polls to forecast the 2018 US House elections
 ##Introduction
-Using previously estimated pollster and sampling universe biases and current polling data, I forecast the the results of the 2018 US House elections. The Bayesian model predicts Democrats will get XX% of the popular vote, yielding XXX seats in the House of Representatives; current polling suggests there is a XX% chance Democrats will take back the House. Lastly, I apply a uniform swing from 2016 to identify key swing districts for investment in 2018. 
+Using previously estimated pollster and sampling universe biases and current polling data, I forecast the the results of the 2018 US House elections. The Bayesian model predicts Democrats will get 54% of the popular vote, yielding 230 seats in the House of Representatives; current polling suggests there is a 58% chance Democrats will take back the House, on Election Day. Lastly, I apply a uniform swing from 2016 to identify key swing districts for investment in 2018. 
 
 ##Data
-The polling data were scraped from Real Clear Politics' database for the [__2018__]() Generic Congressional ballot. Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the most common question being polled by public sources. 
+The polling data were scraped from Real Clear Politics' database for the [__2018__](https://www.realclearpolitics.com/epolls/other/2018_generic_congressional_vote-6185.html#polls) Generic Congressional ballot. Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the most common question being polled by public sources. 
 
-Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)): it is a proportion between 0 and 1. Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more data. Additionally, only sampling universes and pollsters who have polled in at least one of the last six election cycles are included. This is because I use estimates of bias observed over the last electios to account for house effects. See more [__here__](www.github.com).
+Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)): it is a proportion between 0 and 1. Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more data. Additionally, only sampling universes and pollsters who have polled in at least one of the last six election cycles are included. This is because I use estimates of bias observed over the last electios to account for house effects. See more [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html).
 
-As of 2/2/2018, 99 polls from 12 pollsters contacting 123k respondents were used. These are the 5 largest pollsters. See Appendix B for full details.
+As of 2/3/2018, 102 polls from 13 pollsters contacting 127k respondents were used. These are the 5 largest pollsters. See Appendix B for full details.
 
 <center>
 ![](figures/2018_data_breakdown.png){ width=6in }
 </center>
 
 ##Week-by-week estimate of support
-I use a Bayesian random-walk model to estimate the true level of support over time. Below, I show that model. Based on the most current data, the forecast gives Democrats 53.8% support on the generic ballot, translating to 229 seats in the House of Representatives. Likewise, there is relatively little volatility in week-to-week movements. Whereas in the past six election cycles, 95% of week-to-week movement was within 1.5pp, this cycle, 95% of movement is within just 0.65pp. We saw a maximum amount of support for Democrats right at the end of 2017, possibly associated with XXX event, but there's been a slight return since. 
+I use a Bayesian random-walk model to estimate the true level of support over time. Below, I show that model. Based on the most current data, the forecast gives Democrats 54.1% support on the generic ballot, translating to 230 seats in the House of Representatives. Likewise, there is relatively little volatility in week-to-week movements. Whereas in the past six election cycles, 95% of week-to-week movement was within 1.5pp, this cycle, 95% of movement is within just 0.66pp. We saw a maximum amount of support for Democrats right at the end of 2017, possibly associated with XXX event, but there's been a slight return since. 
 
 <center>
 ![](figures/2018_time_series_with_trend.png){ width=8in }
 </center>
 
-If the election were held today, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is nearly a 100% chance that they win a majority of seats in the House itself. Accounting for the variation we expect over time, there is still a 61% chance Democrats will win 50% of the popular vote and a 57% chance of winning a majority of seats __on election day__.
+If the election were held today, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is nearly a 100% chance that they win a majority of seats in the House itself. Accounting for the variation we expect over time, there is still a 62% chance Democrats will win 50% of the popular vote and a 58% chance of winning a majority of seats __on election day__.
 
 ##Strategic targeting for 2018
 
@@ -51,7 +51,7 @@ For these given specifications, we start with the following priors:
 $$ \sigma^2_i = \frac{y_i(1-y_i)}{n_i},\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega \sim \mathcal{U}(0, (0.02/1.96))$$
 $\sigma^2_i$ just follows the formula for variance of a sample. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation ($\omega$), I use a uniform distribution between 0 and 0.01. A value of 0.01 would reflect that 95% of week-to-week movement is within about 2pp in either direction, a fairly weak assumption. These priors are similar to [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf) 
 
-Unlike [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) and [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf), I do not use priors for $\delta_j$ and $\theta_k$. Rather, I use the best estimate from past election cycles. See more about the estimation of those [__here__](www.github.com), including the original priors and observed posteriors.
+Unlike [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) and [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf), I have strong priors for $\delta_j$ and $\theta_k$. Whereas they use a weak prior centered around 0, I use the best estimate from past election cycles and the observed uncertainty about that estimate. See more about the estimation of those [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html), including the original priors and observed posteriors.
 
 #Appendix B
 ##Load packages, functions and other setup 
@@ -136,9 +136,16 @@ ggsave(filename = "figures/2018_data_breakdown.png", plot = plot_grid(x1, x2, nr
 data_jags <- data_prep(data = polls, res = res, year = 2018, anchor = F)
 data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
 
+convergence_2018 <- convergence_diagnostics(data_jags = data_jags,
+                                            anchor = T,
+                                            chains = 4, 
+                                            thining = 10, 
+                                            burnin = 10000, 
+                                            iter = 1000000)
+
 mod_res <- run_model(data_jags = data_jags, 
                      params = c("xi", "omega"), 
-                     anchor = F,
+                     anchor = T,
                      chains = 4, 
                      thining = 10, 
                      burnin = 10000, 
@@ -163,7 +170,12 @@ ggsave(filename = "figures/2018_time_series_with_trend.png", plot = time_series_
 ```
 
 ##Predict # of seats won and probability of taking back the House
-```{r, message=FALSE, warning=FALSE}
+```{r, warning=FALSE}
+message(paste0("Convergance diagnostics for sample 2018 parameters:"))
+print(convergence_2018$gelman)
+print(convergence_2018$autocorr)
+
+message(paste0("95% CI for week-to-week movement:"))
 as.numeric(omega)*1.96
 
 ##If the election were held today
@@ -171,20 +183,30 @@ mod_csim <- as.mcmc(do.call(rbind, mod_res))
 mod_csim <- as.data.frame(mod_csim)
 final_param <- paste0("xi[",(length(names(mod_csim))-1),"]")
 final_forecast_posterior <- mod_csim[,final_param]
-mean(final_forecast_posterior > 0.5)
+
+message(paste0("Current forecast of support:"))
+scales::percent(round(mean(final_forecast_posterior),3))
+
+message(paste0("Probability of 50% popular vote today:"))
+scales::percent(round(mean(final_forecast_posterior > 0.5),3))
 
 predict_seats <- round((coefs[1,1] + coefs[2,1]*mean(final_forecast_posterior))*435)
+message(paste0("Number of seats estimated today:"))
 predict_seats
 
 final_seats_posterior <- round((coefs[1,1] + coefs[2,1]*final_forecast_posterior)*435)
-mean(final_seats_posterior > 217)
+message(paste0("Probability of a majority of seats today:"))
+scales::percent(round(mean(final_seats_posterior > 217),3))
 
 
 ##Adding in error over time
 new_means <- rnorm(100000, mean = mean(final_forecast_posterior), sd = (as.numeric(omega)*min(cycle_time_est$time_before_elec)))
 new_seats <- round((coefs[1,1] + coefs[2,1]*new_means)*435)
 
-mean(new_means > 0.5)
-mean(new_seats > 217)
+message(paste0("Probability of 50% popular vote on election day:"))
+scales::percent(round(mean(new_means > 0.5),3))
+
+message(paste0("Probability of a majority of seats on election day:"))
+scales::percent(round(mean(new_seats > 217),3))
 ```
 

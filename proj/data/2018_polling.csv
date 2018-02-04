@@ -1,4 +1,8 @@
 pollster_raw,pollster,start_date,end_date,n_size,univ,dem,rep,cycle
+Monmouth,monmouth,1/28/18,1/30/18,711,RV,47,45,2018
+Economist/YouGov,economist_yougov,1/28/18,1/30/18,1264,RV,42,37,2018
+Reuters/Ipsos,reuters_ipsos,1/26/18,1/30/18,1856,Adults,37,31,2018
+Rasmussen Reports,rasmussen,1/24/18,1/25/18,1000,LV,45,37,2018
 FOX News,fox_news,1/21/18,1/23/18,1002,RV,44,38,2018
 Economist/YouGov,economist_yougov,1/21/18,1/23/18,1301,RV,41,37,2018
 Quinnipiac,quinnipiac,1/19/18,1/23/18,1245,RV,51,38,2018
