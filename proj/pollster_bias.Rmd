@@ -169,13 +169,13 @@ polling_summary <- polls %>%
   inner_join(pollster_lkup, by = "pollster") %>%
     mutate(pollster_raw = factor(pollster_raw, levels = pollster_raw[order(`Total N-Size`)]))
 
-polling_summary <- polling_summary %>% 
+polling_summary_ft <- polling_summary %>% 
   mutate(nsize = as.character(`Total N-Size`),
          polls = `# of Polls`,
          cycles = `# of Cycles`) %>%
   select(pollster_raw, nsize, polls, cycles)
 
-FT2 <- flextable(polling_summary)
+FT2 <- flextable(polling_summary_ft)
 FT2 <- set_header_labels(FT2, pollster_raw = "Pollster", nsize = "Total N-Size", polls = "# of Polls", cycles = "# of Cycles")
 FT2 <- theme_zebra(x = FT2, odd_header = "#CFCFCF", odd_body = "#EFEFEF",
 even_header = "transparent", even_body = "transparent")
@@ -186,11 +186,6 @@ FT2
 ```
 
 ```{r, include=FALSE}
-polling_summary <- polling_summary %>% 
-  mutate(`Total N-Size` = as.numeric(nsize),
-         `# of Polls` = polls,
-         `# of Cycles` = cycles) 
-
 #Plots for above
 x1 <- ggplot(data = (polling_summary[1:5,]), aes(y = `# of Cycles`, x = pollster_raw)) +
   geom_bar(stat = 'identity') +
@@ -277,7 +272,7 @@ convergence <- list()
 #Estimation
 for(cycle in res$cycle) {
   data_jags <- data_prep(data = polls, res = res, year = cycle, anchor = T)
-  data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
+  data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas, anchor = T)
   convergence[[paste(cycle)]] <- convergence_diagnostics(data_jags = data_jags,
                                                          anchor = T,
                                                          chains = 4, 
@@ -292,7 +287,7 @@ for(cycle in res$cycle) {
                        iter = 1000000, 
                        params = c("delta", "theta"))
 
-  prior_ests <- calculate_priors(mod_res = mod_res, year = cycle, data_jags = data_jags)
+  prior_ests <- calculate_priors(mod_res = mod_res, year = cycle, data_jags = data_jags, anchor = T)
   new_priors <- update_priors(deltas_all = deltas_all, thetas_all = thetas_all, 
                               deltas_new = prior_ests$deltas_est, thetas_new = prior_ests$thetas_est)
   deltas <- new_priors$deltas 
@@ -475,11 +470,11 @@ omegas <- c()
 
 for(cycle in res$cycle) {
   data_jags <- data_prep(data = polls, res = res, year = cycle, anchor = F)
-  data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
+  data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas, anchor = F)
 
   mod_res <- run_model(data_jags = data_jags, 
-                       params = c("xi", "omega"), 
                        anchor = F,
+                       params = c("xi", "omega"), 
                        chains = 4, 
                        thining = 10, 
                        burnin = 10000, 

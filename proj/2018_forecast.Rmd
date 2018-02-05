@@ -95,12 +95,12 @@ polling_summary <- polls %>%
   inner_join(pollster_lkup, by = "pollster") %>%
     mutate(pollster_raw = factor(pollster_raw, levels = pollster_raw[order(`Total N-Size`)]))
 
-polling_summary <- polling_summary %>% 
+polling_summary_ft <- polling_summary %>% 
   mutate(nsize = as.character(`Total N-Size`),
          polls = `# of Polls`) %>%
   select(pollster_raw, nsize, polls)
 
-FT1 <- flextable(polling_summary)
+FT1 <- flextable(polling_summary_ft)
 FT1 <- set_header_labels(FT1, pollster_raw = "Pollster", nsize = "Total N-Size", polls = "# of Polls")
 
 FT1 <- theme_zebra(x = FT1, odd_header = "#CFCFCF", odd_body = "#EFEFEF",
@@ -112,10 +112,6 @@ FT1
 ```
 
 ```{r, include=FALSE}
-polling_summary <- polling_summary %>% 
-  mutate(`Total N-Size` = as.numeric(nsize),
-         `# of Polls` = polls) 
-
 #Plots for above
 x1 <- ggplot(data = (polling_summary[1:5,]), aes(y = `# of Polls`, x = pollster_raw)) +
   geom_bar(stat = 'identity') +
@@ -136,10 +132,10 @@ ggsave(filename = "figures/2018_data_breakdown.png", plot = plot_grid(x1, x2, nr
 ##Estimate week-by-week movement using past pollster and universe biases
 ```{r, warning=FALSE, message=FALSE, results=FALSE}
 data_jags <- data_prep(data = polls, res = res, year = 2018, anchor = F)
-data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas)
+data_jags <- bias_priors(data_jags = data_jags, deltas = deltas, thetas = thetas, anchor = F)
 
 convergence_2018 <- convergence_diagnostics(data_jags = data_jags,
-                                            anchor = T,
+                                            anchor = F,
                                             chains = 4, 
                                             thining = 10, 
                                             burnin = 10000, 
@@ -147,7 +143,7 @@ convergence_2018 <- convergence_diagnostics(data_jags = data_jags,
 
 mod_res <- run_model(data_jags = data_jags, 
                      params = c("xi", "omega"), 
-                     anchor = T,
+                     anchor = F,
                      chains = 4, 
                      thining = 10, 
                      burnin = 10000, 
