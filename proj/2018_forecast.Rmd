@@ -16,7 +16,7 @@ output:
 ```
 #Pooling the polls to forecast the 2018 US House elections
 ##Introduction
-Using previously estimated pollster and sampling universe biases and current polling data, I forecast the the results of the 2018 US House elections. The Bayesian model predicts Democrats will get 54% of the popular vote, yielding 230 seats in the House of Representatives; current polling suggests there is a 58% chance Democrats will take back the House, on Election Day. Lastly, I apply a uniform swing from 2016 to identify key swing districts for investment in 2018. 
+Using previously estimated pollster and sampling universe biases and current polling data, I forecast the the results of the 2018 US House elections. The Bayesian model predicts Democrats will get 55% of the popular vote, yielding 230 seats in the House of Representatives; current polling suggests there is a 57% chance Democrats will take back the House, on Election Day. Lastly, I apply a uniform swing from 2016 to identify key swing districts for investment in 2018. 
 
 ##Data
 The polling data were scraped from Real Clear Politics' database for the [__2018__](https://www.realclearpolitics.com/epolls/other/2018_generic_congressional_vote-6185.html#polls) Generic Congressional ballot. Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the most common question being polled by public sources. 
@@ -32,13 +32,13 @@ As of 2/3/2018, 102 polls from 13 pollsters contacting 127k respondents were use
 2016 US House election results were taken from [__here__](https://github.com/Prooffreader/election_2016_data).
 
 ##Week-by-week estimate of support
-I use a Bayesian random-walk model to estimate the true level of support over time. Below, I show that model. Based on the most current data, the forecast gives Democrats 54.1% support on the generic ballot, translating to 230 seats in the House of Representatives. Likewise, there is relatively little volatility in week-to-week movements. Whereas in the past six election cycles, 95% of week-to-week movement was within 1.5pp, this cycle, 95% of movement is within just 0.66pp. We saw a maximum amount of support for Democrats right at the end of 2017, possibly associated with XXX event, but there's been a slight return since. 
+I use a Bayesian random-walk model to estimate the true level of support over time. Below, I show that model. Based on the most current data, the forecast gives Democrats 54.9% support on the generic ballot, translating to 230 seats in the House of Representatives. Likewise, there is relatively little volatility in week-to-week movements. Whereas in the past six election cycles, 95% of week-to-week movement was within 1.5pp, this cycle, 95% of movement is within just 0.66pp. We saw a maximum amount of support for Democrats right at the end of 2017, possibly associated with XXX event, but there's been a slight return since. 
 
 <center>
 ![](figures/2018_time_series_with_trend.png){ width=8in }
 </center>
 
-If the election were held today, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is nearly a 100% chance that they win a majority of seats in the House itself. Accounting for the variation we expect over time, there is still a 62% chance Democrats will win 50% of the popular vote and a 58% chance of winning a majority of seats __on election day__.
+If the election were held today, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is nearly a 100% chance that they win a majority of seats in the House itself. Accounting for the variation we expect over time, there is still a 64% chance Democrats will win 50% of the popular vote and a 57% chance of winning a majority of seats __on election day__.
 
 ##Strategic targeting for 2018
 
@@ -157,7 +157,7 @@ omega <- extract_omega_est(mod_res = mod_res, year = 2018, data_jags = data_jags
 time_series_with_trend <- ggplot(data=cycle_time_est, aes(x=time_before_elec, y=iter_mean)) + 
   geom_point(data=polls, aes(x=week, y=twoway, size=sqrt(n_size)), alpha=0.2) +
   geom_ribbon(aes(ymin=lower_bound,ymax=upper_bound), alpha = 0.5) +
-  geom_line(color = "blue") +
+  geom_line(color = "blue",size = 0.75) +
   theme_bw() + 
   scale_x_reverse(name = "Weeks Before Election", limits= c(94, 0)) +
   scale_y_continuous(name = "Democratic Two-way Vote Share", labels=scales::percent, limits = c(min(0.48, min(polls$twoway) - 0.01), max(0.6, max(polls$twoway) + 0.01))) + 
@@ -174,7 +174,7 @@ print(convergence_2018$gelman)
 print(convergence_2018$autocorr)
 
 message(paste0("95% CI for week-to-week movement:"))
-as.numeric(omega)*1.96
+scales::percent(round(as.numeric(omega)*1.96,4))
 
 ##If the election were held today
 mod_csim <- as.mcmc(do.call(rbind, mod_res))

@@ -95,7 +95,7 @@ FT1
 
 <br>
 <br>
-Third, some cycles' models are more accurate than others. This table shows the percentage point error of each final forecast. In 2014 and 2016, our models were very accurate. In 2008, and 2012, they missed by about a point, and in 2010 and 2012. The error is not consistently biased in one direction, but instead sometimes overestimates and sometimes underestimates Democratic support.
+Third, some cycles' models are more accurate than others. This table shows the percentage point error of each final forecast. In 2008, 2010 and 2012, my models were very accurate. In 2014 and 2016, they missed by about a point, and in 2006, the forecast missed by 3pp. The error is not consistently biased in one direction, but instead sometimes overestimates and sometimes underestimates Democratic support.
 
 <div style= "float:left;position: relative; top: 10px;">
 ![](figures/final_est_vs_seats.png){ width=2in }
@@ -108,7 +108,7 @@ Lastly, we are interested in the relationship between the final forecasts and th
 ##Conclusions
 Using past public polling data and election results, I generated bias estimates for each pollster and sampling universe activly polling the generic Congressional ballot over the past six cycles. Generally, pollsters are consistently biased by less than 1pp, but a several still exceed this theshold. Of the pollsters analyzed, I find POS (R) and NBC/WSJ are the least biased pollsters. Likewise, I find that likely voter sampling universes are less biased than registered voter or adult universes. All three universes tend to overestimate the true level of Democratic support. 
 
-I then use these (admittedly overfit) estimates of bias to generate forecasts for the six cycles analyzed. The final forecasts had a mean absolute error of about 1.3pp, though five-of-six correctly predicted the winner. These forecasts are fairly predictive of the final seat share Democrats would win.
+I then use these (admittedly overfit) estimates of bias to generate forecasts for the six cycles analyzed. The final forecasts had a mean absolute error of about 1.2pp, though five-of-six correctly predicted the winner. These forecasts are fairly predictive of the final seat share Democrats would win.
 
 #Appendix A
 For a formal model, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the variance a function of $y_i$ and sample size. This would be specified as:
@@ -126,6 +126,8 @@ $\sigma^2_i$ just follows the formula for variance of a sample. As a prior for t
 $$\ \ \ \delta_j \sim \mathcal{N}(0, (0.2/1.96)^2),\ \ \ \theta_k \sim \mathcal{N}(0, (0.2/1.96)^2)$$
 
 For pollster biases ($\delta$), I start with a prior that there is no bias with a standard deviation to reflect that bias is 95% of the time within 20pp in either direction; likewise, I start with a prior for bias from sampling universe ($\theta$) that is the same. However, these priors are updated based upon the previous election cycle. Thus, this prior is true for the fist cycle the pollster was active in (often 2006). Subsequently, the prior is the mean of the posterior observatons of ($\delta_{j_{most\ recent\ cycle}}$) and variance of the same posterior observations. 
+
+To fit the final forecasts, without anchoring in the election result, I use the final posterior distributions for each pollster and universe as priors. However, there needs to be some baseline to have a fully specified model. Whereas previously I used the election result as the baseline, in the forecasts, I use the pollster/universe with the smallest variance of the estimate. That is, I take as ground-truth our most certain estimate of bias and calculate the bias of other pollsters/universes relative to that. 
 
 #Appendix B
 ##Load packages, functions and other setup 
@@ -493,11 +495,11 @@ time_series_with_trend <- ggplot(data=all_cycle_est, aes(x=time_before_elec, y=i
   geom_point(data=polls, aes(x=week, y=twoway, size=sqrt(n_size)), alpha=0.2) +
   geom_ribbon(aes(ymin=lower_bound,ymax=upper_bound), alpha = 0.5) +
   geom_hline(data=res, aes(yintercept = twoway_vote), linetype="dashed") +
-  geom_line(color = "blue") +
+  geom_line(color = "blue", size = 0.75) +
   theme_bw() + 
   facet_wrap(~cycle) +
   scale_x_reverse(name = "Weeks Before Election") +
-  scale_y_continuous(name = "Democratic Two-way Vote Share", labels=scales::percent) + 
+  scale_y_continuous(name = "Democratic Two-way Vote Share", labels=scales::percent, limits = c(0.4, 0.6)) + 
   guides(size=F, color = F)
 
 ggsave(filename = "figures/time_series_with_trend.png", plot = time_series_with_trend, width = 8, height = 4, units = "in")

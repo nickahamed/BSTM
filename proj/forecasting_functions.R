@@ -42,11 +42,13 @@ bias_priors <- function(data_jags, deltas, thetas, anchor) {
     data_jags$theta_recalibrate <- thetas$theta_mu[thetas$theta_sigma2 == theta_min_sd]
     thetas$theta_mu <- thetas$theta_mu - data_jags$theta_recalibrate
     data_jags$theta_min_sd_univ <- thetas$theta_univ_num[thetas$theta_sigma2 == theta_min_sd]
+    data_jags$theta_non_sd_univ <- thetas$theta_univ_num[thetas$theta_sigma2 != theta_min_sd]
     
     delta_min_sd <- min(deltas$delta_sigma2)
     data_jags$delta_recalibrate <- deltas$delta_mu[deltas$delta_sigma2 == delta_min_sd]
     deltas$delta_mu <- deltas$delta_mu - data_jags$delta_recalibrate
     data_jags$delta_min_sd_pollster <- deltas$delta_pollster_num[deltas$delta_sigma2 == delta_min_sd]
+    data_jags$delta_non_sd_pollster <- deltas$delta_pollster_num[deltas$delta_sigma2 != delta_min_sd]
     }
   
   data_jags <- append(data_jags, as.list(thetas))
@@ -89,12 +91,12 @@ run_model <- function(data_jags,
 } "
   } else {
     mod_string_2 <-   "
-  for (i in 1:max(pollster_num)) {
+  for (i in delta_non_sd_pollster) {
     delta[i] ~ dnorm(delta_mu[i], 1.0/delta_sigma2[i])
   }
     delta[delta_min_sd_pollster] = delta_mu[delta_min_sd_pollster]
 
-    for (i in 1:max(univ_num)) {
+    for (i in theta_non_sd_univ) {
     theta[i] ~ dnorm(theta_mu[i], 1.0/theta_sigma2[i])
     }
     theta[theta_min_sd_univ] = theta_mu[theta_min_sd_univ]
@@ -109,7 +111,7 @@ run_model <- function(data_jags,
   return(mod_sim)
   }
 
-calculate_priors <- function(mod_res, year, data_jags) { 
+calculate_priors <- function(mod_res, year, data_jags, anchor) { 
   mod_csim <- as.mcmc(do.call(rbind, mod_res))
   param_ests <- data.frame(iter_mean = colMeans(mod_csim),
                            iter_sigma2 = (apply(mod_csim, 2, FUN ="sd"))^2)
