@@ -26,7 +26,7 @@ data_prep <- function(data, res, year, anchor = T) {
   return(data_jags)
 }
 
-bias_priors <- function(data_jags, deltas, thetas) { 
+bias_priors <- function(data_jags, deltas, thetas, anchor) { 
   thetas <- thetas %>%
     filter(theta_univ %in% unique(data_jags$univ)) %>%
     mutate(theta_univ_num = as.numeric(theta_univ)) %>%
@@ -37,13 +37,25 @@ bias_priors <- function(data_jags, deltas, thetas) {
     mutate(delta_pollster_num = as.numeric(as.factor(as.character(delta_pollster)))) %>%
     arrange(delta_pollster_num)
   
+  if (!anchor) { 
+    theta_min_sd <- min(thetas$theta_sigma2)
+    data_jags$theta_recalibrate <- thetas$theta_mu[thetas$theta_sigma2 == theta_min_sd]
+    thetas$theta_mu <- thetas$theta_mu - data_jags$theta_recalibrate
+    data_jags$theta_min_sd_univ <- thetas$theta_univ_num[thetas$theta_sigma2 == theta_min_sd]
+    
+    delta_min_sd <- min(deltas$delta_sigma2)
+    data_jags$delta_recalibrate <- deltas$delta_mu[deltas$delta_sigma2 == delta_min_sd]
+    deltas$delta_mu <- deltas$delta_mu - data_jags$delta_recalibrate
+    data_jags$delta_min_sd_pollster <- deltas$delta_pollster_num[deltas$delta_sigma2 == delta_min_sd]
+    }
+  
   data_jags <- append(data_jags, as.list(thetas))
   data_jags <- append(data_jags, as.list(deltas))
   return(data_jags)
 }
 
 run_model <- function(data_jags,
-                      anchor = T,
+                      anchor,
                       chains = 4, 
                       thining = 10, 
                       burnin = 10000, 
@@ -63,29 +75,29 @@ run_model <- function(data_jags,
   
   ## prior for standard deviations
   omega ~ dunif(0, 0.01)
-  tau <- 1/pow(omega,2) "
+  tau <- 1/pow(omega,2)"
   
-  if(anchor) {
-    mod_string_2 <- "
-    ## priors for house effects
-    for (i in 1:max(pollster_num)) {
+  if (anchor) {
+    mod_string_2 <-   "
+  for (i in 1:max(pollster_num)) {
     delta[i] ~ dnorm(delta_mu[i], 1.0/delta_sigma2[i])
     }
-    
+
+  for (i in 1:max(univ_num)) {
+    theta[i] ~ dnorm(theta_mu[i], 1.0/theta_sigma2[i])
+    }
+} "
+  } else {
+    mod_string_2 <-   "
+  for (i in 1:max(pollster_num)) {
+    delta[i] ~ dnorm(delta_mu[i], 1.0/delta_sigma2[i])
+  }
+    delta[delta_min_sd_pollster] = delta_mu[delta_min_sd_pollster]
+
     for (i in 1:max(univ_num)) {
     theta[i] ~ dnorm(theta_mu[i], 1.0/theta_sigma2[i])
     }
-  } "
-  } else {
-    mod_string_2 <- "
-    ## priors for house effects
-    for (i in 1:max(pollster_num)) {
-    delta[i] = delta_mu[i]
-    }
-    
-    for (i in 1:max(univ_num)) {
-    theta[i] = theta_mu[i]
-    }
+    theta[theta_min_sd_univ] = theta_mu[theta_min_sd_univ]
 } "
   }
   
@@ -123,6 +135,11 @@ calculate_priors <- function(mod_res, year, data_jags) {
            theta_sigma2 = iter_sigma2,
            theta_univ = univ) %>%
     select(theta_cycle, theta_univ, theta_mu, theta_sigma2)
+  
+  if (!anchor) {
+    theta_est$theta_mu <- theta_est$theta_mu + data_jags$theta_recalibrate
+    delta_est$delta_mu <- delta_est$delta_mu + data_jags$delta_recalibrate
+  }
   
   return(list(deltas_est = delta_est, thetas_est = theta_est))
 }
@@ -169,7 +186,8 @@ convergence_diagnostics <- function(data_jags,
                        burnin = burnin, 
                        iter = iter, 
                        params = params,
-                       data_jags = data_jags)
+                       data_jags = data_jags,
+                       anchor = anchor)
   
   return(list(gelman = gelman.diag(mod_res), autocorr = autocorr.diag(mod_res)))
 }
