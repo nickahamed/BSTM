@@ -39,14 +39,10 @@ bias_priors <- function(data_jags, deltas, thetas, anchor) {
   
   if (!anchor) { 
     theta_min_sd <- min(thetas$theta_sigma2)
-    data_jags$theta_recalibrate <- thetas$theta_mu[thetas$theta_sigma2 == theta_min_sd]
-    thetas$theta_mu <- thetas$theta_mu - data_jags$theta_recalibrate
     data_jags$theta_min_sd_univ <- thetas$theta_univ_num[thetas$theta_sigma2 == theta_min_sd]
     data_jags$theta_non_sd_univ <- thetas$theta_univ_num[thetas$theta_sigma2 != theta_min_sd]
     
     delta_min_sd <- min(deltas$delta_sigma2)
-    data_jags$delta_recalibrate <- deltas$delta_mu[deltas$delta_sigma2 == delta_min_sd]
-    deltas$delta_mu <- deltas$delta_mu - data_jags$delta_recalibrate
     data_jags$delta_min_sd_pollster <- deltas$delta_pollster_num[deltas$delta_sigma2 == delta_min_sd]
     data_jags$delta_non_sd_pollster <- deltas$delta_pollster_num[deltas$delta_sigma2 != delta_min_sd]
     }
@@ -111,7 +107,7 @@ run_model <- function(data_jags,
   return(mod_sim)
   }
 
-calculate_priors <- function(mod_res, year, data_jags, anchor) { 
+calculate_priors <- function(mod_res, year, data_jags) { 
   mod_csim <- as.mcmc(do.call(rbind, mod_res))
   param_ests <- data.frame(iter_mean = colMeans(mod_csim),
                            iter_sigma2 = (apply(mod_csim, 2, FUN ="sd"))^2)
@@ -137,11 +133,6 @@ calculate_priors <- function(mod_res, year, data_jags, anchor) {
            theta_sigma2 = iter_sigma2,
            theta_univ = univ) %>%
     select(theta_cycle, theta_univ, theta_mu, theta_sigma2)
-  
-  if (!anchor) {
-    theta_est$theta_mu <- theta_est$theta_mu + data_jags$theta_recalibrate
-    delta_est$delta_mu <- delta_est$delta_mu + data_jags$delta_recalibrate
-  }
   
   return(list(deltas_est = delta_est, thetas_est = theta_est))
 }

@@ -289,7 +289,7 @@ for(cycle in res$cycle) {
                        iter = 1000000, 
                        params = c("delta", "theta"))
 
-  prior_ests <- calculate_priors(mod_res = mod_res, year = cycle, data_jags = data_jags, anchor = T)
+  prior_ests <- calculate_priors(mod_res = mod_res, year = cycle, data_jags = data_jags)
   new_priors <- update_priors(deltas_all = deltas_all, thetas_all = thetas_all, 
                               deltas_new = prior_ests$deltas_est, thetas_new = prior_ests$thetas_est)
   deltas <- new_priors$deltas 
