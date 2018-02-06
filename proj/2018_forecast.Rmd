@@ -8,12 +8,6 @@ output:
     toc_depth: '2'
 ---
 
-```{r setup, include = F}
-#Part 2
-# -Apply uniform swing from 2016 estimate to 2016 results estimate share of vote for each district
-# -Use SDs to calculate tipping point districts 
-# -Use SDs to calculate p(victory) in tipping point districts
-```
 #Pooling the polls to forecast the 2018 US House elections
 ##Introduction
 Using previously estimated pollster and sampling universe biases and current polling data, I forecast the the results of the 2018 US House elections. The Bayesian model predicts Democrats will get 54% of the popular vote, yielding 226 seats in the House of Representatives; current polling suggests there is a 55% chance Democrats will take back the House, on Election Day. Lastly, I apply a uniform swing from 2016 to identify key swing districts for investment in 2018. 
@@ -41,8 +35,21 @@ I use a Bayesian random-walk model to estimate the true level of support over ti
 If the election were held today, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is nearly a 100% chance that they win a majority of seats in the House itself. Accounting for the variation we expect over time, there is still a 62% chance Democrats will win 50% of the popular vote and a 55% chance of winning a majority of seats __on election day__.
 
 ##Strategic targeting for 2018
+Following [__Jackman (2014)__](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/S1049096514000109), I apply a national uniform swing to the 2016 two-way results of each Congressional district to identify key districts for targeting. 33 districts have at least a 40% chance, but no more than a 60% chance of being won on election day, based on the national swing. 4 are in each of Florida and California, and 3 are in Pennsylvania. 
+
+
+<center>
+![](figures/2018_strategy.png){ width=8in }
+</center>
 
 ##Updated pollster and universe bias
+</center>
+![](figures/2018_pollster_bias.png){ width=8in }
+</center>
+
+</center>
+![](figures/2018_universe_bias.png){ width=8in }
+</center>
 
 #Appendix A
 To specify my random walk model, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf). A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
@@ -75,10 +82,19 @@ scipen=9
 ##Load, prep and explore data
 ```{r, message=FALSE, warning=FALSE}
 pollster_lkup <- read.csv("data/pollster_lkup.csv")
-
 deltas <- read.csv("data/final_pollster_bias_ests.csv")
 thetas <- read.csv("data/final_universe_bias_ests.csv")
 coefs <- read.csv("data/forecast_seats_coefs.csv")
+past_final_est <- read.csv("data/final_est_comparison.csv")
+
+house_2016 <- read.csv("data/house_general_election_2016.csv") %>%
+  filter(individual_party %in% c("republican", "democrat")) %>%
+  group_by(state, geo_name, individual_party) %>%
+  mutate(vote_pct = ifelse(is.na(vote_pct), 100.0, vote_pct)) %>%
+  summarise(vote_pct = sum(vote_pct)) %>%
+  ungroup() %>%
+  spread(key=individual_party, value = vote_pct, fill = 0) %>%
+  mutate(twoway_vote = democrat/(democrat+republican))
 
 polls <- read.csv("data/2018_polling.csv") %>%
   filter(pollster %in% pollster_lkup$pollster) %>%
@@ -210,7 +226,92 @@ message(paste0("Probability of a majority of seats on election day:"))
 scales::percent(round(mean(new_seats > 217),3))
 ```
 
-##Change in bias
+##Strategic analysis
+```{r, warning=FALSE, message=FALSE, results=FALSE}
+nat_swing <- mean(final_forecast_posterior) - 
+  as.numeric(substr(past_final_est$Popular.Vote[past_final_est$Cycle == 2016],1,4))/100
+
+house_2016$dist_forecast <- house_2016$twoway_vote + nat_swing
+house_2016$dist_lb <- house_2016$twoway_vote - 1.96*(as.numeric(omega)*min(cycle_time_est$time_before_elec))
+house_2016$dist_ub <- house_2016$twoway_vote + 1.96*(as.numeric(omega)*min(cycle_time_est$time_before_elec))
+
+house_2016$prob_victory <- 0
+house_2016$cd <- ""
+
+for (i in 1:nrow(house_2016)) {
+  dist_mean <- rnorm(100000, mean = house_2016$dist_forecast[i], sd = (as.numeric(omega)*min(cycle_time_est$time_before_elec)))
+  house_2016$prob_victory[i] <- mean(dist_mean > 0.5)
+  house_2016$cd[i] <- paste(state.abb[grep(house_2016$state[i], state.name)], strsplit(as.character(house_2016$geo_name[i])," ")[[1]], sep = " - ")
+}
+
+house_2016$strat_import <- ifelse(house_2016$prob_victory < 0.6 & house_2016$prob_victory > 0.4, 1, 0)
+
+n_size <- 10000
+temp_dists <- data.frame(support = numeric(435), seat = numeric(435))
+tipping_point <- data.frame(state = character(n_size), dist = character(n_size), dem = numeric(n_size), stringsAsFactors=FALSE)
+
+for (i in 1:n_size) {
+  for (j in 1:nrow(house_2016)) {
+    temp_dists$state[j] <- paste(house_2016$state[j])
+    temp_dists$dist[j] <- paste(house_2016$geo_name[j])
+    temp_dists$support[j] <- rnorm(1, mean = house_2016$dist_forecast[j], sd = (as.numeric(omega)*min(cycle_time_est$time_before_elec)))
+  }
+  
+  temp_dists <- temp_dists %>%
+    arrange(-support)
+  
+  tipping_point$state[i] <- temp_dists$state[218]
+  tipping_point$dist[i] <- temp_dists$dist[218]
+  tipping_point$dem[i] <- ifelse(temp_dists$support[218] > 0.5, 1, 0)
+}
+
+tp_dists <- tipping_point %>%
+  group_by(state, dist) %>%
+  summarise(tp_pct = n()/n_size)
+
+house_2016 <- house_2016 %>%
+  left_join(tp_dists, by  = c("geo_name" = "dist", "state" = "state")) %>% 
+    mutate_each(funs(replace(., which(is.na(.)), 0)))
+```
+
+```{r, include = F}
+stat_districts <- house_2016 %>%
+  filter(strat_import == 1) %>%
+  mutate(cd = factor(cd, levels = cd[order(prob_victory)]))
+
+y1 <- ggplot(stat_districts, aes(x = dist_forecast, y = cd, color = dist_forecast)) + 
+  geom_point() + 
+  theme_bw() + 
+  geom_vline(xintercept = 0.5, linetype = "dashed") +
+  scale_colour_gradient2(low = "red", mid = "grey",
+  high = "blue", midpoint = 0.5) +
+  guides(color = F) +
+  ylab("") +
+  scale_x_continuous(limits =  c(min(stat_districts$dist_forecast)-0.01,max(stat_districts$dist_forecast)+0.01), labels = scales::percent, name = "District Forecast")
+
+y2 <- ggplot(stat_districts, aes(x = prob_victory, y = cd, color = prob_victory)) + 
+  geom_point() + 
+  theme_bw() + 
+  geom_vline(xintercept = 0.5, linetype = "dashed") +
+  scale_colour_gradient2(low = "red", mid = "grey",
+  high = "blue", midpoint = 0.5) +
+  guides(color = F) +
+  ylab("") +
+  scale_x_continuous(limits =  c(min(stat_districts$prob_victory)-0.01,max(stat_districts$prob_victory)+0.01), labels = scales::percent, name = "Probability of Victory") + 
+  theme(axis.text.y = element_blank())
+
+y3 <- ggplot(stat_districts, aes(x = cd, y = tp_pct)) + 
+  geom_bar(stat = "identity", fill = "grey38") + 
+  coord_flip() + 
+  theme_bw() + 
+  guides(fill = F) +
+  xlab("") +
+  scale_y_continuous(limits =  c(0,max(stat_districts$tp_pct)+0.005), labels = scales::percent, name = "Probability of Tipping point") + 
+  theme(axis.text.y = element_blank())
+
+ggsave(filename = "figures/2018_strategy.png", plot = plot_grid(y1, y2, y3, nrow = 1), width = 8, height = 6, units = "in")
+```
+
 ```{r, include = F}
 prior_ests <- calculate_priors(mod_res = mod_res, year = 2018, data_jags = data_jags)
 new_deltas <- prior_ests$deltas_est %>%
@@ -218,10 +319,10 @@ new_deltas <- prior_ests$deltas_est %>%
     arrange(delta_mu) %>%
     inner_join(pollster_lkup, by = c("delta_pollster" = "pollster")) %>%
     mutate(pollster_raw = factor(pollster_raw, levels = pollster_raw[order(delta_mu)]),
-           est = "new")
+           est = "New")
 old_deltas <- deltas %>% 
   filter(delta_pollster %in% new_deltas$delta_pollster) %>% 
-  mutate(est = "old")
+  mutate(est = "Old")
 
 new_deltas <- rbind(new_deltas, old_deltas)
 
@@ -230,23 +331,22 @@ pollster_bias <- ggplot(new_deltas, aes(x=pollster_raw, y=delta_mu, color = est,
   geom_point(size = 3) +
   geom_point(shape = 1,colour = "black", size = 3)+
   geom_hline(yintercept = 0, linetype = "dashed") + 
-  scale_colour_manual(values = c("white", "black")) +
+  scale_colour_manual(values = c("gray90", "black")) +
   theme_bw() +
-  guides(color = F) +
+  theme(legend.position="bottom", legend.title = element_blank()) +
   xlab("Pollster") +
   scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits = c(-0.02,0.01)) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 10, vjust = 0.5))
 
 ggsave(filename = "figures/2018_pollster_bias.png", plot = pollster_bias, width = 8, height = 4, units = "in")
 
-
 new_thetas <- prior_ests$thetas_est %>% 
     arrange(theta_mu) %>%
     mutate(theta_univ = factor(theta_univ, levels = theta_univ[order(theta_mu)]),
-           est = "new")
+           est = "New")
 
 old_thetas <- thetas %>% 
-  mutate(est = "old")
+  mutate(est = "Old")
 
 new_thetas <- rbind(new_thetas, old_thetas)
 
@@ -255,13 +355,13 @@ univ_bias <- ggplot(new_thetas, aes(x=theta_univ, y=theta_mu, color = est, group
   geom_point(size = 3) +
   geom_point(shape = 1,colour = "black", size = 3)+
   geom_hline(yintercept = 0, linetype = "dashed") + 
-  scale_colour_manual(values = c("white", "black")) +
+  scale_colour_manual(values = c("gray90", "black")) +
   theme_bw() +
-  guides(color = F) +
-  xlab("Pollster") +
+  theme(legend.position="bottom", legend.title = element_blank()) +
+  xlab("Universe") +
   scale_y_continuous(name = "Bias Estimate", labels = scales::percent, limits =  c(-0.01,0.045)) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 10, vjust = 0.5))
 
-ggsave(filename = "figures/2018_universe_bias.png", plot = pollster_bias, width = 8, height = 4, units = "in")
+ggsave(filename = "figures/2018_universe_bias.png", plot = univ_bias, width = 8, height = 4, units = "in")
 ```
 

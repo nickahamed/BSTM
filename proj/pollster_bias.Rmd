@@ -396,7 +396,8 @@ FT6
 pollster_bias <- ggplot(deltas, aes(x=pollster_raw, y=delta_mu)) + 
   geom_point(aes(color = delta_mu)) +
   geom_hline(yintercept = 0, linetype = "dashed") + 
-  scale_color_continuous(low="red", high="blue") +
+  scale_colour_gradient2(low = "red", mid = "grey",
+  high = "blue", midpoint = 0) +
   theme_bw() +
   guides(color = F) +
   xlab("Pollster") +
