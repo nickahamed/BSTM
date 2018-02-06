@@ -1,6 +1,6 @@
 ###########################
 ### Author: Nick Ahamed ###
-##### Date: 1/31/2018 #####
+##### Date: 2/5/2018 #####
 ###########################
 
 data_prep <- function(data, res, year, anchor = T) { 
