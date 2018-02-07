@@ -1,0 +1,798 @@
+pollster_raw,pollster,start_date,end_date,n_size,univ,rep,dem,cycle
+Rasmussen,rasmussen,8/17/06,8/19/06,960,LV,38,46,2006
+CNN/Opinion Research,cnn_orc,8/18/06,8/20/06,1033,Adults,43,52,2006
+Hotline/FD,hotline,8/17/06,8/20/06,425,LV,40,40,2006
+USA Today/Gallup,usa_today_gallup,8/18/06,8/20/06,1001,Adults,45,47,2006
+CBS News/NY Times,cbs_nyt,8/17/06,8/21/06,1206,Adults,32,47,2006
+Quinnipiac,quinnipiac,8/17/06,8/23/06,1080,RV,39,48,2006
+Time,time,8/22/06,8/24/06,1002,Adults,40,51,2006
+Newsweek,newsweek,8/24/06,8/25/06,1002,Adults,38,50,2006
+Cook/RT Strategies,cook,8/25/06,8/27/06,801,RV,40,51,2006
+FOX News,fox_news,8/29/06,8/30/06,900,RV,32,48,2006
+CNN,cnn_orc,8/30/06,9/2/06,1004,Adults,43,53,2006
+ABC News,abc_wapo,9/5/06,9/7/06,1003,Adults,42,50,2006
+Gallup,gallup,9/7/06,9/10/06,925,RV,41,53,2006
+Pew Research,pew,9/6/06,9/10/06,1191,RV,39,50,2006
+NBC/WSJ,nbc_wsj,9/8/06,9/11/06,1009,RV,39,48,2006
+AP-Ipsos,ap_ipsos,9/11/06,9/13/06,1501,Adults,39,53,2006
+FOX News,fox_news,9/12/06,9/13/06,900,LV,38,41,2006
+USA Today/Gallup,usa_today_gallup,9/15/06,9/17/06,1003,Adults,48,48,2006
+CBS News/NY Times,cbs_nyt,9/15/06,9/19/06,1007,RV,35,50,2006
+LA Times/Bloomberg,lat_bloomberg,9/16/06,9/19/06,1347,RV,39,49,2006
+CNN,cnn_orc,9/22/06,9/24/06,573,LV,42,55,2006
+Zogby,zogby,9/22/06,9/25/06,1000,LV,33,42,2006
+Hotline/FD,hotline,9/24/06,9/26/06,423,LV,33,46,2006
+Battleground,battleground,9/24/06,9/27/06,1000,LV,41,49,2006
+FOX News,fox_news,9/26/06,9/27/06,900,LV,38,49,2006
+CNN,cnn_orc,9/29/06,10/2/06,548,LV,42,53,2006
+NBC/WSJ,nbc_wsj,9/30/06,10/2/06,805,RV,39,48,2006
+Democracy Corps (D),dem_corps,10/1/06,10/3/06,1000,LV,41,51,2006
+AP-Ipsos,ap_ipsos,10/2/06,10/4/06,741,LV,41,51,2006
+Pew Research,pew,9/21/06,10/4/06,1804,Adults,38,51,2006
+Time,time,10/3/06,10/4/06,1002,Adults,39,54,2006
+Newsweek,newsweek,10/5/06,10/6/06,624,LV,39,51,2006
+CBS News/NY Times,cbs_nyt,10/5/06,10/8/06,891,RV,35,49,2006
+CNN,cnn_orc,10/6/06,10/8/06,543,LV,37,58,2006
+Cook/RT Strategies,cook,10/5/06,10/8/06,837,RV,38,49,2006
+USA Today/Gallup,usa_today_gallup,10/6/06,10/8/06,622,LV,36,59,2006
+Harris,harris,10/6/06,10/9/06,1001,Adults,35,47,2006
+FOX News,fox_news,10/10/06,10/11/06,900,LV,41,50,2006
+NBC/WSJ,nbc_wsj,10/13/06,10/16/06,1006,RV,37,52,2006
+Newsweek,newsweek,10/19/06,10/20/06,578,LV,37,55,2006
+Cook/RT Strategies,cook,10/19/06,10/22/06,683,LV,35,57,2006
+Pew Research,pew,10/17/06,10/22/06,1118,LV,39,50,2006
+USA Today/Gallup,usa_today_gallup,10/20/06,10/22/06,675,LV,41,54,2006
+Hotline/FD,hotline,10/19/06,10/23/06,580,LV,34,52,2006
+Zogby,zogby,10/20/06,10/23/06,1013,LV,33,44,2006
+AP-Ipsos,ap_ipsos,10/20/06,10/25/06,970,LV,37,56,2006
+FOX News,fox_news,10/24/06,10/25/06,900,LV,38,49,2006
+Newsweek,newsweek,10/27/06,10/26/06,677,LV,38,53,2006
+CNN,cnn_orc,10/27/06,10/29/06,499,LV,42,53,2006
+Cook/RT Strategies,cook,10/26/06,10/29/06,981,LV,36,59,2006
+NBC/WSJ,nbc_wsj,10/28/06,10/30/06,1010,RV,37,52,2006
+Newsweek,newsweek,11/2/06,11/3/06,838,LV,38,54,2006
+Time,time,11/1/06,11/3/06,679,LV,40,55,2006
+CNN,cnn_orc,11/3/06,11/5/06,636,LV,38,58,2006
+FOX News,fox_news,11/4/06,11/5/06,900,LV,36,49,2006
+USA Today/Gallup,usa_today_gallup,11/2/06,11/5/06,1362,LV,44,51,2006
+NBC News/Wall St. Jrnl*,nbc_wsj,4/25/08,4/28/08,1006,RV,34,49,2008
+CBS News/NY Times,cbs_nyt,4/25/08,4/29/08,956,RV,32,50,2008
+Rasmussen,rasmussen,4/28/08,4/29/08,800,LV,41,46,2008
+Battleground,battleground,5/11/08,5/14/08,1018,LV,40,49,2008
+Democracy Corps (D),dem_corps,5/13/08,5/15/08,1014,LV,42,52,2008
+Rasmussen,rasmussen,5/21/08,5/22/08,800,LV,39,47,2008
+Rasmussen,rasmussen,6/2/08,6/8/08,7423,LV,34,47,2008
+ABC News/Wash Post,abc_wapo,6/12/08,6/15/08,1125,Adults,38,53,2008
+Rasmussen,rasmussen,6/9/08,6/15/08,7000,LV,34,48,2008
+USA Today/Gallup,usa_today_gallup,6/15/08,6/19/08,1310,LV,42,52,2008
+Rasmussen,rasmussen,6/16/08,6/22/08,7000,LV,34,47,2008
+Democracy Corps (D),dem_corps,6/22/08,6/25/08,2000,LV,42,50,2008
+Pew Research,pew,6/18/08,6/29/08,1574,RV,37,52,2008
+Rasmussen,rasmussen,7/7/08,7/13/08,7000,LV,36,46,2008
+Rasmussen,rasmussen,7/14/08,7/20/08,7000,LV,34,47,2008
+NBC News/Wall St. Jrnl*,nbc_wsj,7/18/08,7/21/08,1003,RV,36,49,2008
+Democracy Corps (D),dem_corps,7/21/08,7/24/08,1004,LV,42,50,2008
+Rasmussen,rasmussen,7/28/08,8/3/08,7000,LV,36,46,2008
+AP-Ipsos,ap_ipsos,7/31/08,8/4/08,833,RV,35,53,2008
+Rasmussen,rasmussen,8/4/08,8/10/08,7000,LV,37,45,2008
+Battleground,battleground,8/10/08,8/14/08,1000,LV,40,47,2008
+NBC News/Wall St. Jrnl*,nbc_wsj,8/15/08,8/18/08,1005,RV,36,47,2008
+FOX News,fox_news,8/19/08,8/20/08,900,RV,38,45,2008
+USA Today/Gallup,usa_today_gallup,8/21/08,8/23/08,765,LV,42,51,2008
+Rasmussen,rasmussen,8/25/08,8/31/08,7000,LV,36,46,2008
+Democracy Corps (D),dem_corps,9/1/08,9/3/08,1000,LV,45,50,2008
+CNN/OpinionResearch,cnn_orc,9/5/08,9/7/08,942,RV,46,49,2008
+Rasmussen,rasmussen,9/1/08,9/7/08,7000,LV,37,45,2008
+USA Today/Gallup,usa_today_gallup,9/5/08,9/7/08,823,LV,50,45,2008
+Associated Press/GfK*,ap_gfk,9/5/08,9/10/08,812,LV,41,46,2008
+Democracy Corps (D),dem_corps,9/8/08,9/10/08,1000,LV,45,50,2008
+Battleground,battleground,9/7/08,9/11/08,1000,LV,40,48,2008
+Newsweek,newsweek,9/10/08,9/11/08,1038,RV,41,49,2008
+Rasmussen,rasmussen,9/8/08,9/14/08,7000,LV,38,44,2008
+CBS News/NY Times,cbs_nyt,9/12/08,9/16/08,1004,RV,31,51,2008
+CNN/Opinion Research,cnn_orc,9/19/08,9/21/08,697,LV,42,56,2008
+Rasmussen,rasmussen,9/15/08,9/21/08,7000,LV,38,45,2008
+LA Times/Bloomberg,lat_bloomberg,9/19/08,9/22/08,838,LV,41,51,2008
+NBC News/Wall St. Jrnl*,nbc_wsj,9/19/08,9/22/08,1085,RV,37,50,2008
+GWU/Battleground,gwu_battleground,9/21/08,9/25/08,1000,LV,41,46,2008
+Time,time,9/26/08,9/29/08,1133,LV,36,46,2008
+Associated Press/GfK*,ap_gfk,9/27/08,9/30/08,808,LV,36,49,2008
+Democracy Corps (D),dem_corps,9/28/08,9/30/08,1000,LV,43,51,2008
+Democracy Corps (D),dem_corps,10/1/08,10/5/08,1000,LV,41,54,2008
+NBC News/Wall St. Jrnl*,nbc_wsj,10/4/08,10/5/08,658,RV,36,49,2008
+FOX News,fox_news,10/8/08,10/9/08,900,RV,36,44,2008
+GWU/Battleground,gwu_battleground,10/6/08,10/9/08,800,LV,38,49,2008
+CBS News/NY Times,cbs_nyt,10/10/08,10/13/08,699,LV,34,48,2008
+LA Times/Bloomberg,lat_bloomberg,10/10/08,10/13/08,1030,LV,39,45,2008
+GWU/Battleground,gwu_battleground,10/9/08,10/15/08,1000,LV,40,49,2008
+NBC News/Wall St. Jrnl*,nbc_wsj,10/17/08,10/20/08,1159,RV,38,49,2008
+CBS News/NY Times,cbs_nyt,10/19/08,10/22/08,1146,RV,36,48,2008
+GWU/Battleground,gwu_battleground,10/16/08,10/22/08,1000,LV,40,48,2008
+Rasmussen Reports,rasmussen,10/20/08,10/26/08,7000,LV,40,47,2008
+CBS News/NY Times,cbs_nyt,10/25/08,10/29/08,1005,LV,36,48,2008
+GWU/Battleground,gwu_battleground,10/23/08,10/29/08,1000,LV,41,45,2008
+Diageo/Hotline,diageo,10/31/08,11/2/08,887,LV,39,44,2008
+Gallup,gallup,10/31/08,11/2/08,2472,LV,41,53,2008
+NBC News/Wall St. Jrnl*,nbc_wsj,11/1/08,11/2/08,1011,LV,36,48,2008
+CNN/Opinion Research,cnn_orc,1/8/10,1/10/10,955,RV,48,45,2010
+Pew Research,pew,1/6/10,1/10/10,1214,RV,44,46,2010
+Rasmussen Reports,rasmussen,1/4/10,1/10/10,3500,LV,45,36,2010
+Democracy Corps (D),dem_corps,1/7/10,1/11/10,836,LV,46,45,2010
+Rasmussen Reports,rasmussen,1/11/10,1/17/10,3500,LV,45,37,2010
+PPP (D),ppp,1/18/10,1/19/10,1151,RV,45,42,2010
+McLaughlin & Associates (R),mclaughlin,1/19/10,1/20/10,1000,LV,42,37,2010
+NPR - POS/GQR,npr,1/20/10,1/23/10,800,LV,44,39,2010
+Rasmussen Reports,rasmussen,1/18/10,1/24/10,3500,LV,46,37,2010
+PPP (D),ppp,1/29/10,1/31/10,584,RV,43,40,2010
+Rasmussen Reports,rasmussen,1/25/10,1/31/10,3500,LV,45,38,2010
+Gallup,gallup,2/1/10,2/3/10,942,RV,45,45,2010
+Democracy Corps (D),dem_corps,2/2/10,2/4/10,805,LV,45,46,2010
+Rasmussen Reports,rasmussen,2/1/10,2/7/10,3500,LV,44,36,2010
+Pew Research,pew,2/3/10,2/9/10,1129,RV,42,45,2010
+Rasmussen Reports,rasmussen,2/8/10,2/14/10,3500,LV,45,36,2010
+CNN/Opinion Research,cnn_orc,2/12/10,2/15/10,954,RV,47,45,2010
+Newsweek,newsweek,2/17/10,2/18/10,908,RV,43,45,2010
+POS (R),pos,2/17/10,2/18/10,900,RV,43,42,2010
+Rasmussen Reports,rasmussen,2/15/10,2/21/10,3500,LV,44,35,2010
+Democracy Corps (D),dem_corps,2/20/10,2/24/10,851,LV,49,46,2010
+McLaughlin & Associates (R),mclaughlin,2/24/10,2/25/10,1000,LV,42,35,2010
+Ipsos/McClatchy,ipsos_mcclatchy,2/26/10,2/28/10,950,RV,43,47,2010
+Rasmussen Reports,rasmussen,2/22/10,2/28/10,3500,LV,44,36,2010
+Rasmussen Reports,rasmussen,3/1/10,3/7/10,3500,LV,44,37,2010
+PPP (D),ppp,3/12/10,3/14/10,1403,RV,46,43,2010
+Rasmussen Reports,rasmussen,3/8/10,3/14/10,3500,LV,45,35,2010
+FOX News,fox_news,3/16/10,3/17/10,900,RV,42,38,2010
+Democracy Corps (D),dem_corps,3/15/10,3/18/10,850,LV,43,44,2010
+CNN/Opinion Research,cnn_orc,3/19/10,3/21/10,953,RV,48,45,2010
+Quinnipiac,quinnipiac,3/16/10,3/21/10,1907,RV,44,39,2010
+Rasmussen Reports,rasmussen,3/15/10,3/21/10,3500,LV,43,35,2010
+CNN/Opinion Research,cnn_orc,3/25/10,3/28/10,935,RV,49,45,2010
+Rasmussen Reports,rasmussen,3/22/10,3/28/10,3500,LV,46,39,2010
+USA Today/Gallup,usa_today_gallup,3/26/10,3/28/10,968,RV,46,45,2010
+Gallup,gallup,3/29/10,4/4/10,1344,RV,46,46,2010
+Rasmussen Reports,rasmussen,3/29/10,4/4/10,3500,LV,47,38,2010
+Ipsos-McClatchy,ipsos_mcclatchy,4/1/10,4/5/10,950,RV,46,45,2010
+FOX News,fox_news,4/6/10,4/7/10,900,RV,43,39,2010
+GWU/Battleground,gwu_battleground,4/5/10,4/8/10,1000,LV,41,40,2010
+CNN/Opinion Research,cnn_orc,4/9/10,4/11/10,907,RV,46,50,2010
+Gallup,gallup,4/5/10,4/11/10,1613,RV,48,44,2010
+PPP (D),ppp,4/9/10,4/11/10,622,RV,47,42,2010
+Rasmussen Reports,rasmussen,4/5/10,4/11/10,3500,LV,45,36,2010
+Gallup,gallup,4/12/10,4/18/10,1600,RV,46,43,2010
+Rasmussen Reports,rasmussen,4/12/10,4/18/10,3500,LV,46,36,2010
+Democracy Corps (D),dem_corps,4/17/10,4/20/10,872,LV,45,43,2010
+FOX News,fox_news,4/20/10,4/21/10,900,RV,42,38,2010
+Gallup,gallup,4/19/10,4/25/10,1600,RV,45,45,2010
+Rasmussen Reports,rasmussen,4/19/10,4/25/10,3500,LV,44,38,2010
+National Journal/FD,nat_journal,4/22/10,4/26/10,1200,Adults,35,39,2010
+Gallup,gallup,4/26/10,5/2/10,1600,RV,45,45,2010
+Rasmussen Reports,rasmussen,4/26/10,5/2/10,3500,LV,44,37,2010
+FOX News,fox_news,5/4/10,5/5/10,900,RV,42,40,2010
+Gallup,gallup,5/3/10,5/8/10,1600,RV,46,46,2010
+Rasmussen Reports,rasmussen,5/3/10,5/8/10,3500,LV,44,38,2010
+Ipsos-McClatchy,ipsos_mcclatchy,5/6/10,5/9/10,905,RV,42,45,2010
+Gallup,gallup,5/10/10,5/16/10,1600,RV,46,45,2010
+Rasmussen Reports,rasmussen,5/10/10,5/16/10,3500,LV,43,38,2010
+Democracy Corps (D),dem_corps,5/15/10,5/18/10,1000,LV,46,43,2010
+FOX News,fox_news,5/18/10,5/19/10,900,RV,41,41,2010
+Gallup,gallup,5/17/10,5/23/10,1600,RV,46,47,2010
+Rasmussen Reports,rasmussen,5/17/10,5/23/10,3500,LV,44,36,2010
+Quinnipiac,quinnipiac,5/19/10,5/24/10,1914,RV,36,42,2010
+Gallup,gallup,5/24/10,5/30/10,1600,RV,49,43,2010
+Rasmussen Reports,rasmussen,5/24/10,5/30/10,3500,LV,44,37,2010
+Gallup,gallup,5/31/10,6/6/10,1600,RV,46,46,2010
+Rasmussen Reports,rasmussen,5/31/10,6/6/10,3500,LV,44,35,2010
+PPP (D),ppp,6/4/10,6/7/10,650,RV,41,43,2010
+FOX News,fox_news,6/8/10,6/9/10,900,RV,38,41,2010
+Gallup,gallup,6/7/10,6/13/10,1600,RV,49,44,2010
+Ipsos/McClatchy,ipsos_mcclatchy,6/10/10,6/13/10,846,RV,43,42,2010
+Rasmussen Reports,rasmussen,6/7/10,6/13/10,3500,LV,46,36,2010
+USA Today/Gallup,usa_today_gallup,6/11/10,6/13/10,1014,Adults,43,48,2010
+Gallup,gallup,6/14/10,6/20/10,1600,RV,46,46,2010
+Pew Research,pew,6/16/10,6/20/10,1496,RV,45,45,2010
+Rasmussen Reports,rasmussen,6/14/10,6/20/10,3500,LV,44,36,2010
+Democracy Corps (D),dem_corps,6/19/10,6/22/10,867,LV,48,42,2010
+Gallup,gallup,6/21/10,6/27/10,1600,RV,45,46,2010
+Rasmussen Reports,rasmussen,6/21/10,6/27/10,3500,LV,44,38,2010
+FOX News,fox_news,6/29/10,6/30/10,900,RV,42,40,2010
+Gallup,gallup,6/28/10,7/3/10,1600,RV,46,44,2010
+Gallup,gallup,7/5/10,7/11/10,1600,RV,46,47,2010
+Rasmussen Reports,rasmussen,7/5/10,7/11/10,3500,LV,44,38,2010
+Bloomberg,bloomberg,7/9/10,7/12/10,875,LV,48,40,2010
+PPP (D),ppp,7/9/10,7/12/10,667,RV,43,43,2010
+Time,time,7/12/10,7/13/10,1003,Adults,42,43,2010
+FOX News,fox_news,7/13/10,7/14/10,900,RV,41,37,2010
+Gallup,gallup,7/12/10,7/18/10,1535,RV,43,49,2010
+Rasmussen Reports,rasmussen,7/12/10,7/18/10,3500,LV,45,36,2010
+Quinnipiac,quinnipiac,7/13/10,7/19/10,2181,RV,43,38,2010
+CNN/Opinion Research,cnn_orc,7/16/10,7/21/10,945,RV,49,44,2010
+Gallup,gallup,7/19/10,7/25/10,1633,RV,44,48,2010
+Rasmussen Reports,rasmussen,7/19/10,7/25/10,3500,LV,46,36,2010
+Reuters/Ipsos,reuters_ipsos,7/22/10,7/25/10,848,RV,46,44,2010
+FOX News,fox_news,7/27/10,7/28/10,900,RV,47,36,2010
+Gallup,gallup,7/26/10,8/1/10,1562,RV,48,43,2010
+Rasmussen Reports,rasmussen,7/26/10,8/1/10,3500,LV,46,38,2010
+Pew Research,pew,7/21/10,8/5/10,2431,RV,44,45,2010
+Gallup,gallup,8/2/10,8/8/10,1600,RV,49,43,2010
+Rasmussen Reports,rasmussen,8/2/10,8/8/10,3500,LV,46,39,2010
+PPP (D),ppp,8/6/10,8/9/10,606,RV,45,42,2010
+CNN/Opinion Research,cnn_orc,8/6/10,8/10/10,935,RV,48,45,2010
+FOX News,fox_news,8/10/10,8/11/10,900,RV,44,37,2010
+Gallup,gallup,8/9/10,8/15/10,1600,RV,50,43,2010
+Rasmussen Reports,rasmussen,8/9/10,8/15/10,3500,LV,48,36,2010
+Associated Press/GfK,ap_gfk,8/11/10,8/16/10,890,RV,49,45,2010
+Time,time,8/16/10,8/17/10,827,LV,43,37,2010
+Gallup,gallup,8/16/10,8/22/10,1600,RV,47,44,2010
+Rasmussen Reports,rasmussen,8/16/10,8/22/10,3500,LV,47,38,2010
+Reuters/Ipsos,reuters_ipsos,8/19/10,8/22/10,950,RV,46,45,2010
+Newsweek,newsweek,8/25/10,8/26/10,856,RV,45,45,2010
+Gallup,gallup,8/23/10,8/29/10,1540,RV,51,41,2010
+Rasmussen Reports,rasmussen,8/23/10,8/29/10,3500,LV,45,39,2010
+National Journal/FD,nat_journal,8/27/10,8/30/10,1116,RV,36,38,2010
+USA Today/Gallup,usa_today_gallup,8/27/10,8/30/10,928,RV,49,43,2010
+CNN/Opinion Research,cnn_orc,9/1/10,9/2/10,936,RV,52,45,2010
+Democracy Corps (D),dem_corps,8/30/10,9/2/10,845,LV,49,42,2010
+FOX News,fox_news,9/1/10,9/2/10,900,RV,46,37,2010
+Gallup,gallup,8/30/10,9/5/10,1651,RV,46,46,2010
+Rasmussen Reports,rasmussen,8/30/10,9/5/10,3500,LV,48,36,2010
+Pew Research,pew,8/25/10,9/6/10,2053,LV,50,43,2010
+Quinnipiac,quinnipiac,8/31/10,9/7/10,1905,RV,42,37,2010
+Politico/GWU/Battleground,politico_gwu_battleground,9/7/10,9/9/10,1000,LV,43,43,2010
+Gallup,gallup,9/6/10,9/12/10,1527,RV,48,43,2010
+Rasmussen Reports,rasmussen,9/6/10,9/12/10,3500,LV,47,38,2010
+PPP (D),ppp,9/10/10,9/13/10,590,RV,44,45,2010
+Democracy Corps (D),dem_corps,9/11/10,9/14/10,835,LV,50,40,2010
+FOX News,fox_news,9/14/10,9/16/10,900,RV,46,40,2010
+McClatchy/Marist,mcclatchy_marist,9/14/10,9/16/10,815,RV,47,45,2010
+POS (R),pos,9/14/10,9/16/10,800,LV,44,39,2010
+Gallup,gallup,9/13/10,9/19/10,2925,RV,45,46,2010
+Rasmussen Reports,rasmussen,9/13/10,9/19/10,3500,LV,48,38,2010
+Reuters/Ipsos,reuters_ipsos,9/16/10,9/19/10,993,RV,45,46,2010
+Politico/GWU/Battleground,politico_gwu_battleground,9/19/10,9/22/10,1000,LV,47,42,2010
+CNN/Opinion Research,cnn_orc,9/21/10,9/23/10,506,LV,53,44,2010
+Gallup,gallup,9/20/10,9/26/10,3000,RV,46,46,2010
+Rasmussen Reports,rasmussen,9/20/10,9/26/10,3500,LV,46,40,2010
+FOX News,fox_news,9/28/10,9/29/10,900,RV,44,38,2010
+Newsweek,newsweek,9/29/10,9/30/10,902,RV,43,48,2010
+ABC News/Wash Post,abc_wapo,9/30/10,10/3/10,669,LV,49,43,2010
+Gallup (LV Higher Turnout)*,gallup_ht,9/23/10,10/3/10,1882,LV,53,40,2010
+Gallup (LV Lower Turnout)*,gallup_lt,9/23/10,10/3/10,1882,LV,56,38,2010
+Rasmussen Reports,rasmussen,9/27/10,10/3/10,3500,LV,45,42,2010
+Democracy Corps (D),dem_corps,10/2/10,10/4/10,816,LV,49,43,2010
+CNN/Opinion Research,cnn_orc,10/5/10,10/7/10,504,LV,52,45,2010
+Bloomberg,bloomberg,10/7/10,10/10/10,721,LV,40,42,2010
+Gallup (LV Higher Turnout)*,gallup_ht,9/30/10,10/10/10,1953,LV,53,41,2010
+Gallup (LV Lower Turnout)*,gallup_lt,9/30/10,10/10/10,1953,LV,56,39,2010
+Rasmussen Reports,rasmussen,10/4/10,10/10/10,3500,LV,47,39,2010
+Reuters/Ipsos,reuters_ipsos,10/7/10,10/11/10,720,LV,48,44,2010
+FOX News,fox_news,10/11/10,10/13/10,687,LV,48,39,2010
+Gallup (LV Higher Turnout)*,gallup_ht,10/7/10,10/17/10,1900,LV,53,42,2010
+Gallup (LV Lower Turnout)*,gallup_lt,10/7/10,10/17/10,1900,LV,56,39,2010
+Rasmussen Reports,rasmussen,10/11/10,10/17/10,3500,LV,48,39,2010
+Associated Press/GfK,ap_gfk,10/13/10,10/18/10,846,LV,50,43,2010
+Pew Research,pew,10/13/10,10/18/10,1354,LV,50,40,2010
+Politico/GWU/Battleground,politico_gwu_battleground,10/17/10,10/20/10,1000,LV,47,42,2010
+Newsweek,newsweek,10/20/10,10/21/10,773,LV,45,48,2010
+Gallup (LV Higher Turnout)*,gallup_ht,10/14/10,10/24/10,1989,LV,52,43,2010
+Gallup (LV Lower Turnout)*,gallup_lt,10/14/10,10/24/10,1989,LV,55,41,2010
+Rasmussen Reports,rasmussen,10/18/10,10/24/10,3500,LV,51,39,2010
+McClatchy/Marist,mcclatchy_marist,10/22/10,10/25/10,350,LV,49,43,2010
+Bloomberg,bloomberg,10/24/10,10/26/10,1000,LV,47,44,2010
+ABC News/Wash Post,abc_wapo,10/25/10,10/28/10,786,LV,49,45,2010
+FOX News,fox_news,10/26/10,10/28/10,764,LV,50,37,2010
+CNN/Opinion Research,cnn_orc,10/27/10,10/30/10,542,LV,52,42,2010
+Pew Research,pew,10/27/10,10/30/10,1809,LV,48,42,2010
+Gallup,gallup,10/28/10,10/31/10,1539,LV,55,40,2010
+Rasmussen Reports,rasmussen,10/25/10,10/31/10,3500,LV,51,39,2010
+Reuters/Ipsos,reuters_ipsos,10/28/10,10/31/10,654,LV,50,44,2010
+Rasmussen Reports,rasmussen,1/2/12,1/8/12,4000,LV,38,44,2012
+Reuters/Ipsos,reuters_ipsos,1/5/12,1/9/12,896,RV,48,44,2012
+Democracy Corps (D),dem_corps,1/8/12,1/11/12,1000,LV,47,44,2012
+Rasmussen Reports,rasmussen,1/9/12,1/15/12,3500,LV,38,44,2012
+Rasmussen Reports,rasmussen,1/16/12,1/22/12,3500,LV,39,42,2012
+Rasmussen Reports,rasmussen,1/23/12,1/29/12,3500,LV,41,40,2012
+Rasmussen Reports,rasmussen,1/30/12,2/5/12,3500,LV,41,43,2012
+Reuters/Ipsos,reuters_ipsos,2/2/12,2/6/12,881,RV,46,44,2012
+Rasmussen Reports,rasmussen,2/6/12,2/12/12,3500,LV,41,43,2012
+Democracy Corps (D),dem_corps,2/11/12,2/14/12,1000,LV,47,45,2012
+Rasmussen Reports,rasmussen,2/13/12,2/19/12,3500,LV,41,42,2012
+USA Today/Gallup,usa_today_gallup,2/16/12,2/19/12,898,RV,47,47,2012
+Quinnipiac,quinnipiac,2/14/12,2/20/12,2605,RV,38,40,2012
+Politico/GWU/Battleground,politico_gwu_battleground,2/19/12,2/22/12,1000,LV,46,45,2012
+Rasmussen Reports,rasmussen,2/20/12,2/26/12,3500,LV,39,43,2012
+Rasmussen Reports,rasmussen,2/27/12,3/4/12,3500,LV,41,44,2012
+Bloomberg,bloomberg,3/8/12,3/11/12,746,LV,44,46,2012
+Rasmussen Reports,rasmussen,3/5/12,3/11/12,3500,LV,38,44,2012
+Reuters/Ipsos,reuters_ipsos,3/8/12,3/11/12,937,RV,47,43,2012
+Rasmussen Reports,rasmussen,3/12/12,3/18/12,3500,LV,40,44,2012
+McClatchy/Marist,mcclatchy_marist,3/20/12,3/22/12,846,RV,43,47,2012
+Rasmussen Reports,rasmussen,3/19/12,3/25/12,3500,LV,38,43,2012
+Rasmussen Reports,rasmussen,3/26/12,4/1/12,3500,LV,39,45,2012
+Rasmussen Reports,rasmussen,4/2/12,4/8/12,3500,LV,40,45,2012
+Rasmussen Reports,rasmussen,4/9/12,4/15/12,3500,LV,36,46,2012
+Reuters/Ipsos,reuters_ipsos,4/12/12,4/15/12,891,RV,42,41,2012
+Quinnipiac,quinnipiac,4/11/12,4/17/12,2577,RV,40,39,2012
+Rasmussen Reports,rasmussen,4/16/12,4/22/12,3500,LV,40,43,2012
+Rasmussen Reports,rasmussen,4/23/12,4/29/12,3500,LV,40,43,2012
+Democracy Corps (D),dem_corps,4/28/12,5/1/12,1000,LV,46,45,2012
+Politico/GWU/Battleground,politico_gwu_battleground,4/29/12,5/3/12,1000,LV,43,45,2012
+Resurgent Republic (R),resurgen_republic,4/30/12,5/3/12,1000,RV,45,40,2012
+Rasmussen Reports,rasmussen,4/30/12,5/6/12,3500,LV,41,44,2012
+Reuters/Ipsos,reuters_ipsos,5/3/12,5/7/12,959,RV,46,44,2012
+Rasmussen Reports,rasmussen,5/7/12,5/12/12,3500,LV,38,45,2012
+USA Today/Gallup,usa_today_gallup,5/10/12,5/13/12,1012,Adults,44,50,2012
+Rasmussen Reports,rasmussen,5/14/12,5/20/12,3500,LV,39,43,2012
+Rasmussen Reports,rasmussen,5/21/12,5/27/12,3500,LV,39,42,2012
+CNN/Opinion Research,cnn_orc,5/29/12,5/31/12,895,RV,48,45,2012
+Rasmussen Reports,rasmussen,5/28/12,6/3/12,3500,LV,37,44,2012
+Rasmussen Reports,rasmussen,6/4/12,6/10/12,3500,LV,39,45,2012
+Reuters/Ipsos,reuters_ipsos,6/7/12,6/11/12,848,RV,47,44,2012
+Pew Research,pew,6/7/12,6/17/12,1563,RV,47,43,2012
+Rasmussen Reports,rasmussen,6/11/12,6/17/12,3500,LV,38,45,2012
+Bloomberg,bloomberg,6/15/12,6/18/12,734,LV,48,41,2012
+Rasmussen Reports,rasmussen,6/18/12,6/24/12,3500,LV,39,44,2012
+Democracy Corps (D),dem_corps,6/23/12,6/27/12,1000,LV,45,46,2012
+Newsweek/Daily Beast,newsweek,6/28/12,6/28/12,600,LV,36,38,2012
+Rasmussen Reports,rasmussen,6/25/12,7/1/12,3500,LV,40,41,2012
+Quinnipiac,quinnipiac,7/1/12,7/8/12,2722,RV,43,40,2012
+Rasmussen Reports,rasmussen,7/2/12,7/8/12,3500,LV,40,43,2012
+Reuters/Ipsos,reuters_ipsos,7/5/12,7/9/12,885,RV,44,48,2012
+Rasmussen Reports,rasmussen,7/9/12,7/15/12,3500,LV,40,43,2012
+Rasmussen Reports,rasmussen,7/16/12,7/22/12,3500,LV,40,43,2012
+Democracy Corps (D),dem_corps,7/21/12,7/25/12,700,LV,46,46,2012
+Rasmussen Reports,rasmussen,7/23/12,7/29/12,3500,LV,40,43,2012
+Rasmussen Reports,rasmussen,7/29/12,8/5/12,3500,LV,39,42,2012
+Reuters/Ipsos,reuters_ipsos,8/2/12,8/6/12,1014,RV,46,46,2012
+Politico/GWU/Battleground,politico_gwu_battleground,8/5/12,8/9/12,1000,LV,43,45,2012
+Rasmussen Reports,rasmussen,8/6/12,8/12/12,3500,LV,39,42,2012
+Rasmussen Reports,rasmussen,8/13/12,8/19/12,3500,LV,41,42,2012
+Resurgent Republic (R),resurgen_republic,8/16/12,8/22/12,1000,LV,44,40,2012
+USA Today/Gallup,usa_today_gallup,8/20/12,8/22/12,955,RV,47,47,2012
+Rasmussen Reports,rasmussen,8/20/12,8/26/12,3500,LV,42,42,2012
+Democracy Corps (D),dem_corps,8/23/12,8/27/12,1000,LV,46,47,2012
+Rasmussen Reports,rasmussen,8/27/12,9/2/12,3500,LV,42,43,2012
+Rasmussen Reports,rasmussen,9/3/12,9/9/12,3500,LV,44,42,2012
+Reuters/Ipsos,reuters_ipsos,9/7/12,9/10/12,942,RV,49,43,2012
+Democracy Corps (D),dem_corps,9/8/12,9/12/12,1000,LV,46,46,2012
+Rasmussen Reports,rasmussen,9/10/12,9/16/12,3500,LV,43,44,2012
+Politico/GWU/Battleground,politico_gwu_battleground,9/16/12,9/20/12,1000,LV,47,45,2012
+Rasmussen Reports,rasmussen,9/17/12,9/23/12,3500,LV,43,44,2012
+Bloomberg,bloomberg,9/21/12,9/24/12,789,LV,43,45,2012
+Politico/GWU/Battleground,politico_gwu_battleground,9/24/12,9/27/12,1000,LV,46,44,2012
+USA Today/Gallup,usa_today_gallup,9/24/12,9/27/12,1301,RV,47,46,2012
+NPR,npr,9/26/12,9/30/12,800,LV,48,45,2012
+Rasmussen Reports,rasmussen,9/24/12,9/30/12,3500,LV,41,45,2012
+Politico/GWU/Battleground,politico_gwu_battleground,10/1/12,10/4/12,1000,LV,46,45,2012
+Rasmussen Reports,rasmussen,10/1/12,10/7/12,3500,LV,44,43,2012
+Politico/GWU/Battleground,politico_gwu_battleground,10/7/12,10/11/12,1000,LV,46,44,2012
+Rasmussen Reports,rasmussen,10/8/12,10/14/12,3500,LV,43,42,2012
+Politico/GWU/Battleground,politico_gwu_battleground,10/15/12,10/18/12,1000,LV,46,46,2012
+Rasmussen Reports,rasmussen,10/15/12,10/21/12,3500,LV,43,44,2012
+NPR,npr,10/23/12,10/25/12,1000,LV,43,43,2012
+Politico/GWU/Battleground,politico_gwu_battleground,10/22/12,10/25/12,1000,LV,45,46,2012
+CBS News/NY Times,cbs_nyt,10/25/12,10/28/12,563,LV,48,46,2012
+Rasmussen Reports,rasmussen,10/22/12,10/28/12,3500,LV,43,46,2012
+Politico/GWU/Battleground,politico_gwu_battleground,10/29/12,11/1/12,1000,LV,46,46,2012
+CNN/Opinion Research,cnn_orc,11/2/12,11/4/12,693,LV,48,49,2012
+Gallup,gallup,11/1/12,11/4/12,2551,LV,49,48,2012
+Rasmussen Reports,rasmussen,10/29/12,11/4/12,3500,LV,46,46,2012
+Politico/GWU/Battleground,politico_gwu_battleground,11/4/12,11/5/12,1000,LV,46,47,2012
+Quinnipiac,quinnipiac,1/4/14,1/7/14,1487,RV,38,37,2014
+Rasmussen Reports,rasmussen,1/6/14,1/12/14,3500,LV,37,41,2014
+GWU/Battleground,gwu_battleground,1/12/14,1/16/14,1000,LV,43,41,2014
+Quinnipiac,quinnipiac,1/15/14,1/19/14,1933,RV,38,37,2014
+Rasmussen Reports,rasmussen,1/13/14,1/19/14,3500,LV,35,41,2014
+FOX News,fox_news,1/19/14,1/21/14,1010,RV,43,41,2014
+PPP (D),ppp,1/23/14,1/26/14,845,RV,42,40,2014
+Rasmussen Reports,rasmussen,1/20/14,1/26/14,3500,LV,37,42,2014
+Rasmussen Reports,rasmussen,1/27/14,2/2/14,3500,LV,40,39,2014
+McClatchy/Marist,mcclatchy_marist,2/4/14,2/9/14,970,RV,44,46,2014
+Rasmussen Reports,rasmussen,2/3/14,2/9/14,3500,LV,38,40,2014
+Rasmussen Reports,rasmussen,2/10/14,2/16/14,3500,LV,37,41,2014
+Rasmussen Reports,rasmussen,2/17/14,2/23/14,3500,LV,37,41,2014
+Rasmussen Reports,rasmussen,2/24/14,3/2/14,3500,LV,36,39,2014
+FOX News,fox_news,3/2/14,3/4/14,1002,RV,38,40,2014
+PPP (D),ppp,3/6/14,3/9/14,1152,RV,40,43,2014
+Rasmussen Reports,rasmussen,3/3/14,3/9/14,3500,LV,39,39,2014
+Rasmussen Reports,rasmussen,3/10/14,3/16/14,3500,LV,39,38,2014
+GWU/Battleground,gwu_battleground,3/16/14,3/20/14,1000,LV,43,43,2014
+NPR/GQR/Resurgent,npr,3/19/14,3/23/14,840,LV,43,44,2014
+Rasmussen Reports,rasmussen,3/17/14,3/23/14,3500,LV,37,41,2014
+Rasmussen Reports,rasmussen,3/24/14,3/30/14,3500,LV,38,39,2014
+Reason-Rupe/PSRAI,reason,3/26/14,3/30/14,1003,Adults,36,40,2014
+Quinnipiac,quinnipiac,3/26/14,3/31/14,1578,RV,38,40,2014
+Rasmussen Reports,rasmussen,3/31/14,4/6/14,3500,LV,39,40,2014
+McClatchy/Marist,mcclatchy_marist,4/7/14,4/10/14,1036,RV,42,48,2014
+Rasmussen Reports,rasmussen,4/7/14,4/13/14,3500,LV,38,40,2014
+FOX News,fox_news,4/13/14,4/15/14,1012,RV,44,41,2014
+Rasmussen Reports,rasmussen,4/14/14,4/20/14,3500,LV,41,40,2014
+ABC News/Wash Post,abc_wapo,4/24/14,4/27/14,855,RV,44,45,2014
+Rasmussen Reports,rasmussen,4/21/14,4/27/14,3500,LV,40,38,2014
+USA Today/Pew Research,usa_today_pew,4/23/14,4/27/14,1162,RV,47,43,2014
+CNN/Opinion Research,cnn_orc,5/2/14,5/4/14,911,RV,46,45,2014
+Rasmussen Reports,rasmussen,4/28/14,5/4/14,3500,LV,37,41,2014
+Rasmussen Reports,rasmussen,5/5/14,5/11/14,3500,LV,38,40,2014
+FOX News,fox_news,5/10/14,5/13/14,1025,RV,40,43,2014
+Rasmussen Reports,rasmussen,5/12/14,5/18/14,3500,LV,37,41,2014
+Rasmussen Reports,rasmussen,5/19/14,5/25/14,3500,LV,38,42,2014
+Rasmussen Reports,rasmussen,5/26/14,6/1/14,3500,LV,38,41,2014
+FOX News,fox_news,6/1/14,6/3/14,1006,RV,43,39,2014
+Rasmussen Reports,rasmussen,6/2/14,6/8/14,3500,LV,37,41,2014
+Bloomberg,bloomberg,6/6/14,6/9/14,763,LV,43,43,2014
+Rasmussen Reports,rasmussen,6/9/14,6/15/14,3500,LV,37,39,2014
+Rasmussen Reports,rasmussen,6/16/14,6/22/14,3500,LV,38,40,2014
+FOX News,fox_news,6/21/14,6/23/14,1018,RV,42,42,2014
+Rasmussen Reports,rasmussen,6/23/14,6/29/14,3500,LV,38,40,2014
+Quinnipiac,quinnipiac,6/24/14,6/30/14,1446,RV,39,41,2014
+Rasmussen Reports,rasmussen,6/30/14,7/6/14,3500,LV,38,41,2014
+Rasmussen Reports,rasmussen,7/7/14,7/13/14,3500,LV,38,39,2014
+Pew Research,pew,7/8/14,7/14/14,1420,RV,45,47,2014
+CNN/Opinion Research,cnn_orc,7/18/14,7/20/14,899,RV,44,48,2014
+Rasmussen Reports,rasmussen,7/14/14,7/20/14,3500,LV,39,39,2014
+FOX News,fox_news,7/20/14,7/22/14,1057,RV,41,43,2014
+Rasmussen Reports,rasmussen,7/21/14,7/27/14,3500,LV,39,41,2014
+Rasmussen Reports,rasmussen,7/28/14,8/3/14,3500,LV,42,38,2014
+McClatchy/Marist,mcclatchy_marist,8/4/14,8/7/14,806,RV,43,38,2014
+Rasmussen Reports,rasmussen,8/4/14,8/10/14,3500,LV,40,39,2014
+FOX News,fox_news,8/10/14,8/12/14,1001,RV,39,46,2014
+Rasmussen Reports,rasmussen,8/11/14,8/17/14,3500,LV,39,39,2014
+Rasmussen Reports,rasmussen,8/18/14,8/24/14,3500,LV,40,39,2014
+USA Today/Pew Research,usa_today_pew,8/20/14,8/24/14,1171,RV,42,47,2014
+GWU/Battleground,gwu_battleground,8/23/14,8/28/14,1000,LV,46,42,2014
+Rasmussen Reports,rasmussen,8/25/14,8/31/14,3500,LV,41,40,2014
+Rasmussen Reports,rasmussen,9/1/14,9/7/14,3500,LV,41,39,2014
+FOX News,fox_news,9/7/14,9/9/14,833,LV,47,40,2014
+Pew Research,pew,9/2/14,9/9/14,1150,LV,47,44,2014
+Rasmussen Reports,rasmussen,9/8/14,9/14/14,3500,LV,38,41,2014
+CBS News/NY Times,cbs_nyt,9/12/14,9/15/14,470,LV,49,42,2014
+Rasmussen Reports,rasmussen,9/15/14,9/21/14,3500,LV,40,40,2014
+CNN/Opinion Research,cnn_orc,9/25/14,9/28/14,701,LV,45,47,2014
+Rasmussen Reports,rasmussen,9/22/14,9/28/14,3500,LV,39,40,2014
+McClatchy/Marist,mcclatchy_marist,9/24/14,9/29/14,884,RV,44,45,2014
+FOX News,fox_news,9/28/14,9/30/14,845,LV,47,40,2014
+Gallup,gallup,9/25/14,9/30/14,1095,RV,47,46,2014
+Rasmussen Reports,rasmussen,9/29/14,10/5/14,3500,LV,39,41,2014
+CBS News,cbs_nyt,10/3/14,10/6/14,575,LV,49,43,2014
+ABC News/Wash Post,abc_wapo,10/9/14,10/12/14,629,LV,50,43,2014
+NBC News/Wall St. Jrnl,nbc_wsj,10/8/14,10/12/14,666,LV,48,47,2014
+Rasmussen Reports,rasmussen,10/6/14,10/12/14,3500,LV,40,40,2014
+FOX News,fox_news,10/12/14,10/14/14,831,LV,45,42,2014
+Rasmussen Reports,rasmussen,10/13/14,10/19/14,3500,LV,41,41,2014
+Associated Press/GfK,ap_gfk,10/16/14,10/20/14,968,LV,40,32,2014
+Pew Research,pew,10/15/14,10/20/14,1126,LV,46,47,2014
+ABC News/Wash Post,abc_wapo,10/23/14,10/26/14,758,LV,50,44,2014
+CNN/Opinion Research,cnn_orc,10/24/14,10/26/14,540,LV,46,47,2014
+Rasmussen Reports,rasmussen,10/20/14,10/26/14,3500,LV,43,41,2014
+USA Today/PSRAI,usa_today_psrai,10/23/14,10/26/14,697,LV,42,43,2014
+CBS News,cbs_nyt,10/23/14,10/27/14,624,LV,50,42,2014
+FOX News,fox_news,10/25/14,10/27/14,734,LV,44,45,2014
+NBC News/Wall St. Jrnl,nbc_wsj,10/30/14,11/1/14,826,LV,48,48,2014
+Rasmussen Reports,rasmussen,10/27/14,11/2/14,3500,LV,44,41,2014
+PPP (D),ppp,2/2/16,2/3/16,1236,RV,41,47,2016
+PPP (D),ppp,3/24/16,3/26/16,1083,RV,43,43,2016
+NBC News/Wall St. Jrnl,nbc_wsj,4/10/16,4/14/16,1000,RV,45,47,2016
+GWU/Battleground,gwu_battleground,4/17/16,4/20/16,1000,LV,41,46,2016
+Rasmussen Reports,rasmussen,5/10/16,5/14/16,2500,LV,38,38,2016
+ABC News/Wash Post,abc_wapo,5/16/16,5/19/16,829,RV,45,45,2016
+NBC News/Wall St. Jrnl,nbc_wsj,5/15/16,5/19/16,1000,RV,44,48,2016
+Quinnipiac,quinnipiac,5/19/16,5/26/16,1711,RV,36,39,2016
+NBC News/Wall St. Jrnl,nbc_wsj,6/19/16,6/23/16,1000,RV,46,46,2016
+FOX News,fox_news,6/26/16,6/28/16,1017,RV,41,46,2016
+Quinnipiac,quinnipiac,7/23/16,7/28/16,1644,RV,39,37,2016
+PPP (D),ppp,7/29/16,7/30/16,1276,LV,44,47,2016
+McClatchy/Marist,mcclatchy_marist,8/1/16,8/3/16,983,RV,41,49,2016
+NBC News/Wall St. Jrnl,nbc_wsj,7/31/16,8/3/16,800,RV,43,47,2016
+GWU/Battleground,gwu_battleground,8/28/16,9/1/16,1000,LV,43,45,2016
+CNN/ORC,cnn_orc,9/1/16,9/4/16,786,LV,49,47,2016
+Reuters/Ipsos,reuters_ipsos,9/1/16,9/5/16,1084,LV,39,40,2016
+Economist/YouGov,economist_yougov,9/4/16,9/6/16,955,RV,38,41,2016
+Reuters/Ipsos,reuters_ipsos,9/8/16,9/12/16,1752,Adults,38,40,2016
+Economist/YouGov,economist_yougov,9/10/16,9/13/16,926,RV,38,44,2016
+Economist/YouGov,economist_yougov,9/18/16,9/19/16,936,RV,36,43,2016
+NBC News/Wall St. Jrnl,nbc_wsj,9/16/16,9/19/16,1000,RV,45,48,2016
+Reuters/Ipsos,reuters_ipsos,9/15/16,9/19/16,1111,LV,40,39,2016
+McClatchy/Marist,mcclatchy_marist,9/15/16,9/20/16,758,LV,45,49,2016
+Bloomberg,bloomberg,9/21/16,9/24/16,1002,LV,44,46,2016
+Economist/YouGov,economist_yougov,9/22/16,9/24/16,948,RV,38,43,2016
+Reuters/Ipsos,reuters_ipsos,9/22/16,9/26/16,1041,LV,36,42,2016
+FOX News,fox_news,9/27/16,9/29/16,911,LV,43,44,2016
+Economist/YouGov,economist_yougov,10/1/16,10/3/16,911,RV,37,43,2016
+Reuters/Ipsos,reuters_ipsos,9/29/16,10/3/16,1669,RV,38,42,2016
+Economist/YouGov,economist_yougov,10/7/16,10/8/16,971,RV,39,42,2016
+NBC News/Wall St. Jrnl,nbc_wsj,10/8/16,10/9/16,500,RV,42,49,2016
+NBC News/Wall St. Jrnl,nbc_wsj,10/8/16,10/10/16,900,RV,42,48,2016
+Reuters/Ipsos,reuters_ipsos,10/6/16,10/10/16,2363,Adults,36,46,2016
+FOX News,fox_news,10/10/16,10/12/16,917,LV,42,48,2016
+ABC News/Wash Post,abc_wapo,10/10/16,10/13/16,740,LV,44,47,2016
+GWU/Battleground,gwu_battleground,10/8/16,10/13/16,1000,LV,42,47,2016
+NBC News/Wall St. Jrnl,nbc_wsj,10/10/16,10/13/16,905,LV,44,47,2016
+CBS News,cbs_nyt,10/12/16,10/16/16,1189,LV,45,50,2016
+Bloomberg,bloomberg,10/14/16,10/17/16,1006,LV,43,47,2016
+Reuters/Ipsos,reuters_ipsos,10/13/16,10/17/16,1190,LV,39,43,2016
+Economist/YouGov,economist_yougov,10/15/16,10/18/16,925,RV,38,43,2016
+CNN/ORC,cnn_orc,10/20/16,10/23/16,779,LV,47,50,2016
+ABC News,abc_wapo,10/22/16,10/24/16,828,LV,46,47,2016
+Associated Press-GfK,ap_gfk,10/20/16,10/24/16,1212,LV,41,46,2016
+Reuters/Ipsos,reuters_ipsos,10/20/16,10/24/16,1170,LV,39,44,2016
+FOX News,fox_news,10/22/16,10/25/16,1221,LV,45,47,2016
+Economist/YouGov,economist_yougov,10/22/16,10/26/16,1209,LV,40,45,2016
+NBC News/Wall St. Jrnl,nbc_wsj,10/25/16,10/29/16,847,RV,45,45,2016
+CBS News/NY Times,cbs_nyt,10/28/16,11/1/16,1333,RV,46,49,2016
+Economist/YouGov,economist_yougov,10/30/16,11/1/16,1228,LV,41,46,2016
+Reuters/Ipsos,reuters_ipsos,10/29/16,11/2/16,1858,LV,41,42,2016
+McClatchy/Marist,mcclatchy_marist,11/1/16,11/3/16,940,LV,47,48,2016
+NBC News/Wall St. Jrnl,nbc_wsj,11/3/16,11/5/16,1282,LV,44,47,2016
+Bloomberg,bloomberg,11/4/16,11/6/16,799,LV,48,45,2016
+FOX News,fox_news,11/3/16,11/6/16,1295,LV,46,45,2016
+Economist/YouGov,economist_yougov,11/4/16,11/7/16,3677,LV,42,45,2016
+Pew Research,pew,1/6/10,1/10/10,1214,RV,44,46,2010
+Rasmussen Reports,rasmussen,1/4/10,1/10/10,3500,LV,45,36,2010
+Rasmussen Reports,rasmussen,12/28/09,1/3/10,4000,LV,44,35,2010
+Rasmussen Reports,rasmussen,12/21/09,12/27/09,2500,LV,43,38,2010
+Rasmussen Reports,rasmussen,12/14/09,12/20/09,3500,LV,44,36,2010
+USA Today/Gallup,usa_today_gallup,12/11/09,12/13/09,898,RV,45,48,2010
+Rasmussen Reports,rasmussen,12/7/09,12/13/09,3500,LV,44,37,2010
+Battleground,battleground,12/6/09,12/10/09,1000,LV,42,41,2010
+PPP (D),ppp,12/4/09,12/7/09,1253,RV,42,44,2010
+Bloomberg,bloomberg,12/3/09,12/7/09,714,LV,42,38,2010
+Rasmussen Reports,rasmussen,11/30/09,12/6/09,3500,LV,43,39,2010
+Rasmussen Reports,rasmussen,11/23/09,11/29/09,3500,LV,44,37,2010
+Rasmussen Reports,rasmussen,11/16/09,11/22/09,3500,LV,44,37,2010
+Democracy Corps (D),dem_corps,11/12/09,11/16/09,875,LV,45,47,2010
+CNN/Opinion Research,cnn_orc,11/13/09,11/15/09,928,RV,43,49,2010
+PPP (D),ppp,11/13/09,11/15/09,1066,RV,38,46,2010
+Rasmussen Reports,rasmussen,11/9/09,11/15/09,3500,LV,44,38,2010
+Gallup,gallup,11/5/09,11/8/09,894,RV,48,44,2010
+Rasmussen Reports,rasmussen,11/2/09,11/8/09,3500,LV,43,37,2010
+Pew Research,pew,10/28/09,11/8/09,1644,RV,42,47,2010
+CNN/Opinion Research,cnn_orc,10/30/09,11/1/09,952,RV,44,50,2010
+Ipsos/McClatchy,ipsos_mcclatchy,10/29/09,11/1/09,950,RV,45,46,2010
+Rasmussen Reports,rasmussen,10/26/09,11/1/09,3500,LV,42,38,2010
+Rasmussen Reports,rasmussen,10/19/09,10/25/09,3500,LV,42,38,2010
+PPP (D),ppp,10/16/09,10/19/09,766,RV,40,48,2010
+ABC News/Wash Post,abc_wapo,10/15/09,10/18/09,1004,Adults,39,51,2010
+Rasmussen Reports,rasmussen,10/12/09,10/18/09,3500,LV,42,37,2010
+Rasmussen Reports,rasmussen,10/5/09,10/11/09,3500,LV,41,39,2010
+Gallup,gallup,10/1/09,10/4/09,906,RV,44,46,2010
+Rasmussen Reports,rasmussen,9/28/09,10/4/09,3500,LV,43,39,2010
+Rasmussen Reports,rasmussen,9/21/09,9/27/09,3500,LV,42,40,2010
+Rasmussen Reports,rasmussen,9/14/09,9/20/09,3500,LV,42,38,2010
+Democracy Corps (D),dem_corps,9/12/09,9/16/09,1044,LV,42,46,2010
+Bloomberg,bloomberg,9/10/09,9/14/09,1004,Adults,32,40,2010
+Rasmussen Reports,rasmussen,9/7/09,9/13/09,3500,LV,41,40,2010
+Rasmussen Reports,rasmussen,8/31/09,9/6/09,3500,LV,44,37,2010
+Democracy Corps (D),dem_corps,8/29/09,9/1/09,837,LV,43,47,2010
+Ipsos-McClatchy,ipsos_mcclatchy,8/27/09,8/31/09,903,RV,34,42,2010
+PPP (D),ppp,8/27/09,8/30/09,596,RV,45,41,2010
+Rasmussen Reports,rasmussen,8/24/09,8/30/09,3500,LV,43,36,2010
+Pew Research,pew,8/20/09,8/27/09,1669,RV,44,45,2010
+Rasmussen Reports,rasmussen,8/17/09,8/23/09,3500,LV,43,38,2010
+Rasmussen Reports,rasmussen,8/9/09,8/16/09,3500,LV,43,38,2010
+Rasmussen Reports,rasmussen,8/3/09,8/9/09,3500,LV,42,38,2010
+Rasmussen Reports,rasmussen,7/27/09,8/2/09,3500,LV,43,38,2010
+NPR,npr,7/22/09,7/26/09,850,LV,43,42,2010
+Rasmussen Reports,rasmussen,7/20/09,7/26/09,3500,LV,42,39,2010
+GWU/Battleground,gwu_battleground,7/19/09,7/23/09,1000,LV,40,43,2010
+Rasmussen Reports,rasmussen,7/13/09,7/19/09,3500,LV,42,38,2010
+Gallup,gallup,7/10/09,7/12/09,916,RV,44,50,2010
+Rasmussen Reports,rasmussen,7/8/09,7/14/09,3500,LV,40,37,2010
+Diageo/Hotline,diageo,7/9/09,7/13/09,800,RV,32,39,2010
+Rasmussen Reports,rasmussen,6/29/09,7/5/09,3500,LV,41,38,2010
+Quinnipiac,quinnipiac,6/23/09,6/29/09,3063,RV,34,42,2010
+Rasmussen Reports,rasmussen,6/22/09,6/28/09,3500,LV,41,39,2010
+Rasmussen Reports,rasmussen,6/15/09,6/21/09,3500,LV,39,41,2010
+Rasmussen Reports,rasmussen,6/8/09,6/14/09,3500,LV,39,39,2010
+Diageo/Hotline,diageo,6/4/09,6/7/09,800,RV,30,39,2010
+Rasmussen Reports,rasmussen,6/1/09,6/7/09,3500,LV,40,40,2010
+Quinnipiac,quinnipiac,5/26/09,6/1/09,3097,RV,32,42,2010
+Democracy Corps (D),dem_corps,5/26/09,6/1/09,1013,RV,40,50,2010
+Rasmussen Reports,rasmussen,5/25/09,5/31/09,3500,LV,37,38,2010
+Rasmussen Reports,rasmussen,5/18/09,5/24/09,3500,LV,38,41,2010
+Rasmussen Reports,rasmussen,5/11/09,5/17/09,3500,LV,39,40,2010
+Democracy Corps (D),dem_corps,5/10/09,5/12/09,1000,RV,43,46,2010
+Rasmussen Reports,rasmussen,5/4/09,5/10/09,3500,LV,40,39,2010
+Rasmussen Reports,rasmussen,4/27/09,5/3/09,3500,LV,40,39,2010
+Quinnipiac,quinnipiac,4/21/09,4/27/09,2041,RV,34,41,2010
+Diageo/Hotline,diageo,4/23/09,4/26/09,800,RV,31,39,2010
+Rasmussen Reports,rasmussen,4/20/09,4/26/09,3500,LV,41,38,2010
+POS (R),pos,4/19/09,4/21/09,800,LV,37,41,2010
+Rasmussen Reports,rasmussen,4/13/09,4/19/09,3500,LV,39,39,2010
+Rasmussen Reports,rasmussen,4/6/09,4/12/09,3500,LV,38,38,2010
+Rasmussen Reports,rasmussen,3/30/09,4/5/09,3500,LV,39,40,2010
+Diageo/Hotline,diageo,3/26/09,3/29/09,800,RV,32,37,2010
+Democracy Corps (D),dem_corps,3/25/09,3/29/09,1000,LV,42,48,2010
+Rasmussen Reports,rasmussen,3/23/09,3/29/09,3500,LV,38,42,2010
+Rasmussen Reports,rasmussen,3/16/09,3/22/09,3500,LV,38,41,2010
+NPR,npr,3/10/09,3/14/09,800,LV,42,42,2010
+Rasmussen Reports,rasmussen,3/9/09,3/15/09,3500,LV,41,39,2010
+Rasmussen Reports,rasmussen,3/2/09,3/8/09,3500,LV,38,42,2010
+Diageo/Hotline,diageo,2/28/09,3/2/09,803,RV,34,40,2010
+Rasmussen Reports,rasmussen,2/23/09,3/1/09,3500,LV,39,41,2010
+Rasmussen Reports,rasmussen,2/16/09,2/22/09,3500,LV,37,41,2010
+Rasmussen Reports,rasmussen,2/9/09,2/15/09,3500,LV,39,41,2010
+Rasmussen Reports,rasmussen,2/2/09,2/8/09,3500,LV,39,40,2010
+Rasmussen Reports,rasmussen,1/26/09,2/1/09,3500,LV,38,42,2010
+Rasmussen Reports,rasmussen,1/19/09,1/25/09,3500,LV,35,42,2010
+Diageo/Hotline,diageo,1/21/09,1/24/09,800,RV,22,46,2010
+Winston Group (R),winston,12/29/08,12/30/08,1000,RV,39,51,2010
+Rasmussen Reports,rasmussen,12/26/11,12/30/11,3000,LV,43,38,2012
+Rasmussen Reports,rasmussen,12/19/11,12/22/11,3500,LV,43,40,2012
+PPP (D),ppp,12/16/11,12/18/11,700,RV,44,46,2012
+Rasmussen Reports,rasmussen,12/12/11,12/18/11,3500,LV,43,40,2012
+Reuters/Ipsos,reuters_ipsos,12/8/11,12/12/11,921,RV,42,48,2012
+Rasmussen Reports,rasmussen,12/5/11,12/11/11,3500,LV,42,39,2012
+Rasmussen Reports,rasmussen,11/28/11,12/4/11,3500,LV,43,38,2012
+Rasmussen Reports,rasmussen,11/21/11,11/27/11,2000,LV,43,38,2012
+Quinnipiac,quinnipiac,11/14/11,11/20/11,2552,RV,36,40,2012
+Rasmussen Reports,rasmussen,11/14/11,11/20/11,3500,LV,41,40,2012
+PPP (D),ppp,11/10/11,11/13/11,800,RV,45,45,2012
+Rasmussen Reports,rasmussen,11/7/11,11/13/11,3500,LV,41,41,2012
+Politico/GWU/Battleground,politico_gwu_battleground,11/6/11,11/9/11,1000,LV,43,44,2012
+Rasmussen Reports,rasmussen,10/31/11,11/6/11,3500,LV,44,37,2012
+Reuters/Ipsos,reuters_ipsos,10/31/11,11/3/11,937,RV,43,48,2012
+Resurgent Republic (R),resurgen_republic,10/30/11,11/2/11,1000,RV,38,40,2012
+Quinnipiac,quinnipiac,10/25/11,10/31/11,2294,RV,34,42,2012
+Rasmussen Reports,rasmussen,10/24/11,10/30/11,3500,LV,43,40,2012
+Rasmussen Reports,rasmussen,10/17/11,10/23/11,3500,LV,44,36,2012
+Democracy Corps (D),dem_corps,10/15/11,10/18/11,1000,LV,46,46,2012
+Rasmussen Reports,rasmussen,10/10/11,10/16/11,3500,LV,42,39,2012
+PPP (D),ppp,10/7/11,10/10/11,700,RV,42,45,2012
+Reuters/Ipsos,reuters_ipsos,10/6/11,10/10/11,934,RV,40,48,2012
+Rasmussen Reports,rasmussen,10/3/11,10/9/11,3500,LV,43,38,2012
+Quinnipiac,quinnipiac,9/27/11,10/3/11,2118,RV,39,39,2012
+Rasmussen Reports,rasmussen,9/26/11,10/2/11,3500,LV,44,38,2012
+Rasmussen Reports,rasmussen,9/19/11,9/25/11,3500,LV,42,40,2012
+Rasmussen Reports,rasmussen,9/12/11,9/18/11,3500,LV,42,39,2012
+Rasmussen Reports,rasmussen,9/5/11,9/11/11,3500,LV,43,38,2012
+Rasmussen Reports,rasmussen,8/29/11,9/4/11,3500,LV,44,37,2012
+Politico/GWU/Battleground,politico_gwu_battleground,8/28/11,9/1/11,1000,LV,40,41,2012
+Rasmussen Reports,rasmussen,8/22/11,8/28/11,3500,LV,45,36,2012
+Quinnipiac,quinnipiac,8/16/11,8/27/11,2730,RV,38,38,2012
+Pew Research,pew,8/17/11,8/21/11,1205,RV,44,48,2012
+Rasmussen Reports,rasmussen,8/15/11,8/21/11,3500,LV,44,38,2012
+Rasmussen Reports,rasmussen,8/8/11,8/14/11,3500,LV,44,37,2012
+Democracy Corps (D),dem_corps,8/6/11,8/10/11,1000,LV,47,46,2012
+USA Today/Gallup,usa_today_gallup,8/4/11,8/7/11,1204,RV,44,51,2012
+Rasmussen Reports,rasmussen,8/1/11,8/7/11,3500,LV,41,39,2012
+Rasmussen Reports,rasmussen,7/25/11,7/31/11,3500,LV,43,39,2012
+Rasmussen Reports,rasmussen,7/18/11,7/24/11,3500,LV,44,38,2012
+PPP (D),ppp,7/15/11,7/17/11,928,RV,44,46,2012
+Rasmussen Reports,rasmussen,7/11/11,7/17/11,3500,LV,44,38,2012
+Rasmussen Reports,rasmussen,7/4/11,7/10/11,3500,LV,44,38,2012
+Rasmussen Reports,rasmussen,6/27/11,7/2/11,3500,LV,43,40,2012
+Rasmussen Reports,rasmussen,6/20/11,6/26/11,3500,LV,44,37,2012
+Democracy Corps (D),dem_corps,6/18/11,6/21/11,1000,RV,47,44,2012
+Rasmussen Reports,rasmussen,6/13/11,6/19/11,3500,LV,43,37,2012
+Rasmussen Reports,rasmussen,6/6/11,6/12/11,4000,LV,43,38,2012
+Rasmussen Reports,rasmussen,5/30/11,6/5/11,3500,LV,43,37,2012
+Rasmussen Reports,rasmussen,5/23/11,5/29/11,3500,LV,43,37,2012
+Democracy Corps (D),dem_corps,5/21/11,5/25/11,1000,LV,45,46,2012
+Rasmussen Reports,rasmussen,5/16/11,5/22/11,3500,LV,42,40,2012
+Rasmussen Reports,rasmussen,5/9/11,5/15/11,3500,LV,44,37,2012
+Politico/GWU/Battleground,politico_gwu_battleground,5/8/11,5/12/11,1000,LV,42,42,2012
+Rasmussen Reports,rasmussen,5/2/11,5/7/11,3500,LV,41,38,2012
+CNN/Opinion Research,cnn_orc,4/29/11,5/1/11,964,RV,46,50,2012
+Rasmussen Reports,rasmussen,4/25/11,5/1/11,3500,LV,42,39,2012
+Rasmussen Reports,rasmussen,4/18/11,4/24/11,3500,LV,42,40,2012
+Rasmussen Reports,rasmussen,4/11/11,4/17/11,3500,LV,42,39,2012
+Democracy Corps (D),dem_corps,4/10/11,4/12/11,1000,LV,47,45,2012
+PPP (D),ppp,4/7/11,4/10/11,532,RV,41,46,2012
+Rasmussen Reports,rasmussen,4/4/11,4/10/11,3500,LV,44,38,2012
+Rasmussen Reports,rasmussen,3/28/11,4/3/11,3500,LV,44,39,2012
+Quinnipiac,quinnipiac,3/22/11,3/28/11,2069,RV,40,37,2012
+Rasmussen Reports,rasmussen,3/21/11,3/27/11,3500,LV,43,39,2012
+Rasmussen Reports,rasmussen,3/14/11,3/20/11,3500,LV,45,37,2012
+Rasmussen Reports,rasmussen,3/7/11,3/13/11,3500,LV,46,37,2012
+Rasmussen Reports,rasmussen,2/28/11,3/6/11,3500,LV,45,39,2012
+Rasmussen Reports,rasmussen,2/21/11,2/27/11,3500,LV,45,39,2012
+Rasmussen Reports,rasmussen,2/14/11,2/20/11,3500,LV,46,37,2012
+Rasmussen Reports,rasmussen,2/7/11,2/13/11,3500,LV,45,39,2012
+PPP (D),ppp,2/11/11,2/14/11,600,RV,41,45,2012
+Democracy Corps (D),dem_corps,2/7/11,2/9/11,1000,LV,48,46,2012
+Rasmussen Reports,rasmussen,1/31/11,2/6/11,3500,LV,45,38,2012
+Rasmussen Reports,rasmussen,1/24/11,1/30/11,3500,LV,45,38,2012
+Rasmussen Reports,rasmussen,1/17/11,1/23/11,3500,LV,44,39,2012
+Rasmussen Reports,rasmussen,1/10/11,1/16/11,3500,LV,46,38,2012
+Democracy Corps (D),dem_corps,1/9/11,1/12/11,1000,LV,47,44,2012
+Rasmussen Reports,rasmussen,1/3/11,1/9/11,3500,LV,47,36,2012
+Rasmussen Reports,rasmussen,12/27/10,1/2/11,3000,LV,45,35,2012
+Rasmussen Reports,rasmussen,12/20/10,12/26/10,3500,LV,43,38,2012
+Rasmussen Reports,rasmussen,12/13/10,12/19/10,3500,LV,45,38,2012
+Rasmussen Reports,rasmussen,12/6/10,12/12/10,3500,LV,45,39,2012
+Rasmussen Reports,rasmussen,11/29/10,12/5/10,3500,LV,45,40,2012
+Rasmussen Reports,rasmussen,11/22/10,11/28/10,2500,LV,46,40,2012
+Rasmussen Reports,rasmussen,11/15/10,11/21/10,3500,LV,44,39,2012
+Rasmussen Reports,rasmussen,11/8/10,11/14/10,3500,LV,45,40,2012
+Rasmussen Reports,rasmussen,11/1/10,11/7/10,3500,LV,49,39,2012
+Rasmussen Reports,rasmussen,12/30/13,1/5/14,3500,LV,38,40,2014
+Rasmussen Reports,rasmussen,12/23/13,12/29/13,3500,LV,40,40,2014
+Rasmussen Reports,rasmussen,12/16/13,12/22/13,3500,LV,42,39,2014
+CNN/Opinion Research,cnn_orc,12/16/13,12/19/13,950,RV,49,44,2014
+FOX News,fox_news,12/14/13,12/16/13,1027,RV,43,43,2014
+PPP (D),ppp,12/12/13,12/15/13,1316,RV,40,43,2014
+Rasmussen Reports,rasmussen,12/9/13,12/15/13,3500,LV,40,40,2014
+Quinnipiac,quinnipiac,12/3/13,12/9/13,2692,RV,41,38,2014
+USA Today/Pew Research,usa_today_pew,12/3/13,12/8/13,1579,RV,44,48,2014
+Rasmussen Reports,rasmussen,12/2/13,12/8/13,3500,LV,43,38,2014
+McClatchy/Marist,mcclatchy_marist,12/3/13,12/5/13,988,RV,43,43,2014
+Rasmussen Reports,rasmussen,11/25/13,12/1/13,3500,LV,43,38,2014
+CNN/Opinion Research,cnn_orc,11/18/13,11/20/13,749,RV,49,47,2014
+Rasmussen Reports,rasmussen,11/18/13,11/24/13,3500,LV,40,41,2014
+Rasmussen Reports,rasmussen,11/11/13,11/17/13,3500,LV,40,39,2014
+FOX News,fox_news,11/10/13,11/12/13,1006,RV,43,40,2014
+Quinnipiac,quinnipiac,11/6/13,11/11/13,2545,RV,39,39,2014
+Rasmussen Reports,rasmussen,11/4/13,11/10/13,3500,LV,39,41,2014
+Rasmussen Reports,rasmussen,10/28/13,11/3/13,3500,LV,37,43,2014
+PPP (D),ppp,10/29/13,10/31/13,649,RV,38,44,2014
+GWU/Battleground,gwu_battleground,10/27/13,10/31/13,1000,LV,41,44,2014
+Rasmussen Reports,rasmussen,10/21/13,10/27/13,3500,LV,37,43,2014
+FOX News,fox_news,10/20/13,10/22/13,1020,RV,37,45,2014
+Rasmussen Reports,rasmussen,10/14/13,10/20/13,3500,LV,36,43,2014
+Pew Research,pew,10/9/13,10/13/13,1259,RV,43,49,2014
+Rasmussen Reports,rasmussen,10/7/13,10/13/13,3500,LV,38,45,2014
+Democracy Corps (D),dem_corps,10/6/13,10/8/13,860,LV,43,47,2014
+PPP (D),ppp,10/4/13,10/6/13,1000,RV,41,46,2014
+Rasmussen Reports,rasmussen,9/30/13,10/6/13,3500,LV,40,40,2014
+Rasmussen Reports,rasmussen,9/23/13,9/29/13,3500,LV,38,42,2014
+Quinnipiac,quinnipiac,9/23/13,9/29/13,1497,RV,34,43,2014
+PPP (D),ppp,9/25/13,9/26/13,790,RV,40,45,2014
+Rasmussen Reports,rasmussen,9/16/13,9/22/13,3500,LV,37,40,2014
+Rasmussen Reports,rasmussen,9/9/13,9/15/13,3500,LV,38,38,2014
+Rasmussen Reports,rasmussen,9/2/13,9/8/13,3500,LV,39,39,2014
+Rasmussen Reports,rasmussen,8/26/13,9/1/13,3500,LV,37,39,2014
+Rasmussen Reports,rasmussen,8/19/13,8/25/13,3500,LV,39,38,2014
+Rasmussen Reports,rasmussen,8/12/13,8/18/13,3500,LV,38,38,2014
+Rasmussen Reports,rasmussen,8/5/13,8/11/13,3500,LV,39,39,2014
+Rasmussen Reports,rasmussen,7/29/13,8/4/13,3500,LV,41,38,2014
+Quinnipiac,quinnipiac,7/28/13,7/31/13,1468,RV,36,40,2014
+Rasmussen Reports,rasmussen,7/22/13,7/28/13,3500,LV,38,39,2014
+Rasmussen Reports,rasmussen,7/15/13,7/21/13,3500,LV,38,40,2014
+Democracy Corps (D),dem_corps,7/10/13,7/15/13,841,LV,44,43,2014
+Rasmussen Reports,rasmussen,7/8/13,7/14/13,3500,LV,39,38,2014
+Quinnipiac,quinnipiac,6/28/13,7/8/13,2014,RV,34,39,2014
+Rasmussen Reports,rasmussen,7/1/13,7/7/13,3500,LV,40,39,2014
+Rasmussen Reports,rasmussen,6/24/13,6/30/13,3500,LV,39,38,2014
+Rasmussen Reports,rasmussen,6/17/13,6/23/13,3500,LV,39,40,2014
+Rasmussen Reports,rasmussen,6/10/13,6/16/13,3500,LV,39,39,2014
+PPP (D),ppp,6/11/13,6/13/13,603,RV,40,47,2014
+Rasmussen Reports,rasmussen,6/3/13,6/9/13,3500,LV,38,40,2014
+Rasmussen Reports,rasmussen,5/27/13,6/2/13,3500,LV,40,40,2014
+Quinnipiac,quinnipiac,5/22/13,5/28/13,1419,RV,38,38,2014
+Rasmussen Reports,rasmussen,5/20/13,5/26/13,3500,LV,39,41,2014
+Rasmussen Reports,rasmussen,5/13/13,5/19/13,3500,LV,40,39,2014
+Rasmussen Reports,rasmussen,5/6/13,5/11/13,3500,LV,38,40,2014
+PPP (D),ppp,5/6/13,5/9/13,1099,RV,43,45,2014
+Rasmussen Reports,rasmussen,4/29/13,5/5/13,3500,LV,38,40,2014
+Quinnipiac,quinnipiac,4/25/13,4/29/13,1471,RV,37,41,2014
+Rasmussen Reports,rasmussen,4/22/13,4/28/13,3500,LV,40,39,2014
+Rasmussen Reports,rasmussen,4/15/13,4/21/13,3500,LV,39,41,2014
+Rasmussen Reports,rasmussen,4/8/13,4/14/13,3500,LV,38,42,2014
+Rasmussen Reports,rasmussen,4/1/13,4/7/13,3500,LV,38,41,2014
+Quinnipiac,quinnipiac,3/26/13,4/1/13,1711,RV,35,43,2014
+PPP (D),ppp,3/27/13,3/30/13,1247,RV,42,46,2014
+Rasmussen Reports,rasmussen,3/25/13,3/31/13,3500,LV,37,44,2014
+Rasmussen Reports,rasmussen,3/18/13,3/24/13,3500,LV,38,43,2014
+Rasmussen Reports,rasmussen,3/11/13,3/17/13,3500,LV,38,43,2014
+Democracy Corps (D),dem_corps,3/9/13,3/12/13,840,LV,42,46,2014
+Rasmussen Reports,rasmussen,3/4/13,3/10/13,3500,LV,40,43,2014
+Rasmussen Reports,rasmussen,2/25/13,3/3/13,3500,LV,40,43,2014
+Rasmussen Reports,rasmussen,2/18/13,2/24/13,3500,LV,38,43,2014
+Rasmussen Reports,rasmussen,2/11/13,2/17/13,3500,LV,37,43,2014
+Rasmussen Reports,rasmussen,2/4/13,2/10/13,3500,LV,39,42,2014
+PPP (D),ppp,1/31/13,2/3/13,800,RV,45,45,2014
+Rasmussen Reports,rasmussen,1/28/13,2/3/13,3000,LV,38,44,2014
+Rasmussen Reports,rasmussen,1/21/13,1/27/13,3000,LV,37,45,2014
+Rasmussen Reports,rasmussen,1/14/13,1/20/13,3000,LV,39,44,2014
+Democracy Corps (D),dem_corps,1/10/13,1/14/13,852,LV,42,46,2014
+Rasmussen Reports,rasmussen,1/7/13,1/13/13,3000,LV,37,43,2014
+PPP (D),ppp,1/3/13,1/6/13,1100,RV,41,47,2014
+Rasmussen Reports,rasmussen,1/2/13,1/6/13,3000,LV,38,44,2014
+Rasmussen Reports,rasmussen,12/26/12,12/30/12,3000,LV,35,46,2014
+Rasmussen Reports,rasmussen,12/17/12,12/22/12,3500,LV,38,44,2014
+Rasmussen Reports,rasmussen,12/10/12,12/16/12,3500,LV,38,46,2014
+Rasmussen Reports,rasmussen,12/3/12,12/9/12,3500,LV,36,46,2014
+Politico/GWU/Battleground,politico_gwu_battleground,12/2/12,12/6/12,1000,LV,42,45,2014
+Rasmussen Reports,rasmussen,11/26/12,12/2/12,3500,LV,36,47,2014
+Rasmussen Reports,rasmussen,11/19/12,11/25/12,3500,LV,40,45,2014
+Rasmussen Reports,rasmussen,11/12/12,11/18/12,3500,LV,40,45,2014
+Rasmussen Reports,rasmussen,11/5/12,11/11/12,3500,LV,42,45,2014

@@ -1,0 +1,110 @@
+pollster_raw,pollster,start_date,end_date,n_size,univ,dem,rep,cycle
+Monmouth,monmouth,1/28/18,1/30/18,711,RV,47,45,2018
+Economist/YouGov,economist_yougov,1/28/18,1/30/18,1264,RV,42,37,2018
+Reuters/Ipsos,reuters_ipsos,1/26/18,1/30/18,1856,Adults,37,31,2018
+Rasmussen Reports,rasmussen,1/24/18,1/25/18,1000,LV,45,37,2018
+FOX News,fox_news,1/21/18,1/23/18,1002,RV,44,38,2018
+Economist/YouGov,economist_yougov,1/21/18,1/23/18,1301,RV,41,37,2018
+Quinnipiac,quinnipiac,1/19/18,1/23/18,1245,RV,51,38,2018
+Reuters/Ipsos,reuters_ipsos,1/19/18,1/23/18,2981,Adults,38,30,2018
+ABC News/Wash Post,abc_wapo,1/15/18,1/18/18,846,RV,51,39,2018
+NBC News/Wall St. Jrnl,nbc_wsj,1/13/18,1/17/18,765,RV,49,43,2018
+Economist/YouGov,economist_yougov,1/14/18,1/16/18,1311,RV,42,36,2018
+Reuters/Ipsos,reuters_ipsos,1/12/18,1/16/18,1638,Adults,37,32,2018
+Quinnipiac,quinnipiac,1/12/18,1/16/18,1212,RV,50,39,2018
+Pew Research,pew,1/10/18,1/15/18,1215,RV,53,39,2018
+NPR/PBS/Marist,npr,1/8/18,1/10/18,1092,RV,46,40,2018
+Emerson,emerson,1/8/18,1/11/18,600,RV,45,40,2018
+Economist/YouGov,economist_yougov,1/8/18,1/9/18,1327,RV,44,37,2018
+Quinnipiac,quinnipiac,1/5/18,1/9/18,1106,RV,52,35,2018
+Reuters/Ipsos,reuters_ipsos,1/5/18,1/9/18,1616,Adults,40,31,2018
+Economist/YouGov,economist_yougov,12/31/17,1/2/18,1277,RV,42,36,2018
+Reuters/Ipsos,reuters_ipsos,12/29/17,1/2/18,1770,Adults,38,31,2018
+Economist/YouGov,economist_yougov,12/24/17,12/26/17,1004,RV,44,36,2018
+Economist/YouGov,economist_yougov,12/17/17,12/19/17,1291,RV,44,35,2018
+Reuters/Ipsos,reuters_ipsos,12/15/17,12/19/17,2492,Adults,39,27,2018
+Quinnipiac,quinnipiac,12/13/17,12/18/17,1230,RV,52,37,2018
+CNN,cnn_orc,12/14/17,12/17/17,898,RV,56,38,2018
+NBC News/Wall St. Jrnl,nbc_wsj,12/13/17,12/15/17,736,RV,50,39,2018
+Economist/YouGov,economist_yougov,12/10/17,12/12/17,1338,RV,44,36,2018
+Monmouth,monmouth,12/10/17,12/12/17,702,RV,51,36,2018
+PPP (D),ppp,12/11/17,12/12/17,862,RV,51,40,2018
+Reuters/Ipsos,reuters_ipsos,12/8/17,12/12/17,1457,Adults,37,29,2018
+Quinnipiac,quinnipiac,12/6/17,12/11/17,1211,RV,49,37,2018
+Marist,marist,12/4/17,12/7/17,1079,RV,50,37,2018
+Economist/YouGov,economist_yougov,12/3/17,12/5/17,1341,RV,42,36,2018
+Reuters/Ipsos,reuters_ipsos,12/1/17,12/5/17,1548,Adults,37,31,2018
+Quinnipiac,quinnipiac,11/29/17,12/4/17,1508,RV,50,36,2018
+Economist/YouGov,economist_yougov,11/26/17,11/28/17,1319,RV,41,35,2018
+Reuters/Ipsos,reuters_ipsos,11/24/17,11/28/17,1969,Adults,36,30,2018
+Reuters/Ipsos,reuters_ipsos,11/17/17,11/22/17,1489,Adults,37,28,2018
+Economist/YouGov,economist_yougov,11/19/17,11/21/17,1344,RV,42,33,2018
+NPR/PBS/Marist,npr,11/13/17,11/15/17,802,RV,43,40,2018
+Economist/YouGov,economist_yougov,11/12/17,11/14/17,1281,RV,42,34,2018
+Reuters/Ipsos,reuters_ipsos,11/10/17,11/14/17,1520,Adults,38,31,2018
+Quinnipiac,quinnipiac,11/7/17,11/13/17,1577,RV,51,38,2018
+Marist,marist,11/6/17,11/9/17,850,RV,51,36,2018
+Economist/YouGov,economist_yougov,11/5/17,11/7/17,1336,RV,40,33,2018
+Reuters/Ipsos,reuters_ipsos,11/3/17,11/7/17,1572,Adults,38,30,2018
+ABC News/Wash Post,abc_wapo,10/29/17,11/1/17,884,RV,51,40,2018
+Economist/YouGov,economist_yougov,10/29/17,10/31/17,1291,RV,39,36,2018
+Reuters/Ipsos,reuters_ipsos,10/27/17,10/31/17,1798,Adults,40,31,2018
+PPP (D),ppp,10/27/17,10/29/17,572,RV,50,40,2018
+NBC News/Wall St. Jrnl,nbc_wsj,10/23/17,10/26/17,753,RV,48,41,2018
+Economist/YouGov,economist_yougov,10/22/17,10/24/17,1312,RV,40,33,2018
+FOX News,fox_news,10/22/17,10/24/17,1005,RV,50,35,2018
+Reuters/Ipsos,reuters_ipsos,10/20/17,10/24/17,2352,Adults,36,28,2018
+Economist/YouGov,economist_yougov,10/15/17,10/16/17,1326,RV,41,33,2018
+Economist/YouGov,economist_yougov,10/7/17,10/10/17,1278,RV,40,33,2018
+Quinnipiac,quinnipiac,10/5/17,10/10/17,1482,RV,49,41,2018
+Economist/YouGov,economist_yougov,10/1/17,10/3/17,1298,RV,39,32,2018
+Economist/YouGov,economist_yougov,9/24/17,9/26/17,1254,RV,40,34,2018
+Quinnipiac,quinnipiac,9/21/17,9/26/17,1412,RV,47,38,2018
+PPP (D),ppp,9/22/17,9/25/17,865,RV,48,37,2018
+Economist/YouGov,economist_yougov,9/17/17,9/19/17,1292,RV,39,33,2018
+NBC News/Wall St. Jrnl,nbc_wsj,9/14/17,9/18/17,751,RV,48,42,2018
+Economist/YouGov,economist_yougov,9/10/17,9/12/17,1313,RV,40,31,2018
+Economist/YouGov,economist_yougov,9/3/17,9/5/17,1309,RV,39,33,2018
+Economist/YouGov,economist_yougov,8/27/17,8/29/17,1278,RV,40,32,2018
+Economist/YouGov,economist_yougov,8/20/17,8/22/17,1327,RV,39,33,2018
+Quinnipiac,quinnipiac,8/17/17,8/22/17,1514,RV,50,38,2018
+PPP (D),ppp,8/18/17,8/21/17,887,RV,49,35,2018
+GWU/Battleground,gwu_battleground,8/13/17,8/17/17,1000,RV,45,38,2018
+Economist/YouGov,economist_yougov,8/13/17,8/15/17,1291,RV,41,33,2018
+Quinnipiac,quinnipiac,8/9/17,8/15/17,1361,RV,50,40,2018
+Marist,marist,8/8/17,8/12/17,883,RV,47,40,2018
+Economist/YouGov,economist_yougov,8/6/17,8/8/17,1303,RV,39,34,2018
+Economist/YouGov,economist_yougov,7/31/17,8/1/17,1329,RV,39,34,2018
+Quinnipiac,quinnipiac,7/27/17,8/1/17,1125,RV,52,38,2018
+Economist/YouGov,economist_yougov,7/23/17,7/25/17,1282,RV,40,34,2018
+Economist/YouGov,economist_yougov,7/15/17,7/18/17,1273,RV,40,34,2018
+Economist/YouGov,economist_yougov,7/9/17,7/11/17,1284,RV,39,32,2018
+Economist/YouGov,economist_yougov,7/3/17,7/4/17,1323,RV,37,35,2018
+Economist/YouGov,economist_yougov,6/25/17,6/27/17,1295,RV,41,35,2018
+FOX News,fox_news,6/25/17,6/27/17,1017,RV,47,41,2018
+Quinnipiac,quinnipiac,6/22/17,6/27/17,1212,RV,51,41,2018
+NPR/PBS/Marist,npr,6/21/17,6/25/17,995,RV,48,38,2018
+Economist/YouGov,economist_yougov,6/18/17,6/20/17,1277,RV,38,35,2018
+NBC News/Wall St. Jrnl,nbc_wsj,6/17/17,6/20/17,765,RV,50,42,2018
+Economist/YouGov,economist_yougov,6/11/17,6/13/17,1310,RV,38,36,2018
+PPP (D),ppp,6/9/17,6/11/17,811,RV,50,40,2018
+Economist/YouGov,economist_yougov,6/4/17,6/6/17,1288,RV,41,37,2018
+Quinnipiac,quinnipiac,5/31/17,6/6/17,1361,RV,51,39,2018
+Economist/YouGov,economist_yougov,5/27/17,5/30/17,1269,RV,39,33,2018
+Economist/YouGov,economist_yougov,5/20/17,5/23/17,1276,RV,38,36,2018
+Economist/YouGov,economist_yougov,5/13/17,5/16/17,1298,RV,40,33,2018
+PPP (D),ppp,5/12/17,5/14/17,692,RV,49,38,2018
+Economist/YouGov,economist_yougov,5/6/17,5/9/17,1287,RV,40,35,2018
+Quinnipiac,quinnipiac,5/4/17,5/9/17,1078,RV,54,38,2018
+Economist/YouGov,economist_yougov,4/29/17,5/2/17,1255,RV,38,35,2018
+Economist/YouGov,economist_yougov,4/23/17,4/25/17,1289,RV,39,34,2018
+FOX News,fox_news,4/23/17,4/25/17,1009,RV,47,42,2018
+NBC News/Wall St. Jrnl,nbc_wsj,4/17/17,4/20/17,759,RV,47,43,2018
+Economist/YouGov,economist_yougov,4/15/17,4/18/17,1291,RV,38,32,2018
+PPP (D),ppp,4/17/17,4/18/17,648,RV,47,41,2018
+Marist,marist,4/11/17,4/12/17,869,RV,45,38,2018
+PPP (D),ppp,3/27/17,3/28/17,677,RV,48,43,2018
+McClatchy/Marist,mcclatchy_marist,3/22/17,3/27/17,906,RV,47,38,2018
+PPP (D),ppp,3/10/17,3/12/17,808,RV,46,41,2018
+PPP (D),ppp,2/21/17,2/22/17,941,RV,46,43,2018
+PPP (D),ppp,1/23/17,1/24/17,1043,RV,48,40,2018
