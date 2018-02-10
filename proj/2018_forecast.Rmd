@@ -316,6 +316,20 @@ ggsave(filename = "figures/2018_strategy.png", plot = plot_grid(y1, y2, y3, nrow
 ```
 
 ```{r, include = F}
+predictions_record <- read.csv("data/predictions_record.csv")
+weekly_update <- data.frame(date = as.character(Sys.Date()), 
+                            weeks_till = min(cycle_time_est$time_before_elec),
+                            estimate = mean(final_forecast_posterior),
+                            prob_victory_today = mean(final_forecast_posterior > 0.5),
+                            prob_victory_eday = mean(new_means > 0.5),
+                            seats = predict_seats,
+                            prob_majority_today = mean(final_seats_posterior > 217),
+                            prob_majority_eday = mean(new_seats > 217),
+                            omega_mvmt_95 = as.numeric(omega)*1.96,
+                            stringsAsFactors = F)
+weekly_update <- rbind(predictions_record,weekly_update)
+write.csv(weekly_update, "data/predictions_record.csv", row.names = F)
+
 prior_ests <- calculate_priors(mod_res = mod_res, year = 2018, data_jags = data_jags)
 new_deltas <- prior_ests$deltas_est %>%
     filter(!is.na(delta_mu)) %>% 
