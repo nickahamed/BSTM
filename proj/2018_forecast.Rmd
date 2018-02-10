@@ -10,14 +10,14 @@ output:
 
 #Pooling the polls to forecast the 2018 US House elections
 ##Introduction
-Using previously estimated pollster and sampling universe biases and current polling data, I forecast the the results of the 2018 US House elections. The Bayesian model predicts Democrats will get 54% of the popular vote, yielding 226 seats in the House of Representatives; current polling suggests there is a 55% chance Democrats will take back the House, on Election Day. Lastly, I apply a uniform swing from 2016 to identify key swing districts for investment in 2018. Over 30 districts are ripe for targeting, many in CA, FL and PA. 
+Using previously estimated pollster and sampling universe biases and current polling data, I forecast the the results of the 2018 US House elections. The Bayesian model predicts Democrats will get 54% of the popular vote, yielding 225 seats in the House of Representatives; current polling suggests there is a 55% chance Democrats will take back the House, on Election Day. Lastly, I apply a uniform swing from 2016 to identify key swing districts for investment in 2018. Over 30 districts are ripe for targeting, many in CA, FL and PA. 
 
 ##Data
 The polling data were scraped from Real Clear Politics' database for the [__2018__](https://www.realclearpolitics.com/epolls/other/2018_generic_congressional_vote-6185.html#polls) Generic Congressional ballot. Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the most common question being polled by public sources. 
 
 Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)): it is a proportion between 0 and 1. Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more data. Additionally, only sampling universes and pollsters who have polled in at least one of the last six election cycles are included. This is because I use estimates of bias observed over the last electios to account for house effects. See more [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html).
 
-As of 2/3/2018, 102 polls from 13 pollsters contacting 127k respondents were used. These are the 5 largest pollsters. See Appendix B for full details.
+As of 2/10/2018, 105 polls from 13 pollsters contacting 133k respondents were used. These are the 5 largest pollsters. See Appendix B for full details.
 
 <center>
 ![](figures/2018_data_breakdown.png){ width=6in }
@@ -26,20 +26,20 @@ As of 2/3/2018, 102 polls from 13 pollsters contacting 127k respondents were use
 2016 US House election results were taken from [__here__](https://github.com/Prooffreader/election_2016_data).
 
 ##Week-by-week estimate of support
-I use a Bayesian random-walk model to estimate the true level of support over time. Below, I show that model. Based on the most current data, the forecast gives Democrats 54.1% support on the two-way generic ballot, translating to 226 seats in the House of Representatives. Likewise, there is relatively little volatility in week-to-week movements. Whereas in the past six election cycles, 95% of week-to-week movement was within 1.5pp, this cycle, 95% of movement is within just 0.66pp. We saw a maximum amount of support for Democrats right at the end of 2017, possibly associated with the tax bill or the Alabama special election, but there's been a slight return since. Despite this, a +8 two-way margin is a good sign for Democrats.
+I use a Bayesian random-walk model to estimate the true level of support over time. Below, I show that model. Based on the most current data, the forecast gives Democrats 53.9% support on the two-way generic ballot, translating to 225 seats in the House of Representatives. Likewise, there is relatively little volatility in week-to-week movements. Whereas in the past six election cycles, 95% of week-to-week movement was within 1.5pp, this cycle, 95% of movement is within just 0.68pp. We saw a maximum amount of support for Democrats right at the end of 2017, possibly associated with the tax bill or the Alabama special election, but there's been a slight return since. Despite this, a +8 two-way margin is a good sign for Democrats.
 
 <center>
 ![](figures/2018_time_series_with_trend.png){ width=8in }
 </center>
 
-If the election were held today, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is nearly a 100% chance that they win a majority of seats in the House itself. Accounting for the variation we expect over time, there is still a 62% chance Democrats will win 50% of the popular vote and a 55% chance of winning a majority of seats __on election day__.
+If the election were held today, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is a 99% chance that they win a majority of seats in the House itself. Accounting for the variation we expect over time, there is still a 62% chance Democrats will win 50% of the popular vote and a 55% chance of winning a majority of seats __on election day__.
 
 ##Strategic targeting for 2018
-Following [__Jackman (2014)__](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/S1049096514000109), I apply a national uniform swing to the 2016 two-way results of each Congressional district to identify key districts for targeting. Just over 30 districts have at least a 40% chance, but no more than a 60% chance of Democratic victory on election day, based on the national swing. 4 are in each of Florida and California, and 3 are in Pennsylvania. 
+Following [__Jackman (2014)__](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/S1049096514000109), I apply a national uniform swing to the 2016 two-way results of each Congressional district to identify key districts for targeting. Just over 30 districts have at least a 40% chance, but no more than a 60% chance of Democratic victory on election day, based on the national swing. Several are in each of Florida, California and Pennsylvania. 
 
 There are a 198 seats where Democrats have more than a 60% chance of victory. As such, most of these key target seats are leaning towards Republicans. Democrats will need to win in over half of these unexpected to take back the House. 
 
-Importantly, since the election is still so far away, it's not clear which of these districts are the most likely to be the 218th seat. In general, Democrats should allocate resources to so-called 'tipping point' districts. This implies a fairly broad investment strategy since the election is so far away. Right now, 368 districts have some nonzero likelihood of being the tipping point on Election Day, but if the election were held today, just 20 districts would deserve investment. Until these key districts become clearer, Democrats should prepare to fight everywhere.
+Importantly, since the election is still so far away, it's not clear which of these districts are the most likely to be the 218th seat. In general, Democrats should allocate resources to so-called 'tipping point' districts. This implies a fairly broad investment strategy since the election is so far away. Right now, 364 districts have some nonzero likelihood of being the tipping point on Election Day, but if the election were held today, just 20 districts would deserve investment. Until these key districts become clearer, Democrats should prepare to fight everywhere.
 
 <center>
 ![](figures/2018_strategy.png){ width=8in }
