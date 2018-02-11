@@ -1,7 +1,7 @@
 ---
 title: "Pooling the polls to forecast the 2018 US House elections"
 author: "Nick Ahamed"
-date: "2/7/2018"
+date: "2/11/2018"
 output:
   html_document:
     toc: yes
