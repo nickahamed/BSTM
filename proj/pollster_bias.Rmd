@@ -1,7 +1,7 @@
 ---
 title: "Pooling the polls to estimate bias in past US House Elections"
 author: "Nick Ahamed"
-date: "2/6/2018"
+date: "2/12/2018"
 output:
   html_document:
     toc: yes
@@ -13,64 +13,10 @@ library(flextable)
 ```
 #Pooling the polls to estimate bias in past US House Elections
 ##Introduction
-In this analysis, I estimate the bias for each public pollster active in the last 6 congressional elections. My final estimate identifies Gallup(Low-Turnout) as the most conservative pollster and AP/Ipsos as the most liberal. I likewise estimate bias of various sampling universes. Next, I use these biases to estimate the true level of support for Democrats over time in each cycle. Lastly, I regress the final estimate of support in each cycle against the number of seats Democrats won.  
-
-##The Data
-I have two primary sources of data: past polls and election results. The poll response that I use is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the only current question being polled, and so for comparability, I will use the same question for past elections.
-
-The past polls were taken from Real Clear Politics' database across 6 election cycles: [__2006__](https://realclearpolitics.com/epolls/other/2006_generic_congressional_vote-2174.html), [__2008__](https://www.realclearpolitics.com/epolls/other/2008_generic_congressional_vote-2173.html#polls), [__2010__](https://www.realclearpolitics.com/epolls/other/2010_generic_congressional_vote-2171.html#polls), [__2012__](https://www.realclearpolitics.com/epolls/other/2012_generic_congressional_vote-3525.html#polls), [__2014__](https://www.realclearpolitics.com/epolls/other/generic_congressional_vote-2170.html) and [__2016__](https://www.realclearpolitics.com/epolls/other/2016_generic_congressional_vote-5279.html#polls). Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)): it is a proportion between 0 and 1. Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more data.
-
-In total, 797 polls from 41 pollsters contacting 1.7m respondents over the 6 election cycles were used. These are the 5 largest pollsters. See Appendix B for full details.
-
-<center>
-![](figures/data_breakdown.png){ width=6in }
-</center>
-
-For election results, I use both the popular vote share and the seats won. These were taken from Wikipedia: [__2006__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2006), [__2008__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2008), [__2010__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2010), [__2012__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2012), [__2014__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2014), and [__2016__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2016). Again, I use Democrats' two-way vote share of the popular vote to mimic their two-way support in the polling data, and their percentage share of seats in the Congress. 
-
-First, let's explore the trends over time in each cycle. Here, each point is a poll; it's size relfects the sample size and color represents the pollster. The dashed line represents the final two-way popular vote share of Democrats. A couple of observations from this are clear. We see that by election, some pollsters are systematically off. For example, the pink pollster in 2010 was consistently below the final election result, suggesting bias. Last, we see that there are trends in results over time. For example, in 2014 the polls got closer and closer to the true result over time. Further investigation shows that poll results are not normally distributed around the result **across time**, suggesting we will need a time-dependent model. 
-
-<center>
-![](figures/time_series.png)
-</center>
-
-```{r, out.width="8in", out.height="3in", echo=FALSE, message=F, warning=F,  fig.align='center',include=FALSE}
-knitr::include_graphics("figures/normal_dists.png")
-```
-
-```{r, out.width="3in", out.height="3in",echo=FALSE, message=F, warning=F,  fig.align='center',include=FALSE}
-knitr::include_graphics("figures/correlation.png")
-```
-
-##Estimating pollster and universe bias
-To estimate bias for each pollster and universe, I use a Bayesian random-walk models anchored to the true final election results. For the first cycle a pollster/universe is used in, its prior is normally distributed around 0pp and assumed to be less than 20pp 95% of the time, in either direction. This prior is updated to be the posterior from the most recent previous cycle the pollster/universe was active in. Full specification of the theoretical model can be found in Appendix A; implementation specifications and key convergance diagnostics can be found in Appendix B. 
-
-Below I plot the final bias estimate for each pollster. For example, for a pollster who polled in 2014 but not 2016, this will be their 2014 posterior results. Most pollsters are not biased by more than a percentage point in either direction. 'Gallup Low-Turnout' was the mostly conservative estimate (they took 4 polls in 1 election cycle). 'AP/Ipsos' most consistently overestimted Democratic support (they took 4 polls in 2 election cycles). POS (R) was the least biased pollseter with an average bias of -0.00025 across their 3 polls in 1 cycles. Full results can be found in Appendix B.
-
-<center>
-![](figures/pollster_bias.png)
-</center>
-
-Looking more closely at pollsters that were active in at least 5 of the 6 cycles examine, we some variation in bias across cycles. For example, CBS/NYT strongly oveestimated Democratic support in 2008, but became less and less biased each cycle. Others were too conservative in some cycles and too liberal in others. Fox News underestimated Democratic support in all.
-
-<center>
-![](figures/pollster_cycle.png)
-</center>
-
-Additionally, we see that most sampling universes also show some overestimation of Democratic support. Our posterior observation from the 2016 cycle shows that likely voter universes across pollsters were biased 0.9pp in favor of Democrats, registered voter universes were biased 1.3pp and samples of just adults were biased nearly 4pp in favor of Democrats. Full results can be found in Appendix B.
-
-<div style= "float:left;position: relative; top: -10px;">
-![](figures/univ_bias.png){ width=4in }
-</div>
-
-These trends were fairly stable over time. The rank order of the universes was the same for all elections except 2006. Both adult and registered voter universes were stable around their final estimate since the 2010 cycle. In 2010, there was basically no bias in likely voter universes, but this increased in the following three elections. 
-
-<center>
-![](figures/univ_cycle.png)
-</center>
+In this analysis, I estimate the bias for each public pollster active in and sampling universe used in the last 6 congressional elections. My final estimate identifies Gallup(Low-Turnout) as the most conservative pollster and AP/Ipsos as the most liberal. I find that likely voter universes are the least biased and adult samples are the most. Additionally, I show that accounting for past biases improves the accuracy of the election forecast. This database of 41 pollsters and 3 universes allows us to forecast future elections with more accuracy than we'd otherwise have. 
 
 ##Week-by-week estimates of support by cycle
-Using the final estimates of bias for pollsters and universes as priors, I now refit the random-walk models, but with no anchor to the true result. This allows us to generate estimates week-by-week for each election, including a final estimate of election outcome, simulating a future prediction. The results are slightly overfit, especially for 2016, since the true results in each election updated the priors which are now inputs to the model. For 2016 specifically, the priors are derived from posterior distribution of the model anchored in the true result, so we should expect the model to be very precise. For full model specification see Appendix A and Appendix B for implementaton, code and full results. 
+I use Bayesian modeling to generate election forecasts. These models account for both past pollster and sampling universe biases and are more accurate than a model that accounts for just pollster bias or no bias at all. Over the six cycles analyzed here, there is a reduction in error just over 0.3pp compared to the model with no bias and just under 0.3pp over the model that just accounts for pollster bias.
 
 The figure below highlights a few key trends. First, the estimated 'true' trendline for each election cycle is shifted slightly below the polls. This is due to the fact that our estimates of universe bias (above) were consistently overestimating Democratic support. Additional bias from polling house effects are split between over- and under-estimating Democratic support. 
 
@@ -101,17 +47,78 @@ Third, some cycles' models are more accurate than others. This table shows the p
 ![](figures/final_est_vs_seats.png){ width=2in }
 </div>
 
-The model that adapts for both past pollster and sampling universe bias is more accurate than a model that accounts for just pollster bias or no bias at all. Over the six cycles analyzed here, there is a reduction in error just over 0.3pp compared to the model with no bias and just under 0.3pp over the model that just accounts for pollster bias.
+Lastly, we are interested in the relationship between the final forecasts and the actual share of seats won. Because of our winner-take-all and gerrymandered system, the popular vote rarely translates directly into share of seats won. A simple linear regression shows that 69% of the variation in seats won over the last 6 elections is explained by the forecasts produced here. Additionally, Democrats need to be forecasted to win about 52% of the popular vote to win 50% of the seats.
 
-Lastly, we are interested in the relationship between the final forecasts and the actual share of seats won. Becuase of our winner-take-all and gerrymandered system, the popular vote rarely translates directly into share of seats won. A simple linear regression shows that 69% of the variation in seats won over the last 6 elections is explained by the forecasts produced here. Additionally, Democrats need to be forecasted to win about 52% of the popular vote to win 50% of the seats.
+These models leverage the final estimates of bias for pollsters and universes (described below) as priors in a Bayesian random-walk model that is not anchored to the true result. This allows us to generate estimates week-by-week for each election, including a final estimate of election outcome, simulating a future prediction. The results are slightly overfit, especially for 2016, since the true results in each election updated the priors which are now inputs to the model. For 2016 specifically, the priors are derived from posterior distribution of the model anchored in the true result, so we should expect the model to be fairly precise. For full model specification see Appendix A and Appendix B for implementation, code and full results. 
+
+##Estimating pollster and universe bias
+Below I plot the final bias estimate for each pollster. For example, for a pollster who polled in 2014 but not 2016, this will be their 2014 posterior results. Most pollsters are not biased by more than a percentage point in either direction. 'Gallup Low-Turnout' was the mostly conservative estimate (they took 4 polls in 1 election cycle). 'AP/Ipsos' most consistently overeestimted Democratic support (they took 4 polls in 2 election cycles). POS (R) was the least biased pollster with an average bias of -0.00025 across their 3 polls in 1 cycles. Full results can be found in Appendix B.
+
+<center>
+![](figures/pollster_bias.png)
+</center>
+
+Looking more closely at pollsters that were active in at least 5 of the 6 cycles examine, we some variation in bias across cycles. For example, CBS/NYT strongly overestimated Democratic support in 2008, but became less and less biased each cycle. Others were too conservative in some cycles and too liberal in others. Fox News underestimated Democratic support in all elections examined.
+
+<center>
+![](figures/pollster_cycle.png)
+</center>
+
+Additionally, we see that most sampling universes also show some overestimation of Democratic support. Our posterior observation from the 2016 cycle shows that likely voter universes across pollsters were biased 0.9pp in favor of Democrats, registered voter universes were biased 1.3pp and samples of just adults were biased nearly 4pp in favor of Democrats. Full results can be found in Appendix B.
+
+<div style= "float:left;position: relative; top: -10px;">
+![](figures/univ_bias.png){ width=4in }
+</div>
+
+These trends were fairly stable over time. The rank order of the universes was the same for all elections except 2006. Both adult and registered voter universes were stable around their final estimate since the 2010 cycle. In 2010, there was basically no bias in likely voter universes, but this increased in the following three elections. 
+
+<center>
+![](figures/univ_cycle.png)
+</center>
+
+To estimate bias for each pollster and universe, I used a Bayesian random-walk models anchored to the true final election results. For the first cycle a pollster/universe is used in, its prior is normally distributed around 0pp and assumed to be less than 20pp 95% of the time, in either direction. This prior is updated to be the posterior from the most recent previous cycle the pollster/universe was active in. Full specification of the theoretical model can be found in Appendix A; implementation specifications and key convergence diagnostics can be found in Appendix B. 
+
+##The Data
+I have two primary sources of data: past polls and election results. The poll response that I use is the 'generic Congressional ballot.' Each pollster has a slightly different wording (and hence why we measure pollster biases), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republican candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the only current question being polled, and so for comparability, I will use the same question for past elections.
+
+The past polls were taken from Real Clear Politics' database across 6 election cycles:
+[__2006__](https://realclearpolitics.com/epolls/other/2006_generic_congressional_vote-2174.html), [__2008__](https://www.realclearpolitics.com/epolls/other/2008_generic_congressional_vote-2173.html#polls), [__2010__](https://www.realclearpolitics.com/epolls/other/2010_generic_congressional_vote-2171.html#polls), [__2012__](https://www.realclearpolitics.com/epolls/other/2012_generic_congressional_vote-3525.html#polls), [__2014__](https://www.realclearpolitics.com/epolls/other/generic_congressional_vote-2170.html) and [__2016__](https://www.realclearpolitics.com/epolls/other/2016_generic_congressional_vote-5279.html#polls). These 6 cycles represent all modern polling data available in RCP's database where universe and sample size are regularly reported. While we don't expect bias to be the same cycle-to-cycle (after all, pollsters should update their methods to address their error), the advantage of Bayesian methods give flexibility for this change while still acknowledging that past behavior is our best guess.  
+
+Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. 
+
+Additionally, the polls' results were transformed to reflect the two-way share for Democrats (Dem/(Dem+Rep)): it is a proportion between 0 and 1. Almost all Congressional races are only seriously contested by these two parties and one candidate only needs a plurality of support to win. Therefore, to make probability-of-victory estimates, we can just build one model that predicts the share of the two-party vote, reducing computation time significantly. 
+
+Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more data to estimate with the same accuracy. Additionally, a weekly model acknowledges that most changes in support are transient and allows us to focus on meaningful changes. Lastly, the weekly model lowers the number of parameters that need to be estimated by a factor of 7, reducing computation time as well. 
+
+In total, 797 polls from 41 pollsters contacting 1.7m respondents over the 6 election cycles were used. These are the 5 largest pollsters. See Appendix B for full details.
+
+<center>
+![](figures/data_breakdown.png){ width=6in }
+</center>
+
+For election results, I use both the popular vote share and the seats won. These were taken from Wikipedia: [__2006__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2006), [__2008__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2008), [__2010__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2010), [__2012__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2012), [__2014__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2014), and [__2016__](https://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2016). Again, I use Democrats' two-way vote share of the popular vote to mimic their two-way support in the polling data, and their percentage share of seats in the Congress. 
+
+First, let's explore the trends over time in each cycle. Here, each point is a poll; its size reflects the sample size and color represents the pollster. The dashed line represents the final two-way popular vote share of Democrats. A couple of observations from this are clear: 
+
+* We see that by election, some pollsters are systematically off. For example, the pink pollster in 2010 was consistently below the final election result, suggesting bias. 
+
+* We also see that there are trends in results over time. For example, in 2014 the polls got closer and closer to the true result over time.
+
+<center>
+![](figures/time_series.png)
+</center>
+
+```{r, out.width="3in", out.height="3in",echo=FALSE, message=F, warning=F,  fig.align='center',include=FALSE}
+knitr::include_graphics("figures/correlation.png")
+```
 
 ##Conclusions
-Using past public polling data and election results, I generated bias estimates for each pollster and sampling universe activly polling the generic Congressional ballot over the past six cycles. Generally, pollsters are consistently biased by less than 1pp, but a several still exceed this theshold. Of the pollsters analyzed, I find POS (R) and NBC/WSJ are the least biased pollsters. Likewise, I find that likely voter sampling universes are less biased than registered voter or adult universes. All three universes tend to overestimate the true level of Democratic support. 
+Using past public polling data and election results, I generated bias estimates for each pollster and sampling universe actively polling the generic Congressional ballot over the past six cycles. Generally, pollsters are consistently biased by less than 1pp, but a several still exceed this threshold. Of the pollsters analyzed, I find POS (R) and NBC/WSJ are the least biased pollsters. Likewise, I find that likely voter sampling universes are less biased than registered voter or adult universes. All three universes tend to overestimate the true level of Democratic support. 
 
 I then use these (admittedly overfit) estimates of bias to generate forecasts for the six cycles analyzed. The final forecasts had a mean absolute error of about 1.2pp, though five-of-six correctly predicted the winner. These forecasts are fairly predictive of the final seat share Democrats would win.
 
 #Appendix A
-For a formal model, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distruted with support as the mean and the variance a function of $y_i$ and sample size. This would be specified as:
+For a formal model, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) to specify my model to estimate biases, but with an added term for sampling universe. A given poll is assumed to be normally distributed with support as the mean and the variance a function of $y_i$ and sample size. This would be specified as:
 $$y_i \sim \mathcal{N}(\mu_i, \sigma^2_i)$$
 That poll is centered around mean $\mu_i$, which itself is a function of $\alpha_t$, the true value of support at the time the poll was taken $t$, $\delta_j$, the bias of pollster $j$, and $\theta_k$, the bias of sampling universe $k$. Fully specified, this is: 
 $$\mu_i = \alpha_{t_i} + \delta_{j_i} + \theta_{k_i}$$
