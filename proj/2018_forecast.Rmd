@@ -1,7 +1,7 @@
 ---
-title: "Pooling the polls to forecast the 2018 US House elections"
+title: "2018 US House Elections Forecast"
 author: "Nick Ahamed"
-date: "2/12/2018"
+date: "12 February 2018"
 output:
   html_document:
     toc: yes
@@ -10,47 +10,51 @@ output:
 
 #Pooling the polls to forecast the 2018 US House elections
 ##Introduction
-Using previously estimated pollster and sampling universe biases and current polling data, I forecast the the results of the 2018 US House elections. The Bayesian model predicts Democrats will get 54% of the popular vote, yielding 225 seats in the House of Representatives, 7 more than the 218 needed to win a majority. Based on current polling, Democrats win a majority on Election Day in 55% of simulations. Lastly, I've identified about 30 battleground districts that are ripe for targeting if swing is roughly uniform.
+Using previously estimated pollster and sampling universe biases and current polling data, I forecast the results of the 2018 U.S. House of Representatives elections. My Bayesian model predicts Democrats will receive 54% of the popular vote, yielding 225 seats in the House of Representatives, 7 more than the 218 needed to win a majority. Based on current polling, Democrats win a majority of seats on Election Day in 57% of simulations. Lastly, I have identified about 30 battleground districts that would be strategic targets if swing from 2016 is roughly uniform.
 
 ##Week-by-week estimate of support
-I use a Bayesian random-walk model to estimate the true level of support over time. Based on the most current data, the forecast gives Democrats 53.9% support on the two-way generic ballot, translating to 225 seats in the House of Representatives. Likewise, there is relatively little volatility in week-to-week movements. Whereas in the past six election cycles, 95% of week-to-week movement was within 1.5pp, this cycle, 95% of movement is within just 0.68pp. This perhaps reflects strong stability in voter opinion: regardless of the news cycle, most voters are consistent in their support. It's an important reminder that Democrats don't need to respond to the day-to-day and hour-to-hour machinations of Trump, but should focus on longer-term base building.
+I use a Bayesian random-walk model to estimate the true level of support over time. Based on the most current data, my forecast gives Democrats 53.9% support on the two-way generic ballot, which translates to 225 seats in the House of Representatives. There is relatively little volatility in week-to-week movements. Whereas in the past six election cycles, 95% of week-to-week movement was within 1.5pp, this cycle, 95% of movement is within just 0.7pp. This perhaps reflects strong stability in voter opinion: regardless of the news cycle, most voters are consistent in their support. It is an important reminder that Democrats do not need to respond to the day-to-day and hour-to-hour machinations of Trump, but should focus on longer-term base building.
 
-We saw a maximum amount of support for Democrats right at the end of 2017, possibly associated with the tax bill or the Alabama special election, but there's been a slight return since. Despite this, a +8 two-way margin is a good sign for Democrats. For example, at this point in 2010, Republicans polled at 54.2%, predicting they'd win 227 seats; they won 242.
+We saw the highest support for Democrats at the end of 2017, possibly associated with the Alabama special election or the tax bill, but there has been a slight slide in support since. Despite this, a +8 two-way margin is a good sign for Democrats. In comparison, at this point in 2010, Republicans polled at 54.2%, predicting they would win 227 seats; they won 242.
 
 <center>
 ![](figures/2018_time_series_with_trend.png){ width=8in }
 </center>
 
-If the election were held today and polling is not systematically flawed, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is a 99% chance that they win a majority of seats in the House itself. However, we are still months away from the election. Simulations allow us to account for the variation we expect over time. Across 10,000 simulations of support __on election day__, Democrats win the popular vote 62% of the time and a majority in the House in 55% of simulations.
+If the election were held today and assuming polling is not systematically flawed, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is a 99% chance that they win a majority of seats in the House itself. However, we are still months away from the election. Simulations allow us to account for the variation we expect over time. Across 10,000 simulations of support __on election day__, Democrats win the popular vote in 62% of the simulations and a majority in the House in 57% of the simulations.
 
 ##Strategic targeting for 2018
-Following [__Jackman (2014)__](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/S1049096514000109), I apply a national uniform swing to the 2016 two-way results of each Congressional district to identify key districts for targeting. About 30 districts have at least a 40% chance, but no more than a 60% chance of Democratic victory on election day, based on the national uniform swing. 
+Following [__Jackman (2014)__](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/S1049096514000109), I apply national uniform swing to the 2016 two-way results of each Congressional district to identify key districts for targeting. About 30 districts have between a 40% and 60% chance of Democratic victory on election day, based on the national uniform swing. However, most of these key target seats are leaning towards Republicans; Democrats will need to win in over half of these to take back the House.
 
-There are a 198 seats where Democrats have more than a 60% chance of victory. As such, most of these key target seats are leaning towards Republicans. Democrats will need to win in over half of these to take back the House. 
+<center>
+![](figures/2018_histograms.png){ width=8in }
+</center>
+
+There are 198 seats where Democrats have more than a 60% chance of victory. 27 of these seats only lean towards the Democrat (less than an 80% chance of victory) and we must focus on protecting. An additional 91 seats lean Republican and are expansion seats if it looks like a wave year.
 
 <center>
 ![](figures/2018_strategy.png){ width=8in }
 </center>
 
-Importantly, since the election is still so far away, it's not clear which of these districts are the most likely to be the 218th seat. In general, Democrats should allocate resources to so-called 'tipping point' districts. As seen in the third column above, this implies a __fairly broad investment__ strategy since the election is so far away. Right now, 364 districts have some nonzero likelihood of being the tipping point on Election Day, but if the election were held today, just 20 districts would deserve investment. Until these key districts become clearer, __Democrats should fight everywhere__.
+Importantly, since the election is still so far away, it's not clear which of these districts is the most likely to be the 218th seat. In general, Democrats should allocate resources to so-called 'tipping point' districts. As seen in the third column above, this implies a fairly broad investment strategy since the election is so distant. Right now, 364 districts have some nonzero likelihood of being the tipping point on Election Day, but if the election were held today, just 20 districts would deserve investment. Until these key districts become clearer, __Democrats should fight everywhere__.
 
-An alternative to uniform swing and tippint point calculations is building a forecast using the named-congressional ballot. While polling in sufficiently large numbers to produce accurate estimates would be costly, it would generate:
+An alternative to uniform swing that would give more precise rankings now is building a forecast using the named-congressional ballot. While polling in sufficiently large numbers to produce accurate estimates would be costly, it would generate:
 
   1. fine-grained, district-specific estimates of support that correctly rank the districts;
   
   2. district-specific uncertainty allowing us to identify which districts are more likely to swing than others. 
 
 ##Pollster and universe bias
-Lastly, it's worth demonstrating that we observe only small changes in estimates of bias. Rasmussen was the reference pollster for this cycle, since its prior had the least uncertainty (see Appendix A for more information) -- so its estimate is fixed. Only two pollsters changed the sign of their bias: The Economist/YouGov went from overestimating Democratic support to being more conservative, and Quinnipiac moved in the opposite direction. While on the one hand, there is not much evidence that other pollsters are consistently more or less biased than our previous estimate, on the other, in some cases we have enough evidence to detect that a pollster updated their methodology enough to change their bias.
+Lastly, it is worth demonstrating that we observe only small changes in estimates of bias. Rasmussen was the reference pollster for this cycle, since its Bayesian prior had the least uncertainty (see Appendix A for more information) -- so its estimate has been fixed. Only two pollsters changed the sign of their bias: The Economist/YouGov went from overestimating Democratic support to being more conservative vis-a-vis Rasmussen, and Quinnipiac moved in the opposite direction. On one hand, there is not much evidence that other pollsters are consistently more or less biased than our previous estimate; on the other, in some cases we have enough evidence to detect that two pollsters updated their methodologies enough to detect directional change in their biases.
 
 <center>
 ![](figures/2018_bias_update.png){ width=8in }
 </center>
 
-Similarly, the estimate for bias of registered voter universes is similar across time: just under 1.5pp towards Democrats. On the other hand, holding the bias of likely voter universes constant, adult universes are considerably less biased than in previous cycles, but are still quite biased. 
+Similarly, the estimate for bias of registered voter universes is similar across time: just about 1.5pp towards Democrats. On the contrary, holding the bias of likely voter universes constant, adult universes are considerably less biased than in previous cycles, but are still quite biased. 
 
 ##The Data
-The polling data were scraped from Real Clear Politics' database for the [__2018__](https://www.realclearpolitics.com/epolls/other/2018_generic_congressional_vote-6185.html#polls) Generic Congressional ballot. Each pollster has a slightly different wording (and hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republcian candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters are making in the voting booth. However, since not all candidates are known for 2018 yet, this is the most common question being polled by public sources. 
+The polling data were scraped from Real Clear Politics' database for the [__2018__](https://www.realclearpolitics.com/epolls/other/2018_generic_congressional_vote-6185.html#polls) generic Congressional ballot. Each pollster has a slightly different wording (hence why we measure pollster bias), but they are all similar to: 'If the elections for the U.S. House of Representatives were being held today, which party’s candidate would you vote for in your congressional district: The Democratic candidate or the Republican candidate?'  The named Congressional ballot question would account for incumbency effects and more closely mirror the choice voters will make in the voting booth. However, since not all candidates are known for 2018 yet, the generic ballot is the most common question being polled by public sources. 
 
 Only polls where the year, date range, pollster, sampling universe and sample size are all known were included. 
 
@@ -58,28 +62,28 @@ Additionally, the polls' results were transformed to reflect the two-way share f
 
 Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more data to estimate with the same accuracy. Additionally, a weekly model acknowledges that most changes in support are transient and allows us to focus on meaningful changes. Lastly, the weekly model lowers the number of parameters that need to be estimated by a factor of 7, reducing computation time as well. 
 
-Additionally, only sampling universes and pollsters who have polled in at least one of the last six election cycles are included. This is because I use estimates of bias observed over the last elections to account for house effects. See more [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html).
+Only sampling universes and pollsters who have polled in at least one of the last six election cycles are included. This is because I use estimates of bias observed over the last elections to account for polling house effects. See more [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html).
 
-As of 2/12/2018, 105 polls from 13 pollsters contacting 133k respondents were used. These are the 5 largest pollsters. See Appendix B for full details.
+As of February 12, 2018, 105 polls from 13 pollsters contacting 133k respondents were used. These are the 5 largest pollsters. See Appendix B for full details.
 
 <center>
 ![](figures/2018_data_breakdown.png){ width=6in }
 </center>
 
-2016 US House election results were taken from [__here__](https://github.com/Prooffreader/election_2016_data).
+2016 U.S. House election results were taken from [__here__](https://github.com/Prooffreader/election_2016_data).
 
 #Appendix A
-To specify my random walk model, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf). A given poll is assumed to be normally distruted with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
+To specify my random walk model, I follow [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf). A given poll is assumed to be normally distributed with support as the mean and the standard deviation a function of $y_i$ and sample size. This would be specified as:
 $$y_i \sim \mathcal{N}(\mu_i, \sigma^2_i)$$
 That poll is centered around mean $\mu_i$, which itself is a function of $\alpha_t$, the true value of support at the time the poll was taken $t$, $\delta_j$, the bias of pollster $j$, and $\theta_k$, the bias of sampling universe $k$. Fully specified, this is: 
 $$\mu_i = \alpha_{t_i} + \delta_{j_i} + \theta_{k_i}$$
 Due to the trends we see in our initial data exploration, a random walk model is appropriate. In such a model, support at time $t$ is normally distributed around support at time $t - 1$. 
 $$ \alpha_t \sim \mathcal{N}(\alpha_{t-1}, \omega^2) $$
-For these given specifications, we start with the following priors: 
+For these given specifications, I start with the following priors: 
 $$ \sigma^2_i = \frac{y_i(1-y_i)}{n_i},\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.56),\ \ \ \omega \sim \mathcal{U}(0, (0.02/1.96))$$
-$\sigma^2_i$ just follows the formula for variance of a sample. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation ($\omega$), I use a uniform distribution between 0 and 0.01. A value of 0.01 would reflect that 95% of week-to-week movement is within about 2pp in either direction, a fairly weak assumption. These priors are similar to [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf) 
+$\sigma^2_i$ just follows the formula for variance of a sample. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation ($\omega$), I use a uniform distribution between 0 and 0.01. A value of 0.01 would reflect that 95% of week-to-week movement is within about 2pp in either direction, a fairly weak assumption. These priors are similar to [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf).
 
-Unlike [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) and [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf), I have strong priors for $\delta_j$ and $\theta_k$. Whereas they use a weak prior centered around 0, I use the best estimate from past election cycles and the observed uncertainty about that estimate. See more about the estimation of those [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html), including the original priors and observed posteriors. However, using priors for all of the variables leaves the model underspecified. It is impossible to simultaneously estimate the bias for universe/pollster, and the true level of support each week. As such, I fix the prior for the pollster/universe that we have the least uncertainty about at it's bias estimate (set variance of prior = 0). Whereas past bias estimates were derived in relation to the true election result, this approach updates the priors in relation to this pollster/universe.
+Unlike [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) and [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf), I have strong priors for $\delta_j$ and $\theta_k$. Whereas they use a weak prior centered around 0, I use the best estimate from past election cycles and the observed uncertainty about that estimate. See more about the estimation of those [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html), including the original priors and observed posteriors. However, using priors for all of the variables leaves the model underspecified. It is impossible to simultaneously estimate the bias for universe/pollster, and the true level of support each week. As such, I fix the prior for the pollster/universe for which we have the least uncertainty about at its bias estimate (set variance of prior = 0). Whereas past bias estimates were derived in relation to the true election result, this approach updates the priors in relation to this pollster/universe.
 
 #Appendix B
 ##Load packages, functions and other setup 
@@ -265,7 +269,7 @@ house_2016$strat_import <- ifelse(house_2016$prob_victory < 0.6 & house_2016$pro
 
 n_size <- 10000
 temp_dists <- data.frame(support = numeric(435), seat = numeric(435))
-tipping_point <- data.frame(state = character(n_size), dist = character(n_size), dem = numeric(n_size), stringsAsFactors=FALSE)
+tipping_point <- data.frame(state = character(n_size), dist = character(n_size), stringsAsFactors=FALSE)
 
 for (i in 1:n_size) {
   for (j in 1:nrow(house_2016)) {
@@ -279,7 +283,6 @@ for (i in 1:n_size) {
   
   tipping_point$state[i] <- temp_dists$state[218]
   tipping_point$dist[i] <- temp_dists$dist[218]
-  tipping_point$dem[i] <- ifelse(temp_dists$support[218] > 0.5, 1, 0)
 }
 
 tp_dists <- tipping_point %>%
@@ -288,13 +291,48 @@ tp_dists <- tipping_point %>%
 
 house_2016 <- house_2016 %>%
   left_join(tp_dists, by  = c("geo_name" = "dist", "state" = "state")) %>% 
-    mutate_each(funs(replace(., which(is.na(.)), 0)))
+  mutate_each(funs(replace(., which(is.na(.)), 0))) %>%
+  mutate(win = ifelse(dist_forecast > 0.5, 1, 0),
+         class = ifelse(prob_victory > 0.8, 1, 
+                        ifelse(prob_victory > 0.6, 0.75,
+                               ifelse(prob_victory > 0.4, 0.5,
+                                      ifelse(prob_victory > 0.2, 0.25, 0)))),
+         dist_forecast = ifelse(dist_forecast > 1, 1, dist_forecast))
 ```
 
 ```{r, include = F}
 stat_districts <- house_2016 %>%
   filter(strat_import == 1) %>%
   mutate(cd = factor(cd, levels = cd[order(prob_victory)]))
+
+seats_df <- data.frame(new_seats = new_seats, new_seats_wins = ifelse(new_seats > 217, 1, 0)) %>%
+  filter(new_seats < 435, new_seats > 0)
+
+hist1 <- ggplot(house_2016, aes(x = dist_forecast, fill =  factor(win))) + 
+  geom_histogram() +
+  theme_bw()+
+  guides(fill= F) + 
+  scale_x_continuous(labels = scales::percent, name = "Forecasted Support") + 
+  ylab("# of Districts")  + 
+  scale_fill_manual(values = c("#A83022", "#3596DD"))
+
+hist2 <- ggplot(house_2016, aes(x = prob_victory, fill =  factor(class))) + 
+  geom_histogram() +
+  theme_bw()+
+  guides(fill= F) + 
+  scale_x_continuous(labels = scales::percent, name = "Probability of Victory") + 
+  ylab("# of Districts")  + 
+  scale_fill_manual(values = c("#A83022", "#BC5B51", "#64288C", "#3596DD", "#1F2F6A"))
+
+hist3 <- ggplot(seats_df, aes(x = new_seats, fill =  factor(new_seats_wins))) + 
+  geom_bar(aes(y = (..count..)/sum(..count..))) + 
+  theme_bw()+
+  guides(fill= F) + 
+  scale_y_continuous(labels = scales::percent, name = "% of Simulations") + 
+  xlab("# of Democratic Seats")  + 
+  scale_fill_manual(values = c("#A83022", "#3596DD"))
+
+ggsave(filename = "figures/2018_histograms.png", plot = plot_grid(hist1, hist2, hist3, nrow = 1), width = 8, height = 4, units = "in")
 
 y1 <- ggplot(stat_districts, aes(x = dist_forecast, y = cd, color = dist_forecast)) + 
   geom_point() + 
