@@ -1,4 +1,9 @@
 pollster_raw,pollster,start_date,end_date,n_size,univ,dem,rep,cycle
+Economist/YouGov,economist_yougov,2/18/18,2/20/18,1308,RV,43,35,2018
+Quinnipiac,quinnipiac,2/16/18,2/19/18,1249,RV,53,38,2018
+Economist/YouGov,economist_yougov,2/11/18,2/13/18,1280,RV,42,38,2018
+Reuters/Ipsos,reuters_ipsos,2/9/18,2/13/18,1515,Adults,39,30,2018
+PPP (D),ppp,2/9/18,2/11/18,687,RV,49,41,2018
 Marist,marist,2/5/18,2/7/18,807,RV,49,38,2018
 Economist/YouGov,economist_yougov,2/4/18,2/6/18,1320,RV,43,37,2018
 Reuters/Ipsos,reuters_ipsos,2/2/18,2/6/18,3110,Adults,38,31,2018
