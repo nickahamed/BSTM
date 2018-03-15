@@ -1,7 +1,7 @@
 ---
 title: "2018 US House Elections Forecast"
 author: "Nick Ahamed"
-date: "12 February 2018"
+date: "15 March 2018"
 output:  word_document
 ---
 
@@ -18,7 +18,7 @@ We saw the highest support for Democrats at the end of 2017, possibly associated
 knitr::include_graphics(path = "figures/2018_time_series_with_trend.png", auto_pdf = T)
 ```
 
-If the election were held today and assuming polling is not systematically flawed, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is a 99% chance that they win a majority of seats in the House itself. However, we are still months away from the election. Simulations allow us to account for the variation we expect over time. Across 10,000 simulations of support __on election day__, Democrats win the popular vote in 62% of the simulations and a majority in the House in 55% of the simulations.
+If the election were held today and assuming polling is not systematically flawed, there is a 100% chance that Democrats win over 50% of the popular vote, and more importantly, there is a 99% chance that they win a majority of seats in the House itself. However, we are still months away from the election. Simulations allow us to account for the variation we expect over time. Across 10,000 simulations of support __on election day__, Democrats win the popular vote in 63% of the simulations and a majority in the House in 55% of the simulations.
 
 ##Strategic targeting for 2018
 Following [__Jackman (2014)__](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/S1049096514000109), I apply national uniform swing to the 2016 two-way results of each Congressional district to identify key districts for targeting. About 30 districts have between a 40% and 60% chance of Democratic victory on election day, based on the national uniform swing. However, most of these key target seats are leaning towards Republicans; Democrats will need to win in over half of these to take back the House.
@@ -27,13 +27,13 @@ Following [__Jackman (2014)__](https://www.cambridge.org/core/services/aop-cambr
 knitr::include_graphics(path = "figures/2018_histograms.png", auto_pdf = T)
 ```
 
-There are 198 seats where Democrats have more than a 60% chance of victory. 27 of these seats only lean towards the Democrat (less than an 80% chance of victory) and we must focus on protecting. An additional 91 seats lean Republican and are expansion seats if it looks like a wave year.
+There are 198 seats where Democrats have more than a 60% chance of victory. 23 of these seats only lean towards the Democrat (less than an 80% chance of victory) and we must focus on protecting. An additional 88 seats lean Republican and are expansion seats if it looks like a wave year.
 
 ```{r, echo=FALSE, fig.width=8, fig.height=6, fig.align="center"}
 knitr::include_graphics(path = "figures/2018_strategy.png", auto_pdf = T)
 ```
 
-Importantly, since the election is still so far away, it's not clear which of these districts is the most likely to be the 218th seat. In general, Democrats should allocate resources to so-called 'tipping point' districts. As seen in the third column above, this implies a fairly broad investment strategy since the election is so distant. Right now, 364 districts have some nonzero likelihood of being the tipping point on Election Day, but if the election were held today, just 20 districts would deserve investment. Until these key districts become clearer, __Democrats should fight everywhere__.
+Importantly, since the election is still so far away, it's not clear which of these districts is the most likely to be the 218th seat. In general, Democrats should allocate resources to so-called 'tipping point' districts. As seen in the third column above, this implies a fairly broad investment strategy since the election is so distant. Right now, 354 districts have some nonzero likelihood of being the tipping point on Election Day, but if the election were held today, just 20 districts would deserve investment. Until these key districts become clearer, __Democrats should fight everywhere__.
 
 An alternative to uniform swing that would give more precise rankings now is building a forecast using the named-congressional ballot. While polling in sufficiently large numbers to produce accurate estimates would be costly, it would generate:
 
@@ -59,9 +59,9 @@ Additionally, the polls' results were transformed to reflect the two-way share f
 
 Time is transformed to be the rounded number of weeks between the middle day of the poll and election day. A daily model would be more precise, but would take more data to estimate with the same accuracy. Additionally, a weekly model acknowledges that most changes in support are transient and allows us to focus on meaningful changes. Lastly, the weekly model lowers the number of parameters that need to be estimated by a factor of 7, reducing computation time as well. 
 
-Only sampling universes and pollsters who have polled in at least one of the last six election cycles are included. This is because I use estimates of bias observed over the last elections to account for polling house effects. See more [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html).
+Sampling universes and pollsters who have polled in at least one of the last six election cycles use their previously estimated bias. See more [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html). New pollsters have a weak prior described below. 
 
-As of February 12, 2018, 105 polls from 13 pollsters contacting 133k respondents were used. These are the 5 largest pollsters. Full details and code available. 
+As of March 15, 2018, 134 polls from 19 pollsters contacting 166k respondents were used. These are the 5 largest pollsters. See Appendix B for full details.
 
 ```{r, echo=FALSE, fig.width=6, fig.height=3, fig.align="center"}
 knitr::include_graphics(path = "figures/2018_data_breakdown.png", auto_pdf = T)
@@ -81,3 +81,7 @@ $$ \sigma^2_i = \frac{y_i(1-y_i)}{n_i},\ \ \ \alpha_1 \sim \mathcal{U}(0.46, 0.5
 $\sigma^2_i$ just follows the formula for variance of a sample. As a prior for the starting true value of support ($\alpha_1$), I use a uniform distribution over the minimum and maximum actual vote share of Democrats in the six elections analyzed. Lastly, as a prior for the true standard deviation ($\omega$), I use a uniform distribution between 0 and 0.01. A value of 0.01 would reflect that 95% of week-to-week movement is within about 2pp in either direction, a fairly weak assumption. These priors are similar to [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf).
 
 Unlike [__Jackman (2005)__](http://eppsac.utdallas.edu/files/jackman/CAJP%2040-4%20Jackman.pdf) and [__Strauss (2007)__](http://www.mindlessphilosopher.net/princeton/strauss_reverse%20random%20walk.pdf), I have strong priors for $\delta_j$ and $\theta_k$. Whereas they use a weak prior centered around 0, I use the best estimate from past election cycles and the observed uncertainty about that estimate. See more about the estimation of those [__here__](https://github.com/nickahamed/BSTM/blob/master/proj/pollster_bias.html), including the original priors and observed posteriors. However, using priors for all of the variables leaves the model underspecified. It is impossible to simultaneously estimate the bias for universe/pollster, and the true level of support each week. As such, I fix the prior for the pollster/universe for which we have the least uncertainty about at its bias estimate (set variance of prior = 0). Whereas past bias estimates were derived in relation to the true election result, this approach updates the priors in relation to this pollster/universe.
+
+New pollsters/universes that have not previously polled have the following priors. 
+$$\ \ \ \delta_j \sim \mathcal{N}(0, (0.2/1.96)^2),\ \ \ \theta_k \sim \mathcal{N}(0, (0.2/1.96)^2)$$
+For pollster biases ($\delta$), I start with a prior that there is no bias with a standard deviation to reflect that bias is 95% of the time within 20pp in either direction; likewise, I start with a prior for bias from sampling universe ($\theta$) that is the same. 
